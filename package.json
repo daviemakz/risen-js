@@ -4,7 +4,12 @@
   "description": "This package allows streaming & non-streaming microservices to be build on the frontend and the backend.",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "format": "prettier --config ./.prettierrc --write './**/*.js'",
+    "format-windows": "prettier --config ./.prettierrc --write ./**/*.js",
+    "deploy-patch": "git commit -a -m 'module update: patch' && git push && npm version patch && npm publish",
+    "deploy-minor": "git commit -a -m 'module update: minor' && git push && npm version minor && npm publish",
+    "deploy-major": "git commit -a -m 'module update: major' && git push && npm version major && npm publish"
   },
   "repository": {
     "type": "git",
@@ -30,5 +35,8 @@
   "bugs": {
     "url": "https://github.com/daviemakz/micro-services-framework/issues"
   },
-  "homepage": "https://github.com/daviemakz/micro-services-framework#readme"
+  "homepage": "https://github.com/daviemakz/micro-services-framework#readme",
+  "devDependencies": {
+    "prettier": "^1.13.6"
+  }
 }

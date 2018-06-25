@@ -1,0 +1,34 @@
+{
+  "name": "micro-service-framework",
+  "version": "1.0.0",
+  "description": "This package allows streaming & non-streaming microservices to be build on the frontend and the backend.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daviemakz/micro-services-framework.git"
+  },
+  "keywords": [
+    "micro",
+    "service",
+    "framework",
+    "browser",
+    "webpack",
+    "server",
+    "server-end",
+    "front-end",
+    "node",
+    "node",
+    "react",
+    "angular",
+    "child-process"
+  ],
+  "author": "David Makuni",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daviemakz/micro-services-framework/issues"
+  },
+  "homepage": "https://github.com/daviemakz/micro-services-framework#readme"
+}

@@ -43,10 +43,12 @@
     "prettier-eslint-cli": "^4.7.1"
   },
   "dependencies": {
+    "autobind": "^1.0.3",
     "babel-core": "^6.26.3",
     "browserify": "^16.2.2",
     "child-process": "^1.0.2",
     "find-free-port": "^2.0.0",
+    "is-port-free": "^1.0.7",
     "net": "^1.0.2",
     "sleep-async": "^1.0.5"
   }

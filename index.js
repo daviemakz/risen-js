@@ -6,7 +6,7 @@ require('./lib/runtime');
 // Load NPM modules
 const isPortFree = require('is-port-free');
 
-// Load core libs
+// Load core libraries
 const microServiceCore = require('./lib');
 const packageJson = require('./package.json');
 
@@ -20,7 +20,7 @@ class MicroServiceFramework extends microServiceCore {
     // Store server interfaces
     this.interfaces = {};
     // Bind methods
-    ['startServer', 'log', 'initGateway', 'bindGateway'].forEach(
+    ['startServer', 'initGateway', 'bindGateway'].forEach(
       func => (this[func] = this[func].bind(this))
     );
   }
@@ -30,27 +30,24 @@ class MicroServiceFramework extends microServiceCore {
     return setTimeout(() => process.exit(), 0);
   }
 
-  // FUNCTION: Add micro service
-
   // FUNCTION: Start the server
   startServer() {
     return (async () => {
       await this.initGateway();
       await this.bindGateway();
-      // Start all registered micro server processes (automatically ready for connections)
     })();
   }
 
-  // FUNCTION: Initialise API Gateway
+  // FUNCTION: Initialise api gateway
   initGateway() {
     // Initial message
-    this.log('Micro Service Framework: ' + packageJson.version, 'log');
+    this.log(`Micro Service Framework: ${packageJson.version}`, 'log');
     // Return
     return new Promise((resolve, reject) =>
-      // Check that API gateway is free
+      // Check that api gateway is free
       isPortFree(this.settings.apiGatewayPort)
         .then(() => {
-          this.log('Starting API Gateway', 'log');
+          this.log('Starting api Gateway', 'log');
           // Initialise interface
           this.interfaces.apiGateway = this.invokeListener(
             this.settings.apiGatewayPort
@@ -58,19 +55,19 @@ class MicroServiceFramework extends microServiceCore {
           // Check the status of the gateway
           if (!this.interfaces.apiGateway) {
             // Console Log
-            this.log('ERROR: Unable To Start Server, Exiting..! ', 'log');
+            this.log('ERROR: Unable to start gateway, exiting! ', 'log');
             // Return
             return reject(false);
           } else {
             // Console Log
-            this.log('API gateway started!', 'log');
+            this.log('api gateway started!', 'log');
             // Return
             return resolve(true);
           }
         })
         .catch(e => {
           this.log(
-            'ERROR: API Gateway Port Not Free Or Unknown Error Has Occurred. INFO: ' +
+            'ERROR: Gateway port not free or unknown error has occurred. INFO: ' +
               JSON.stringify(e, null, 2),
             'log'
           );
@@ -80,30 +77,30 @@ class MicroServiceFramework extends microServiceCore {
     );
   }
 
-  // FUNCTION: Bind API gateway event listners
+  // FUNCTION: Bind api gateway event listners
   bindGateway() {
     return new Promise((resolve, reject) => {
       // Socket Communication Request
       this.interfaces.apiGateway.on('COM_REQUEST', (message, data) => {
         // Confirm Connection
-        this.log('[' + this.conId + '] Connection Request Recieved', 'log');
+        this.log(`[${this.conId}] Connection Request Recieved`, 'log');
         // Process Communication Request
         data
           ? this.processComRequest(data, message, this.conId)
           : this.processComError(data, message, this.conId);
         // Process Connection
-        this.log('[' + this.conId + '] Connection Request Processed');
+        this.log(`[${this.conId}] Connection Request Processed`);
         // Increment
         return this.conId++;
       });
       // Socket Communication Close
       this.interfaces.apiGateway.on('COM_CLOSE', message => {
         // Connection Close Requested
-        this.log('[' + this.conId + '] Connection Close Requested');
+        this.log(`[${this.conId}] Connection Close Requested`);
         // Destroy Socket (Close Connection)
         message.conn.destroy();
         // Connection Closed
-        this.log('[' + this.conId + '] Connection Successfully Closed');
+        this.log(`[${this.conId}] Connection Successfully Closed`);
         // Increment
         return this.conId++;
       });

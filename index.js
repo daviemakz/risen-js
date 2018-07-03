@@ -60,7 +60,7 @@ class MicroServiceFramework extends microServiceCore {
             return reject(false);
           } else {
             // Console Log
-            this.log('api gateway started!', 'log');
+            this.log('API gateway started!', 'log');
             // Return
             return resolve(true);
           }

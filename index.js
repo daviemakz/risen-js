@@ -15,6 +15,8 @@ class MicroServiceFramework extends microServiceCore {
   constructor(options) {
     // Super
     super(options);
+    // Connection tracking number
+    this.conId = 0;
     // Store server interfaces
     this.interfaces = {};
     // Bind methods
@@ -23,18 +25,12 @@ class MicroServiceFramework extends microServiceCore {
     );
   }
 
-  // FUNCTION: Show message in log
-  log(message, type) {
-    return (
-      this.settings.verbose && ['log', 'error', 'warn'] &&
-      console[type](message)
-    );
-  }
-
   // FUNCTION: Start server failed
   startServerFailed() {
     return setTimeout(() => process.exit(), 0);
   }
+
+  // FUNCTION: Add micro service
 
   // FUNCTION: Start the server
   startServer() {

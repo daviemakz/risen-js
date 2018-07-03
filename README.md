@@ -1,4 +1,4 @@
-# Micro Services Framework
+# Node.JS Micro Services Framework
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/daviemakz/micro-services-framework.svg)](https://greenkeeper.io/)
 

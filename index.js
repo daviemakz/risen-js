@@ -79,7 +79,6 @@ class MicroServiceFramework extends microServiceCore {
 
   // FUNCTION: Bind api gateway event listners
   bindGateway() {
-    return new Promise((resolve, reject) => {
       // Socket Communication Request
       this.interfaces.apiGateway.on('COM_REQUEST', (message, data) => {
         // Confirm Connection
@@ -105,8 +104,8 @@ class MicroServiceFramework extends microServiceCore {
         return this.conId++;
       });
       //// Socket Communication Kill Process
-      this.interfaces.apiGateway.on('KILL', message => process.exit());
-    });
+      this.interfaces.apiGateway.on('KILL', () => process.exit());
+    )
   }
 }
 

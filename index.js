@@ -34,7 +34,7 @@ class MicroServiceFramework extends ServicesCore {
         microServiceConnectionTimeout: 10000,
         microServiceConnectionAttempts: 1000,
         apiGatewayPort: 8080,
-        portRangeStart: 10000,
+        portRangeStart: 1024,
         portRangeFinish: 65535,
       },
       options

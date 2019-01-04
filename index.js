@@ -24,22 +24,21 @@ class MicroServiceFramework extends ServicesCore {
     // Connection tracking number
     this.conId = 0;
     // Declare settings
-    this.settings = {
-      verbose: options.hasOwnProperty('verbose') ? options.verbose : true,
-      maxBuffer: options.hasOwnProperty('maxBuffer') ? options.maxBuffer : 50, // in megabytes
-      logPath: options.hasOwnProperty('logPath') ? options.logPath : void 0,
-      restartTimeout: options.hasOwnProperty('restartTimeout') ? options.restartTimeout : 1000,
-      connectionTimeout: options.hasOwnProperty('connectionTimeout') ? options.connectionTimeout : 1000,
-      microServiceConnectionTimeout: options.hasOwnProperty('microServiceConnectionTimeout')
-        ? options.microServiceConnectionTimeout
-        : 10000,
-      microServiceConnectionAttempts: options.hasOwnProperty('microServiceConnectionAttempts')
-        ? options.microServiceConnectionAttempts
-        : 1000,
-      apiGatewayPort: options.hasOwnProperty('apiGatewayPort') ? options.apiGatewayPort : 8080,
-      portRangeStart: options.hasOwnProperty('portRangeStart') ? options.portRangeStart : 10000,
-      portRangeFinish: options.hasOwnProperty('portRangeFinish') ? options.portRangeFinish : 65535,
-    };
+    this.settings = Object.assign(
+      {
+        verbose: true,
+        maxBuffer: 50, // in megabytes
+        logPath: void 0,
+        restartTimeout: 1000,
+        connectionTimeout: 1000,
+        microServiceConnectionTimeout: 10000,
+        microServiceConnectionAttempts: 1000,
+        apiGatewayPort: 8080,
+        portRangeStart: 10000,
+        portRangeFinish: 65535,
+      },
+      options
+    );
     // Store server externalInterfaces, these are the socket objects which allow external communication
     this.externalInterfaces = {};
     this.microServerInfo = {};
@@ -107,12 +106,15 @@ class MicroServiceFramework extends ServicesCore {
           this.externalInterfaces.apiGateway = this.invokeListener(this.settings.apiGatewayPort);
           // Check the status of the gateway
           return !this.externalInterfaces.apiGateway
-            ? this.log('Unable to start gateway, exiting! ', 'error') || reject(false)
+            ? this.log('Unable to start gateway, exiting!', 'error') ||
+                reject(Error('Unable to start gateway, exiting!'))
             : this.log('API Gateway Started!', 'log') || resolve(true);
         })
         .catch(e => {
           this.log(`Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(e, null, 2)}`, 'log');
-          return reject(false);
+          return reject(
+            Error(`Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(e, null, 2)}`)
+          );
         });
     });
   }
@@ -162,7 +164,7 @@ class MicroServiceFramework extends ServicesCore {
                 this.initService(name, result =>
                   result === true
                     ? resolveLocal()
-                    : rejectLocal(`Unable to start microservice! MORE INFO: ${JSON.stringify(result, null, 2)}`)
+                    : rejectLocal(Error(`Unable to start microservice! MORE INFO: ${JSON.stringify(result, null, 2)}`))
                 );
               })
           )

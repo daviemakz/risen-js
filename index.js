@@ -29,7 +29,7 @@ class MicroServiceFramework extends ServicesCore {
       maxBuffer: options.hasOwnProperty('maxBuffer') ? options.maxBuffer : 50, // in megabytes
       logPath: options.hasOwnProperty('logPath') ? options.logPath : void 0,
       restartTimeout: options.hasOwnProperty('restartTimeout') ? options.restartTimeout : 1000,
-      connectionTimeout: options.hasOwnProperty('connectionTimeout') ? options.connectionTimeout : 1500,
+      connectionTimeout: options.hasOwnProperty('connectionTimeout') ? options.connectionTimeout : 1000,
       microServiceConnectionTimeout: options.hasOwnProperty('microServiceConnectionTimeout')
         ? options.microServiceConnectionTimeout
         : 10000,
@@ -107,14 +107,11 @@ class MicroServiceFramework extends ServicesCore {
           this.externalInterfaces.apiGateway = this.invokeListener(this.settings.apiGatewayPort);
           // Check the status of the gateway
           return !this.externalInterfaces.apiGateway
-            ? this.log('ERROR: Unable to start gateway, exiting! ', 'log') || reject(false)
+            ? this.log('Unable to start gateway, exiting! ', 'error') || reject(false)
             : this.log('API Gateway Started!', 'log') || resolve(true);
         })
         .catch(e => {
-          this.log(
-            `ERROR: Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(e, null, 2)}`,
-            'log'
-          );
+          this.log(`Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(e, null, 2)}`, 'log');
           return reject(false);
         });
     });
@@ -126,22 +123,22 @@ class MicroServiceFramework extends ServicesCore {
       // Socket Communication Request
       this.externalInterfaces.apiGateway.on('COM_REQUEST', (message, data) => {
         // Confirm Connection
-        this.log(`[${this.conId}] Connection Request Recieved`, 'log');
+        this.log(`[${this.conId}] Connection request recieved`, 'log');
         // Process Communication Request
         data ? this.processComRequest(data, message, this.conId) : this.processComError(data, message, this.conId);
         // Process Connection
-        this.log(`[${this.conId}] Connection Request Processed`);
+        this.log(`[${this.conId}] Connection request processed`);
         // Increment
         return this.conId++;
       });
       // Socket Communication Close
       this.externalInterfaces.apiGateway.on('COM_CLOSE', message => {
         // Connection Close Requested
-        this.log(`[${this.conId}] Connection Close Requested`);
+        this.log(`[${this.conId}] Connection close requested`);
         // Destroy Socket (Close Connection)
         message.conn.destroy();
         // Connection Closed
-        this.log(`[${this.conId}] Connection Successfully Closed`);
+        this.log(`[${this.conId}] Connection successfully closed`);
         // Increment
         return this.conId++;
       });

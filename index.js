@@ -1,3 +1,5 @@
+'use strict';
+
 // Load runtime
 require('./lib/runtime');
 
@@ -5,19 +7,20 @@ require('./lib/runtime');
 const isPortFree = require('is-port-free');
 const path = require('path');
 const fs = require('fs');
-
-// Load core libraries
-const ServicesCore = require('./lib');
-
-// Load package.json
 const packageJson = require('./package.json');
 
+// Load core libraries
+const servicesCore = require('./lib');
+
 // Load templates
-const CommandBodyObject = require('./lib/template/command.js');
-const ResponseBodyObject = require('./lib/template/response.js');
+const commandBodyObject = require('./lib/template/command.js');
+const responseBodyObject = require('./lib/template/response.js');
+
+// Load network components
+const { createListener, createSpeaker, createSpeakerReconnector } = require('./lib/net');
 
 // Declare class
-class MicroServiceFramework extends ServicesCore {
+class MicroServiceFramework extends servicesCore {
   constructor(options) {
     // Super
     super(options);
@@ -29,7 +32,7 @@ class MicroServiceFramework extends ServicesCore {
         verbose: true,
         maxBuffer: 50, // in megabytes
         logPath: void 0,
-        restartTimeout: 1000,
+        restartTimeout: 50,
         connectionTimeout: 1000,
         microServiceConnectionTimeout: 10000,
         microServiceConnectionAttempts: 1000,
@@ -101,14 +104,14 @@ class MicroServiceFramework extends ServicesCore {
       // Check that api gateway is free
       isPortFree(this.settings.apiGatewayPort)
         .then(() => {
-          this.log('Starting API Gateway', 'log');
+          this.log('Starting service core', 'log');
           // Initialise interface, invoke port listener
           this.externalInterfaces.apiGateway = this.invokeListener(this.settings.apiGatewayPort);
           // Check the status of the gateway
           return !this.externalInterfaces.apiGateway
             ? this.log('Unable to start gateway, exiting!', 'error') ||
                 reject(Error('Unable to start gateway, exiting!'))
-            : this.log('API Gateway Started!', 'log') || resolve(true);
+            : this.log('Service core started!', 'log') || resolve(true);
         })
         .catch(e => {
           this.log(`Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(e, null, 2)}`, 'log');
@@ -125,22 +128,22 @@ class MicroServiceFramework extends ServicesCore {
       // Socket Communication Request
       this.externalInterfaces.apiGateway.on('COM_REQUEST', (message, data) => {
         // Confirm Connection
-        this.log(`[${this.conId}] Connection request recieved`, 'log');
+        this.log(`[${this.conId}] Service core connection request recieved`, 'log');
         // Process Communication Request
         data ? this.processComRequest(data, message, this.conId) : this.processComError(data, message, this.conId);
         // Process Connection
-        this.log(`[${this.conId}] Connection request processed`);
+        this.log(`[${this.conId}] Service core connection request processed`);
         // Increment
         return this.conId++;
       });
       // Socket Communication Close
       this.externalInterfaces.apiGateway.on('COM_CLOSE', message => {
         // Connection Close Requested
-        this.log(`[${this.conId}] Connection close requested`);
+        this.log(`[${this.conId}] Service core connection close requested`);
         // Destroy Socket (Close Connection)
         message.conn.destroy();
         // Connection Closed
-        this.log(`[${this.conId}] Connection successfully closed`);
+        this.log(`[${this.conId}] Service core connection successfully closed`);
         // Increment
         return this.conId++;
       });
@@ -180,7 +183,10 @@ class MicroServiceFramework extends ServicesCore {
 
 // Exports
 module.exports = {
-  MicroServicesFramework: options => new MicroServiceFramework(options),
-  CommandBodyObject,
-  ResponseBodyObject,
+  microServiceFramework: options => new MicroServiceFramework(options),
+  commandBodyObject: commandBodyObject,
+  responseBodyObject: responseBodyObject,
+  createListener,
+  createSpeaker,
+  createSpeakerReconnector,
 };

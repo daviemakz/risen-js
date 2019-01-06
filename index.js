@@ -183,9 +183,9 @@ class MicroServiceFramework extends servicesCore {
 
 // Exports
 module.exports = {
-  microServiceFramework: options => new MicroServiceFramework(options),
-  commandBodyObject: commandBodyObject,
-  responseBodyObject: responseBodyObject,
+  MicroServiceFramework: options => new MicroServiceFramework(options),
+  CommandBodyObject: commandBodyObject,
+  ResponseBodyObject: responseBodyObject,
   createListener,
   createSpeaker,
   createSpeakerReconnector,

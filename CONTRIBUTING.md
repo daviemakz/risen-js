@@ -1,15 +1,14 @@
-# Contributing to 'MySQL Connection Pool Manager'
+# Contributing to 'Micro Service Framework'
 
-The following is a set of guidelines for contributing to 'MySQL Connection Pool Manager'. Please spend several minutes in reading these guidelines before you create an issue or pull request.
+The following is a set of guidelines for contributing to 'Micro Service Framework'. Please spend several minutes in reading these guidelines before you create an issue or pull request.
 
 Anyway, these are just guidelines, not rules, use your best judgment and feel free to propose changes to this document in a pull request.
-
 
 ## Do your homework before asking a question
 
 It's a great idea to read Eric Steven Raymond's [How To Ask Questions The Smart Way](http://www.catb.org/esr/faqs/smart-questions.html) twice before asking a question. But if you are busy now, I recommend to read [Don't post homework questions](http://www.catb.org/esr/faqs/smart-questions.html#homework) first.
 
-The following guidelines are about *How to avoid Homework Questions*.
+The following guidelines are about _How to avoid Homework Questions_.
 
 ## Read the documentation.
 
@@ -25,11 +24,11 @@ It would be helpful to provide a demo which can re-produce the bug 100%. Please 
 
 ## Tips about Feature Request
 
-If you believe that 'MySQL Connection Pool Manager' should provide some features, but it does not. You could create an issue to discuss.
+If you believe that 'Micro Service Framework' should provide some features, but it does not. You could create an issue to discuss.
 
 ## Tips about Pull Request
 
-**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+**Working on your first Pull Request?** You can learn how from this _free_ series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
 
 It's welcomed to pull request. And there are some tips about that:
 

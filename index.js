@@ -27,6 +27,7 @@ const {
 const defaultServiceOptions = {
   loadBalancing: 'roundRobin',
   runOnStart: [],
+  instances: 1,
 };
 
 // Declare class

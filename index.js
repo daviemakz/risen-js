@@ -55,9 +55,9 @@ class MicroServiceFramework extends servicesCore {
     // Store server externalInterfaces, these are the socket objects which allow external communication
     this.externalInterfaces = {};
     // Service process
-    this.microServerInfo = {};
-    this.microServerOptions = {};
-    this.microServerData = {};
+    this.serviceInfo = {};
+    this.serviceOptions = {};
+    this.serviceData = {};
     // Define port tracking array
     this.inUsePorts = [];
     // Bind methods
@@ -104,18 +104,18 @@ class MicroServiceFramework extends servicesCore {
           `No operations found. Expecting an exported object with atleast one key! PATH: ${resolvedPath}`
         );
       }
-      case this.microServerInfo.hasOwnProperty(name): {
+      case this.serviceInfo.hasOwnProperty(name): {
         throw new Error(`The microservice ${name} has already been defined.`);
       }
       default: {
         // Set options
-        this.microServerOptions[name] = Object.assign(
+        this.serviceOptions[name] = Object.assign(
           {},
           defaultServiceOptions,
           options
         );
         // Set information
-        this.microServerInfo[name] = resolvedPath;
+        this.serviceInfo[name] = resolvedPath;
         // Return
         return true;
       }
@@ -206,9 +206,9 @@ class MicroServiceFramework extends servicesCore {
   // FUNCTION: Bind api gateway event listners
   startMicroServices() {
     return new Promise((resolve, reject) => {
-      if (Object.keys(this.microServerInfo)) {
+      if (Object.keys(this.serviceInfo)) {
         Promise.all(
-          Object.keys(this.microServerInfo).map(
+          Object.keys(this.serviceInfo).map(
             name =>
               new Promise((resolveLocal, rejectLocal) => {
                 this.initService(name, result => {

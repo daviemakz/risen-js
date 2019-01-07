@@ -209,24 +209,39 @@ class MicroServiceFramework extends servicesCore {
     return new Promise((resolve, reject) => {
       if (Object.keys(this.serviceInfo)) {
         Promise.all(
-          Object.keys(this.serviceInfo).map(
-            name =>
-              new Promise((resolveLocal, rejectLocal) => {
-                this.initService(name, result => {
-                  result === true
-                    ? resolveLocal()
-                    : rejectLocal(
-                        Error(
-                          `Unable to start microservice! MORE INFO: ${JSON.stringify(
-                            result,
-                            null,
-                            2
-                          )}`
-                        )
-                      );
-                });
-              })
-          )
+          Object.keys(this.serviceInfo)
+            .reduce((acc, serviceName) => {
+              // Instance count
+              let instances = this.serviceOptions[serviceName].instances;
+              const processList = [];
+              // Build instances
+              while (instances > 0) {
+                // Push instance
+                processList.push(serviceName);
+                // Deincrement instances
+                --instances;
+              }
+              // Return
+              return acc.concat(...processList);
+            }, [])
+            .map(
+              name =>
+                new Promise((resolveLocal, rejectLocal) => {
+                  this.initService(name, result => {
+                    result === true
+                      ? resolveLocal()
+                      : rejectLocal(
+                          Error(
+                            `Unable to start microservice! MORE INFO: ${JSON.stringify(
+                              result,
+                              null,
+                              2
+                            )}`
+                          )
+                        );
+                  });
+                })
+            )
         )
           .then(() => resolve())
           .catch(e => reject(e));

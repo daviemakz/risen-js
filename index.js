@@ -17,7 +17,17 @@ const commandBodyObject = require('./lib/template/command.js');
 const responseBodyObject = require('./lib/template/response.js');
 
 // Load network components
-const { createListener, createSpeaker, createSpeakerReconnector } = require('./lib/net');
+const {
+  createListener,
+  createSpeaker,
+  createSpeakerReconnector,
+} = require('./lib/net');
+
+// Microservice options
+const defaultServiceOptions = {
+  loadBalancing: 'roundRobin',
+  runOnStart: [],
+};
 
 // Declare class
 class MicroServiceFramework extends servicesCore {
@@ -44,9 +54,16 @@ class MicroServiceFramework extends servicesCore {
     );
     // Store server externalInterfaces, these are the socket objects which allow external communication
     this.externalInterfaces = {};
+    // Service process
     this.microServerInfo = {};
+    this.microServerOptions = {};
+    this.microServerData = {};
+    // Define port tracking array
+    this.inUsePorts = [];
     // Bind methods
-    ['startServer', 'initGateway', 'bindGateway'].forEach(func => (this[func] = this[func].bind(this)));
+    ['startServer', 'initGateway', 'bindGateway'].forEach(
+      func => (this[func] = this[func].bind(this))
+    );
   }
 
   // FUNCTION: Start server failed
@@ -68,7 +85,7 @@ class MicroServiceFramework extends servicesCore {
   }
 
   // FUNCTION: Add micro service to the instance
-  defineService(name, operations) {
+  defineService(name, operations, options) {
     // Variables
     const resolvedPath = `${path.resolve(operations)}.js`;
     // Check that the server doesnt already exist
@@ -81,7 +98,8 @@ class MicroServiceFramework extends servicesCore {
           `The operations path of the microservice is not defined or cannot be found! PATH: ${resolvedPath}`
         );
       }
-      case typeof require(resolvedPath) !== 'object' || !Object.keys(require(resolvedPath)).length: {
+      case typeof require(resolvedPath) !== 'object' ||
+        !Object.keys(require(resolvedPath)).length: {
         throw new Error(
           `No operations found. Expecting an exported object with atleast one key! PATH: ${resolvedPath}`
         );
@@ -90,7 +108,16 @@ class MicroServiceFramework extends servicesCore {
         throw new Error(`The microservice ${name} has already been defined.`);
       }
       default: {
-        return (this.microServerInfo[name] = resolvedPath) && true;
+        // Set options
+        this.microServerOptions[name] = Object.assign(
+          {},
+          defaultServiceOptions,
+          options
+        );
+        // Set information
+        this.microServerInfo[name] = resolvedPath;
+        // Return
+        return true;
       }
     }
   }
@@ -106,7 +133,9 @@ class MicroServiceFramework extends servicesCore {
         .then(() => {
           this.log('Starting service core', 'log');
           // Initialise interface, invoke port listener
-          this.externalInterfaces.apiGateway = this.invokeListener(this.settings.apiGatewayPort);
+          this.externalInterfaces.apiGateway = this.invokeListener(
+            this.settings.apiGatewayPort
+          );
           // Check the status of the gateway
           return !this.externalInterfaces.apiGateway
             ? this.log('Unable to start gateway, exiting!', 'error') ||
@@ -114,9 +143,22 @@ class MicroServiceFramework extends servicesCore {
             : this.log('Service core started!', 'log') || resolve(true);
         })
         .catch(e => {
-          this.log(`Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(e, null, 2)}`, 'log');
+          this.log(
+            `Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(
+              e,
+              null,
+              2
+            )}`,
+            'log'
+          );
           return reject(
-            Error(`Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(e, null, 2)}`)
+            Error(
+              `Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(
+                e,
+                null,
+                2
+              )}`
+            )
           );
         });
     });
@@ -128,9 +170,14 @@ class MicroServiceFramework extends servicesCore {
       // Socket Communication Request
       this.externalInterfaces.apiGateway.on('COM_REQUEST', (message, data) => {
         // Confirm Connection
-        this.log(`[${this.conId}] Service core connection request recieved`, 'log');
+        this.log(
+          `[${this.conId}] Service core connection request recieved`,
+          'log'
+        );
         // Process Communication Request
-        data ? this.processComRequest(data, message, this.conId) : this.processComError(data, message, this.conId);
+        data
+          ? this.processComRequest(data, message, this.conId)
+          : this.processComError(data, message, this.conId);
         // Process Connection
         this.log(`[${this.conId}] Service core connection request processed`);
         // Increment
@@ -164,11 +211,19 @@ class MicroServiceFramework extends servicesCore {
           Object.keys(this.microServerInfo).map(
             name =>
               new Promise((resolveLocal, rejectLocal) => {
-                this.initService(name, result =>
+                this.initService(name, result => {
                   result === true
                     ? resolveLocal()
-                    : rejectLocal(Error(`Unable to start microservice! MORE INFO: ${JSON.stringify(result, null, 2)}`))
-                );
+                    : rejectLocal(
+                        Error(
+                          `Unable to start microservice! MORE INFO: ${JSON.stringify(
+                            result,
+                            null,
+                            2
+                          )}`
+                        )
+                      );
+                });
               })
           )
         )

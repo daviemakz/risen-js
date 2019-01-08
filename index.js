@@ -50,12 +50,15 @@ class MicroServiceFramework extends servicesCore {
         apiGatewayPort: 8080,
         portRangeStart: 1024,
         portRangeFinish: 65535,
+        coreOperations: {},
+        runOnStart: [],
       },
       options
     );
     // Store server externalInterfaces, these are the socket objects which allow external communication
     this.externalInterfaces = {};
     // Service process
+    this.coreOperations = {};
     this.serviceInfo = {};
     this.serviceOptions = {};
     this.serviceData = {};
@@ -76,13 +79,34 @@ class MicroServiceFramework extends servicesCore {
   startServer() {
     return (async () => {
       try {
+        await this.assignCoreFunctions();
         await this.initGateway();
         await this.bindGateway();
         await this.startMicroServices();
+        await this.executeInitialFunctions('coreOperations', 'settings');
       } catch (e) {
         throw new Error(e);
       }
     })();
+  }
+
+  // FUNCTION: Assign core functions
+  assignCoreFunctions() {
+    return new Promise((resolve, reject) => {
+      // Core function scope
+      const coreFunctionScope = {
+        sendRequest: this.sendRequest,
+        destroyConnection: this.destroyConnection,
+      };
+      // Assign operations
+      Object.keys(this.settings.coreOperations).forEach(func => {
+        this.coreOperations[func] = this.settings.coreOperations[func].bind(
+          coreFunctionScope
+        );
+      });
+      // Resolve promise
+      resolve();
+    });
   }
 
   // FUNCTION: Add micro service to the instance

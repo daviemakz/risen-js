@@ -29,6 +29,7 @@ Using Yarn:
 200 - Command not executed, transport failure or no data received.
 201 - Command not executed, internal redirection failure.
 202 - Command not executed, no data received by service.
+203 - Command not executed, function unknown.
 
 ## Transport
 
@@ -38,6 +39,7 @@ Using Yarn:
 2004 - Unable to connect to specific service.
 2005 - Request received but destination unknown.
 2006 - Child service process exited unexpectedly.
+2007 - Child service process exited unexpectedly.
 
 ## Functions
 

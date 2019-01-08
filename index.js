@@ -99,10 +99,8 @@ class MicroServiceFramework extends servicesCore {
         destroyConnection: this.destroyConnection,
       };
       // Assign operations
-      Object.keys(this.settings.coreOperations).forEach(func => {
-        this.coreOperations[func] = this.settings.coreOperations[func].bind(
-          coreFunctionScope
-        );
+      Object.entries(this.settings.coreOperations).forEach(([name, func]) => {
+        this.coreOperations[name] = func.bind(coreFunctionScope);
       });
       // Resolve promise
       resolve();

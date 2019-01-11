@@ -1,6 +1,5 @@
 # Node.JS Micro Services Framework
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/daviemakz/micro-services-framework.svg)](https://greenkeeper.io/)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework?ref=badge_shield)
 
 [![NPM](https://nodei.co/npm/micro-services-framework.png?compact=true)](https://www.npmjs.com/package/micro-services-framework)

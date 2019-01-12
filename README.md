@@ -26,22 +26,22 @@ Using Yarn:
 
 # Error Codes
 
-200 - Command not executed, transport failure or no data received.  
-201 - Command not executed, internal redirection failure.
-202 - Command not executed, no data received by service.
-203 - Command not executed, function unknown.
-
 ## Transport
 
-2001 - No data received.
-2002 - Service connection initiation attempts, maximum reached.
-2003 - Unable to connect to service core.
-2004 - Unable to connect to specific service.
-2005 - Request received but destination unknown.
-2006 - Child service process exited unexpectedly.
-2007 - Child service process exited unexpectedly.
+- 2001 - No data received.
+- 2002 - Service connection initiation attempts, maximum reached.
+- 2003 - Unable to connect to service core.
+- 2004 - Unable to connect to specific service.
+- 2005 - Request received but destination unknown.
+- 2006 - Child service process exited unexpectedly.
+- 2007 - Child service process exited unexpectedly.
 
 ## Functions
+
+- 200 - Command not executed, transport failure or no data received.
+- 201 - Command not executed, internal redirection failure.
+- 202 - Command not executed, no data received by service.
+- 203 - Command not executed, function unknown.
 
 # Examples
 

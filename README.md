@@ -4,8 +4,8 @@
 
 [![NPM](https://nodei.co/npm/micro-services-framework.png?compact=true)](https://www.npmjs.com/package/micro-services-framework)
 
-[![Downloads](https://img.shields.io/github/downloads/daviemakz/micro-services-framework/total.svg)](https://www.npmjs.com/package/micro-services-framework)
 [![Build Status](https://travis-ci.org/daviemakz/micro-services-framework.svg?branch=master)](https://travis-ci.org/daviemakz/micro-services-framework)
+[![Downloads](https://img.shields.io/github/downloads/daviemakz/micro-services-framework/total.svg)](https://www.npmjs.com/package/micro-services-framework)
 [![dependencies Status](https://david-dm.org/daviemakz/micro-services-framework/status.svg)](https://david-dm.org/daviemakz/micro-services-framework)
 [![devDependencies Status](https://david-dm.org/daviemakz/micro-services-framework/dev-status.svg)](https://david-dm.org/daviemakz/micro-services-framework?type=dev)
 
@@ -55,10 +55,6 @@ This example is setting up a simple micro service which handles a readable strea
 ```
 
 ```
-
-## Browser Examples
-
-## Example App 1: [insert link]
 
 ## Test
 

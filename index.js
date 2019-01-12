@@ -9,12 +9,15 @@ const path = require('path');
 const fs = require('fs');
 const { shuffle } = require('lodash');
 
+// Load classes
+const LocalDatabase = require('./lib/db');
+const ServiceCore = require('./lib');
+
 // Load package.json
 const packageJson = require('./package.json');
 
-// Load core libraries
-const servicesCore = require('./lib');
-const servicesOperations = require('./lib/core');
+// Load core operations
+const serviceCoreOperations = require('./lib/core');
 
 // Load templates
 const commandBodyObject = require('./lib/template/command.js');
@@ -37,6 +40,7 @@ const defaultServiceOptions = {
 // Instance options
 const defaultInstanceOptions = {
   mode: 'server',
+  databaseName: '_defaultDatabase',
   verbose: true,
   maxBuffer: 50, // in megabytes
   logPath: void 0,
@@ -52,7 +56,7 @@ const defaultInstanceOptions = {
 };
 
 // Declare class
-class MicroServiceFramework extends servicesCore {
+class MicroServiceFramework extends ServiceCore {
   constructor(options) {
     // Super
     super(options);
@@ -60,6 +64,10 @@ class MicroServiceFramework extends servicesCore {
     this.conId = 0;
     // Declare settings
     this.settings = Object.assign(defaultInstanceOptions, options);
+    // Initialise database
+    this.db = new LocalDatabase({
+      databaseName: this.settings.databaseName
+    }).db;
     // Set process env settings
     process.env.settings = this.settings;
     process.env.exitedProcessPorts = [];
@@ -118,7 +126,7 @@ class MicroServiceFramework extends servicesCore {
     return new Promise((resolve, reject) => {
       // Assign operations
       Object.entries(
-        Object.assign({}, servicesOperations, this.settings.coreOperations)
+        Object.assign({}, serviceCoreOperations, this.settings.coreOperations)
       ).forEach(([name, func]) => {
         this.coreOperations[name] = func.bind(this);
       });

@@ -1,7 +1,9 @@
 # Node.JS Micro Services Framework
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework?ref=badge_shield)
+
 [![NPM](https://nodei.co/npm/micro-services-framework.png?compact=true)](https://www.npmjs.com/package/micro-services-framework)
+
 [![Downloads](https://img.shields.io/github/downloads/daviemakz/micro-services-framework/total.svg)](https://www.npmjs.com/package/micro-services-framework)
 [![Build Status](https://travis-ci.org/daviemakz/micro-services-framework.svg?branch=master)](https://travis-ci.org/daviemakz/micro-services-framework)
 [![dependencies Status](https://david-dm.org/daviemakz/micro-services-framework/status.svg)](https://david-dm.org/daviemakz/micro-services-framework)

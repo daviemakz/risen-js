@@ -7,10 +7,14 @@ require('./lib/runtime');
 const isPortFree = require('is-port-free');
 const path = require('path');
 const fs = require('fs');
+const { shuffle } = require('lodash');
+
+// Load package.json
 const packageJson = require('./package.json');
 
 // Load core libraries
 const servicesCore = require('./lib');
+const servicesOperations = require('./lib/core');
 
 // Load templates
 const commandBodyObject = require('./lib/template/command.js');
@@ -20,14 +24,31 @@ const responseBodyObject = require('./lib/template/response.js');
 const {
   createListener,
   createSpeaker,
-  createSpeakerReconnector,
+  createSpeakerReconnector
 } = require('./lib/net');
 
 // Microservice options
 const defaultServiceOptions = {
   loadBalancing: 'roundRobin',
   runOnStart: [],
-  instances: 1,
+  instances: 1
+};
+
+// Instance options
+const defaultInstanceOptions = {
+  mode: 'server',
+  verbose: true,
+  maxBuffer: 50, // in megabytes
+  logPath: void 0,
+  restartTimeout: 50,
+  connectionTimeout: 1000,
+  microServiceConnectionTimeout: 10000,
+  microServiceConnectionAttempts: 1000,
+  apiGatewayPort: 8080,
+  portRangeStart: 1024,
+  portRangeFinish: 65535,
+  coreOperations: {},
+  runOnStart: []
 };
 
 // Declare class
@@ -38,24 +59,11 @@ class MicroServiceFramework extends servicesCore {
     // Connection tracking number
     this.conId = 0;
     // Declare settings
-    this.settings = Object.assign(
-      {
-        verbose: true,
-        maxBuffer: 50, // in megabytes
-        logPath: void 0,
-        restartTimeout: 50,
-        connectionTimeout: 1000,
-        microServiceConnectionTimeout: 10000,
-        microServiceConnectionAttempts: 1000,
-        apiGatewayPort: 8080,
-        portRangeStart: 1024,
-        portRangeFinish: 65535,
-        coreOperations: {},
-        runOnStart: [],
-      },
-      options
-    );
-    // Store server externalInterfaces, these are the socket objects which allow external communication
+    this.settings = Object.assign(defaultInstanceOptions, options);
+    // Set process env settings
+    process.env.settings = this.settings;
+    process.env.exitedProcessPorts = [];
+    // Store server external interfaces
     this.externalInterfaces = {};
     // Service process
     this.coreOperations = {};
@@ -65,9 +73,13 @@ class MicroServiceFramework extends servicesCore {
     // Define port tracking array
     this.inUsePorts = [];
     // Bind methods
-    ['startServer', 'initGateway', 'bindGateway'].forEach(
-      func => (this[func] = this[func].bind(this))
-    );
+    [
+      'assignCoreFunctions',
+      'startServerFailed',
+      'startServer',
+      'initGateway',
+      'bindGateway'
+    ].forEach(func => (this[func] = this[func].bind(this)));
   }
 
   // FUNCTION: Start server failed
@@ -79,11 +91,22 @@ class MicroServiceFramework extends servicesCore {
   startServer() {
     return (async () => {
       try {
-        await this.assignCoreFunctions();
-        await this.initGateway();
-        await this.bindGateway();
-        await this.startMicroServices();
-        await this.executeInitialFunctions('coreOperations', 'settings');
+        if (['client', 'server'].includes(this.settings.mode)) {
+          if (this.settings.mode === 'server') {
+            await this.assignCoreFunctions();
+            await this.initGateway();
+            await this.bindGateway();
+            await this.startServices();
+            await this.executeInitialFunctions('coreOperations', 'settings');
+          } else {
+            this.log(`Micro Service Framework: ${packageJson.version}`, 'log');
+            this.log(`Running in client mode...`, 'log');
+          }
+        } else {
+          throw new Error(
+            `Unsupported mode detected. Valid options are 'server' or 'client'`
+          );
+        }
       } catch (e) {
         throw new Error(e);
       }
@@ -93,14 +116,11 @@ class MicroServiceFramework extends servicesCore {
   // FUNCTION: Assign core functions
   assignCoreFunctions() {
     return new Promise((resolve, reject) => {
-      // Core function scope
-      const coreFunctionScope = {
-        sendRequest: this.sendRequest,
-        destroyConnection: this.destroyConnection,
-      };
       // Assign operations
-      Object.entries(this.settings.coreOperations).forEach(([name, func]) => {
-        this.coreOperations[name] = func.bind(coreFunctionScope);
+      Object.entries(
+        Object.assign({}, servicesOperations, this.settings.coreOperations)
+      ).forEach(([name, func]) => {
+        this.coreOperations[name] = func.bind(this);
       });
       // Resolve promise
       resolve();
@@ -227,14 +247,19 @@ class MicroServiceFramework extends servicesCore {
   }
 
   // FUNCTION: Bind api gateway event listners
-  startMicroServices() {
+  startServices(serviceInfo = void 0, customInstances = void 0) {
+    // Variables
+    const servicesInfo = serviceInfo || this.serviceInfo;
+    // Return
     return new Promise((resolve, reject) => {
-      if (Object.keys(this.serviceInfo)) {
+      if (Object.keys(servicesInfo)) {
         Promise.all(
-          Object.keys(this.serviceInfo)
-            .reduce((acc, serviceName) => {
+          shuffle(
+            Object.keys(servicesInfo).reduce((acc, serviceName) => {
               // Instance count
-              let instances = this.serviceOptions[serviceName].instances;
+              let instances =
+                customInstances || this.serviceOptions[serviceName].instances;
+              // Define process list
               const processList = [];
               // Build instances
               while (instances > 0) {
@@ -246,24 +271,24 @@ class MicroServiceFramework extends servicesCore {
               // Return
               return acc.concat(...processList);
             }, [])
-            .map(
-              name =>
-                new Promise((resolveLocal, rejectLocal) => {
-                  this.initService(name, result => {
-                    result === true
-                      ? resolveLocal()
-                      : rejectLocal(
-                          Error(
-                            `Unable to start microservice! MORE INFO: ${JSON.stringify(
-                              result,
-                              null,
-                              2
-                            )}`
-                          )
-                        );
-                  });
-                })
-            )
+          ).map(
+            name =>
+              new Promise((resolveLocal, rejectLocal) => {
+                this.initService(name, result => {
+                  result === true
+                    ? resolveLocal(true)
+                    : rejectLocal(
+                        Error(
+                          `Unable to start microservice! MORE INFO: ${JSON.stringify(
+                            result,
+                            null,
+                            2
+                          )}`
+                        )
+                      );
+                });
+              })
+          )
         )
           .then(() => resolve())
           .catch(e => reject(e));
@@ -281,5 +306,5 @@ module.exports = {
   ResponseBodyObject: responseBodyObject,
   createListener,
   createSpeaker,
-  createSpeakerReconnector,
+  createSpeakerReconnector
 };

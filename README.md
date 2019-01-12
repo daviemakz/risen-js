@@ -26,7 +26,7 @@ Using Yarn:
 
 # Error Codes
 
-200 - Command not executed, transport failure or no data received.
+200 - Command not executed, transport failure or no data received.  
 201 - Command not executed, internal redirection failure.
 202 - Command not executed, no data received by service.
 203 - Command not executed, function unknown.
@@ -69,6 +69,6 @@ Run the following commands to test the module:
 
 All contributions are very welcome, please read my [CONTRIBUTING.md](https://github.com/daviemakz/micro-services-framework/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/daviemakz/micro-services-framework/pulls) or as [GitHub issues](https://github.com/daviemakz/micro-services-framework/issues). If you'd like to improve code, please feel free!
 
-
 ## License
+
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework?ref=badge_large)

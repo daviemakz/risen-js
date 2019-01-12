@@ -7,7 +7,7 @@ require('./lib/runtime');
 const isPortFree = require('is-port-free');
 const path = require('path');
 const fs = require('fs');
-const {shuffle} = require('lodash');
+const { shuffle } = require('lodash');
 
 // Load classes
 const LocalDatabase = require('./lib/db');
@@ -27,20 +27,20 @@ const responseBodyObject = require('./lib/template/response.js');
 const {
   createListener,
   createSpeaker,
-  createSpeakerReconnector,
+  createSpeakerReconnector
 } = require('./lib/net');
 
 // Microservice options
 const defaultServiceOptions = {
   loadBalancing: 'roundRobin',
   runOnStart: [],
-  instances: 1,
+  instances: 1
 };
 
 // Instance options
 const defaultInstanceOptions = {
   mode: 'server',
-  databaseName: '_defaultDatabase',
+  databaseNames: ['_defaultTable'],
   verbose: true,
   maxBuffer: 50, // in megabytes
   logPath: void 0,
@@ -52,7 +52,7 @@ const defaultInstanceOptions = {
   portRangeStart: 1024,
   portRangeFinish: 65535,
   coreOperations: {},
-  runOnStart: [],
+  runOnStart: []
 };
 
 // Declare class
@@ -66,9 +66,9 @@ class MicroServiceFramework extends ServiceCore {
     this.settings = Object.assign(defaultInstanceOptions, options);
     // Initialise database
     this.db = {};
-    this.settings.databaseNames.forEach((table) => {
+    this.settings.databaseNames.forEach(table => {
       this.db[table] = new LocalDatabase({
-        databaseName: table,
+        databaseName: table
       }).db;
     });
     // Set process env settings
@@ -89,8 +89,8 @@ class MicroServiceFramework extends ServiceCore {
       'startServerFailed',
       'startServer',
       'initGateway',
-      'bindGateway',
-    ].forEach((func) => (this[func] = this[func].bind(this)));
+      'bindGateway'
+    ].forEach(func => (this[func] = this[func].bind(this)));
   }
 
   // FUNCTION: Start server failed
@@ -144,35 +144,35 @@ class MicroServiceFramework extends ServiceCore {
     const resolvedPath = `${path.resolve(operations)}.js`;
     // Check that the server doesnt already exist
     switch (true) {
-    case typeof name === 'undefined': {
-      throw new Error(`The name of the microservice is not defined! ${name}`);
-    }
-    case typeof operations === 'undefined' || !fs.existsSync(resolvedPath): {
-      throw new Error(
-        `The operations path of the microservice is not defined or cannot be found! PATH: ${resolvedPath}`
-      );
-    }
-    case typeof require(resolvedPath) !== 'object' ||
+      case typeof name === 'undefined': {
+        throw new Error(`The name of the microservice is not defined! ${name}`);
+      }
+      case typeof operations === 'undefined' || !fs.existsSync(resolvedPath): {
+        throw new Error(
+          `The operations path of the microservice is not defined or cannot be found! PATH: ${resolvedPath}`
+        );
+      }
+      case typeof require(resolvedPath) !== 'object' ||
         !Object.keys(require(resolvedPath)).length: {
-      throw new Error(
-        `No operations found. Expecting an exported object with atleast one key! PATH: ${resolvedPath}`
-      );
-    }
-    case this.serviceInfo.hasOwnProperty(name): {
-      throw new Error(`The microservice ${name} has already been defined.`);
-    }
-    default: {
-      // Set options
-      this.serviceOptions[name] = Object.assign(
-        {},
-        defaultServiceOptions,
-        options
-      );
-      // Set information
-      this.serviceInfo[name] = resolvedPath;
-      // Return
-      return true;
-    }
+        throw new Error(
+          `No operations found. Expecting an exported object with atleast one key! PATH: ${resolvedPath}`
+        );
+      }
+      case this.serviceInfo.hasOwnProperty(name): {
+        throw new Error(`The microservice ${name} has already been defined.`);
+      }
+      default: {
+        // Set options
+        this.serviceOptions[name] = Object.assign(
+          {},
+          defaultServiceOptions,
+          options
+        );
+        // Set information
+        this.serviceInfo[name] = resolvedPath;
+        // Return
+        return true;
+      }
     }
   }
 
@@ -196,7 +196,7 @@ class MicroServiceFramework extends ServiceCore {
                 reject(Error('Unable to start gateway, exiting!'))
             : this.log('Service core started!', 'log') || resolve(true);
         })
-        .catch((e) => {
+        .catch(e => {
           this.log(
             `Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(
               e,
@@ -238,7 +238,7 @@ class MicroServiceFramework extends ServiceCore {
         return this.conId++;
       });
       // Socket Communication Close
-      this.externalInterfaces.apiGateway.on('COM_CLOSE', (message) => {
+      this.externalInterfaces.apiGateway.on('COM_CLOSE', message => {
         // Connection Close Requested
         this.log(`[${this.conId}] Service core connection close requested`);
         // Destroy Socket (Close Connection)
@@ -249,7 +249,7 @@ class MicroServiceFramework extends ServiceCore {
         return this.conId++;
       });
       // Socket Communication Kill Process
-      this.externalInterfaces.apiGateway.on('KILL', (message) => {
+      this.externalInterfaces.apiGateway.on('KILL', message => {
         process.exit();
       });
       // Resolve promise
@@ -283,26 +283,26 @@ class MicroServiceFramework extends ServiceCore {
               return acc.concat(...processList);
             }, [])
           ).map(
-            (name) =>
+            name =>
               new Promise((resolveLocal, rejectLocal) => {
-                this.initService(name, (result) => {
+                this.initService(name, result => {
                   result === true
                     ? resolveLocal(true)
                     : rejectLocal(
-                      Error(
-                        `Unable to start microservice! MORE INFO: ${JSON.stringify(
-                          result,
-                          null,
-                          2
-                        )}`
-                      )
-                    );
+                        Error(
+                          `Unable to start microservice! MORE INFO: ${JSON.stringify(
+                            result,
+                            null,
+                            2
+                          )}`
+                        )
+                      );
                 });
               })
           )
         )
           .then(() => resolve())
-          .catch((e) => reject(e));
+          .catch(e => reject(e));
       } else {
         reject(Error('No microservices defined!'));
       }
@@ -312,10 +312,10 @@ class MicroServiceFramework extends ServiceCore {
 
 // Exports
 module.exports = {
-  MicroServiceFramework: (options) => new MicroServiceFramework(options),
+  MicroServiceFramework: options => new MicroServiceFramework(options),
   CommandBodyObject: commandBodyObject,
   ResponseBodyObject: responseBodyObject,
   createListener,
   createSpeaker,
-  createSpeakerReconnector,
+  createSpeakerReconnector
 };

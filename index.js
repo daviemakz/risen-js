@@ -24,8 +24,8 @@ const packageJson = require('./package.json');
 const serviceCoreOperations = require('./lib/core');
 
 // Load templates
-const commandBodyObject = require('./lib/template/command.js');
-const responseBodyObject = require('./lib/template/response.js');
+const CommandBodyObject = require('./lib/template/command.js');
+const ResponseBodyObject = require('./lib/template/response.js');
 
 // Load network components
 const {
@@ -77,30 +77,6 @@ const buildHttpOptions = options => ({
   static: [],
   routes: []
 });
-
-/*
-
-options.http = {
-  port: 80,
-  ssl: {
-    key: 'encryption/private.key',
-    cert: 'encryption/private.crt',
-    ca: 'encryption/private.ca',
-  } || false,
-  harden: true,
-  beforeStart: (express) => express,
-  middlewares: [],
-  static: [],
-  routes: [
-    {
-      method: 'GET',
-      uri: '/',
-      handler: (request, response, instance) => res.send('Hello World')
-    }
-  ]
-}
-
-*/
 
 // Instance options
 const defaultInstanceOptions = {
@@ -199,7 +175,6 @@ class MicroServiceFramework extends ServiceCore {
         }
       } catch (e) {
         throw new Error(e);
-        process.exit();
       }
     })();
   }
@@ -347,23 +322,23 @@ class MicroServiceFramework extends ServiceCore {
               new Promise((resolve, reject) => {
                 try {
                   // Check if the HTTP server should be started or not
-                  if (this.settings.http) {
+                  if (httpSettings) {
                     // Build express instance
                     const expressApp = express();
                     // Allow access to the express instance
-                    this.settings.http.beforeStart(expressApp);
+                    httpSettings.beforeStart(expressApp);
                     // Assign static path resources if defined
-                    this.settings.http.static.forEach(path =>
+                    httpSettings.static.forEach(path =>
                       expressApp.use(express.static(path))
                     );
                     // Harden http server if hardening is defined
-                    this.settings.http.harden && this.hardenServer();
+                    httpSettings.harden && this.hardenServer(expressApp);
                     // Apply middlewares to express
-                    this.settings.http.middlewares.forEach(middleware =>
+                    httpSettings.middlewares.forEach(middleware =>
                       expressApp.use(middleware)
                     );
                     // Assign routes
-                    this.settings.http.routes
+                    httpSettings.routes
                       .filter(route => {
                         if (
                           ['put', 'post', 'get', 'delete', 'patch'].includes(
@@ -383,23 +358,40 @@ class MicroServiceFramework extends ServiceCore {
                         }
                       })
                       .forEach(route =>
-                        expressApp[route.method](route.uri, (req, res) =>
-                          route.handler(req, res, {
-                            sendRequest: this.sendRequest
-                          })
+                        expressApp[route.method.toLowerCase()](
+                          route.uri,
+                          (req, res, next) => {
+                            setTimeout(() => {
+                              try {
+                                return route.handler(req, res, {
+                                  sendRequest: this.sendRequest,
+                                  CommandBodyObject: CommandBodyObject,
+                                  ResponseBodyObject: ResponseBodyObject
+                                });
+                              } catch (e) {
+                                console.log('I am here!');
+                                return next(e);
+                              }
+                            }, 0);
+                          }
                         )
                       );
                     // Start HTTP(s) server
-                    if (this.settings.http.ssl) {
+                    if (typeof httpSettings.ssl === 'object') {
                       return (
                         this.httpsServer.push(
-                          https.createServer(this.settings.http.ssl, expressApp)
+                          https
+                            .createServer(httpSettings.ssl, expressApp)
+                            .listen(httpSettings.port)
                         ) && resolve()
                       );
                     } else {
                       return (
-                        this.httpServer.push(http.createServer(expressApp)) &&
-                        resolve()
+                        this.httpServer.push(
+                          http
+                            .createServer(expressApp)
+                            .listen(httpSettings.port)
+                        ) && resolve()
                       );
                     }
                   } else {
@@ -484,8 +476,8 @@ class MicroServiceFramework extends ServiceCore {
 // Exports
 module.exports = {
   MicroServiceFramework: options => new MicroServiceFramework(options),
-  CommandBodyObject: commandBodyObject,
-  ResponseBodyObject: responseBodyObject,
+  CommandBodyObject: CommandBodyObject,
+  ResponseBodyObject: ResponseBodyObject,
   createListener,
   createSpeaker,
   createSpeakerReconnector

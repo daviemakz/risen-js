@@ -8,6 +8,10 @@ const isPortFree = require('is-port-free');
 const path = require('path');
 const fs = require('fs');
 const { shuffle } = require('lodash');
+const https = require('https');
+const http = require('http');
+const helmet = require('helmet');
+const express = require('express');
 
 // Load classes
 const LocalDatabase = require('./lib/db');
@@ -37,9 +41,71 @@ const defaultServiceOptions = {
   instances: 1
 };
 
+// HTTPS options
+const buildSecureOptions = ssl => {
+  try {
+    return typeof ssl === 'object'
+      ? Object.entries(
+          Object.assign(
+            {},
+            {
+              key: void 0,
+              cert: void 0,
+              ca: void 0
+            },
+            ssl
+          )
+        )
+          .map(([optionKey, filePath]) => ({
+            [optionKey]: fs.readFileSync(filePath)
+          }))
+          .reduce((acc, x) => Object.assign(acc, x), {})
+      : ssl;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+// HTTP options
+const buildHttpOptions = options => ({
+  port: 80,
+  ssl: buildSecureOptions(options.ssl),
+  harden: true,
+  harden: true,
+  beforeStart: express => express,
+  middlewares: [],
+  static: [],
+  routes: []
+});
+
+/*
+
+options.http = {
+  port: 80,
+  ssl: {
+    key: 'encryption/private.key',
+    cert: 'encryption/private.crt',
+    ca: 'encryption/private.ca',
+  } || false,
+  harden: true,
+  beforeStart: (express) => express,
+  middlewares: [],
+  static: [],
+  routes: [
+    {
+      method: 'GET',
+      uri: '/',
+      handler: (request, response, instance) => res.send('Hello World')
+    }
+  ]
+}
+
+*/
+
 // Instance options
 const defaultInstanceOptions = {
   mode: 'server',
+  http: false,
   databaseNames: ['_defaultTable'],
   verbose: true,
   maxBuffer: 50, // in megabytes
@@ -63,7 +129,16 @@ class MicroServiceFramework extends ServiceCore {
     // Connection tracking number
     this.conId = 0;
     // Declare settings
-    this.settings = Object.assign(defaultInstanceOptions, options);
+    this.settings = Object.assign(
+      defaultInstanceOptions,
+      options,
+      Array.isArray(options.http) && options.http.length
+        ? options.http.map(httpSettings => buildHttpOptions(httpSettings))
+        : false
+    );
+    // External HTTP(s) properties
+    this.httpsServer = [];
+    this.httpServer = [];
     // Initialise database
     this.db = {};
     this.settings.databaseNames.forEach(table => {
@@ -89,7 +164,9 @@ class MicroServiceFramework extends ServiceCore {
       'startServerFailed',
       'startServer',
       'initGateway',
-      'bindGateway'
+      'bindGateway',
+      'hardenServer',
+      'startHttpServer'
     ].forEach(func => (this[func] = this[func].bind(this)));
   }
 
@@ -108,6 +185,7 @@ class MicroServiceFramework extends ServiceCore {
             await this.initGateway();
             await this.bindGateway();
             await this.startServices();
+            await this.startHttpServer();
             await this.executeInitialFunctions('coreOperations', 'settings');
           } else {
             this.log(`Micro Service Framework: ${packageJson.version}`, 'log');
@@ -117,9 +195,11 @@ class MicroServiceFramework extends ServiceCore {
           throw new Error(
             `Unsupported mode detected. Valid options are 'server' or 'client'`
           );
+          process.exit();
         }
       } catch (e) {
         throw new Error(e);
+        process.exit();
       }
     })();
   }
@@ -255,6 +335,97 @@ class MicroServiceFramework extends ServiceCore {
       // Resolve promise
       return resolve();
     });
+  }
+
+  // FUNCTION: Start http instances
+  startHttpServer() {
+    // Return promise
+    return Array.isArray(this.settings.http)
+      ? Promise.all(
+          this.settings.http.map(
+            httpSettings =>
+              new Promise((resolve, reject) => {
+                try {
+                  // Check if the HTTP server should be started or not
+                  if (this.settings.http) {
+                    // Build express instance
+                    const expressApp = express();
+                    // Allow access to the express instance
+                    this.settings.http.beforeStart(expressApp);
+                    // Assign static path resources if defined
+                    this.settings.http.static.forEach(path =>
+                      expressApp.use(express.static(path))
+                    );
+                    // Harden http server if hardening is defined
+                    this.settings.http.harden && this.hardenServer();
+                    // Apply middlewares to express
+                    this.settings.http.middlewares.forEach(middleware =>
+                      expressApp.use(middleware)
+                    );
+                    // Assign routes
+                    this.settings.http.routes
+                      .filter(route => {
+                        if (
+                          ['put', 'post', 'get', 'delete', 'patch'].includes(
+                            route.method.toLowerCase()
+                          )
+                        ) {
+                          return true;
+                        } else {
+                          console.warn(
+                            `This route has an unknown method, skipping: ${JSON.stringify(
+                              route,
+                              null,
+                              2
+                            )}`
+                          );
+                          return false;
+                        }
+                      })
+                      .forEach(route =>
+                        expressApp[route.method](route.uri, (req, res) =>
+                          route.handler(req, res, {
+                            sendRequest: this.sendRequest
+                          })
+                        )
+                      );
+                    // Start HTTP(s) server
+                    if (this.settings.http.ssl) {
+                      return (
+                        this.httpsServer.push(
+                          https.createServer(this.settings.http.ssl, expressApp)
+                        ) && resolve()
+                      );
+                    } else {
+                      return (
+                        this.httpServer.push(http.createServer(expressApp)) &&
+                        resolve()
+                      );
+                    }
+                  } else {
+                    return resolve();
+                  }
+                } catch (e) {
+                  return reject(Error(e));
+                }
+              })
+          )
+        )
+      : new Promise(resolve => {
+          this.log('No HTTP(s) servers defined. Starting services only...');
+          resolve();
+        });
+  }
+
+  // FUNCTION: Harden HTTP server
+  hardenServer(expressApp) {
+    /*
+      This hardening follows the guidance in this file:
+      https://expressjs.com/en/advanced/best-practice-security.html
+      This may be enhanced in the future
+    */
+    // Apply helmet
+    return expressApp.use(helmet());
   }
 
   // FUNCTION: Bind api gateway event listners

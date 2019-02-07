@@ -2,14 +2,18 @@
   "name": "micro-service-framework",
   "version": "1.0.0",
   "description": "This package allows streaming & non-streaming microservices to be build on the frontend and the backend.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "babel src --out-dir dist",
     "test": "npm test",
+    "postversion": "git push",
+    "prepublish": "rimraf dist && babel src --out-dir dist && git commit -a -m 'module update' && yarn version --patch",
     "format": "prettier --config ./.prettierrc --write './**/*.js'",
     "format-windows": "prettier --config ./.prettierrc --write ./**/*.js",
     "deploy-patch": "git commit -a -m 'module update: patch' && git push && npm version patch && npm publish",
     "deploy-minor": "git commit -a -m 'module update: minor' && git push && npm version minor && npm publish",
-    "deploy-major": "git commit -a -m 'module update: major' && git push && npm version major && npm publish"
+    "deploy-major": "git commit -a -m 'module update: major' && git push && npm version major && npm publish",
+    "watch": "babel --watch src --out-dir dist"
   },
   "repository": {
     "type": "git",
@@ -37,6 +41,10 @@
   },
   "homepage": "https://github.com/daviemakz/micro-services-framework#readme",
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/register": "^7.0.0",
     "eslint": "^5.11.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-google": "^0.11.0",
@@ -46,11 +54,11 @@
     "mocha": "^5.2.0",
     "prettier": "^1.13.7",
     "prettier-eslint": "^8.8.2",
-    "prettier-eslint-cli": "^4.7.1"
+    "prettier-eslint-cli": "^4.7.1",
+    "rimraf": "^2.6.3"
   },
   "dependencies": {
     "autobind": "^1.0.3",
-    "babel-core": "^6.26.3",
     "body-parser": "^1.18.3",
     "browserify": "^16.2.2",
     "child-process": "^1.0.2",

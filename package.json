@@ -1,12 +1,12 @@
 {
   "name": "micro-service-framework",
-  "version": "1.0.4",
+  "version": "1.0.0",
   "description": "This package allows streaming & non-streaming microservices to be build on the frontend and the backend.",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist",
     "test": "npm test",
-    "prepublish": "yarn version --patch && rimraf dist && babel src --out-dir dist && git commit -a -m 'module update'",
+    "prepublish": "rimraf dist && babel src --out-dir dist && git commit -a -m 'module update'",
     "postpublish": "git push",
     "format": "prettier --config ./.prettierrc --write './**/*.js'",
     "format-windows": "prettier --config ./.prettierrc --write ./**/*.js",

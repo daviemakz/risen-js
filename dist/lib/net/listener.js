@@ -104,7 +104,9 @@ var Listener = (function(_super) {
     message.next = function() {
       var _ref;
 
-      return (_ref = _this.remoteMethods[subject]) !== null ? _ref[i++](message, message.data) : void 0;
+      return (_ref = _this.remoteMethods[subject]) !== null
+        ? _ref[i++](message, message.data)
+        : void 0;
     };
 
     return message;
@@ -118,7 +120,8 @@ var Listener = (function(_super) {
   Listener.prototype.on = function() {
     var methods;
     var subject;
-    (subject = arguments[0]), (methods = arguments.length >= 2 ? [].slice.call(arguments, 1) : []);
+    (subject = arguments[0]),
+      (methods = arguments.length >= 2 ? [].slice.call(arguments, 1) : []);
     return (this.remoteMethods[subject] = methods);
   };
 

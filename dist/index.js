@@ -145,14 +145,21 @@ function _setPrototypeOf(o, p) {
 
 function _assertThisInitialized(self) {
   if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    throw new ReferenceError(
+      "this hasn't been initialised - super() hasn't been called"
+    );
   }
   return self;
 }
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
-    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
   } else {
     obj[key] = value;
   }
@@ -160,7 +167,9 @@ function _defineProperty(obj, key, value) {
 }
 
 function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+  return (
+    _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest()
+  );
 }
 
 function _nonIterableRest() {
@@ -173,7 +182,11 @@ function _iterableToArrayLimit(arr, i) {
   var _d = false;
   var _e = undefined;
   try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+    for (
+      var _i = arr[Symbol.iterator](), _s;
+      !(_n = (_s = _i.next()).done);
+      _n = true
+    ) {
       _arr.push(_s.value);
       if (i && _arr.length === i) break;
     }
@@ -201,7 +214,10 @@ function _typeof(obj) {
     };
   } else {
     _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === 'function' && obj.constructor === Symbol && obj !== Symbol.prototype
+      return obj &&
+        typeof Symbol === 'function' &&
+        obj.constructor === Symbol &&
+        obj !== Symbol.prototype
         ? 'symbol'
         : typeof obj;
     };
@@ -234,7 +250,11 @@ var buildSecureOptions = function buildSecureOptions(ssl) {
               optionKey = _ref2[0],
               filePath = _ref2[1];
 
-            return _defineProperty({}, optionKey, _fs.default.readFileSync(filePath));
+            return _defineProperty(
+              {},
+              optionKey,
+              _fs.default.readFileSync(filePath)
+            );
           })
           .reduce(function(acc, x) {
             return Object.assign(acc, x);
@@ -285,7 +305,10 @@ var MicroServiceFramework = (function(_ServiceCore) {
 
     _classCallCheck(this, MicroServiceFramework);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(MicroServiceFramework).call(this, options));
+    _this = _possibleConstructorReturn(
+      this,
+      _getPrototypeOf(MicroServiceFramework).call(this, options)
+    );
     _this.conId = 0;
     _this.settings = Object.assign(
       defaultInstanceOptions,
@@ -315,7 +338,13 @@ var MicroServiceFramework = (function(_ServiceCore) {
         }, {}) || {};
     process.env.settings = _this.settings;
     process.env.exitedProcessPorts = [];
-    ['externalInterfaces', 'coreOperations', 'serviceInfo', 'serviceOptions', 'serviceData'].forEach(function(prop) {
+    [
+      'externalInterfaces',
+      'coreOperations',
+      'serviceInfo',
+      'serviceOptions',
+      'serviceData'
+    ].forEach(function(prop) {
       return (_this[prop] = {});
     });
     [
@@ -327,7 +356,9 @@ var MicroServiceFramework = (function(_ServiceCore) {
       'hardenServer',
       'startHttpServer'
     ].forEach(function(func) {
-      return (_this[func] = _this[func].bind(_assertThisInitialized(_assertThisInitialized(_this))));
+      return (_this[func] = _this[func].bind(
+        _assertThisInitialized(_assertThisInitialized(_this))
+      ));
     });
     return _this;
   }
@@ -355,7 +386,9 @@ var MicroServiceFramework = (function(_ServiceCore) {
                     case 0:
                       _context.prev = 0;
 
-                      if (!['client', 'server'].includes(_this2.settings.mode)) {
+                      if (
+                        !['client', 'server'].includes(_this2.settings.mode)
+                      ) {
                         _context.next = 19;
                         break;
                       }
@@ -386,20 +419,28 @@ var MicroServiceFramework = (function(_ServiceCore) {
 
                     case 13:
                       _context.next = 15;
-                      return _this2.executeInitialFunctions('coreOperations', 'settings');
+                      return _this2.executeInitialFunctions(
+                        'coreOperations',
+                        'settings'
+                      );
 
                     case 15:
                       return _context.abrupt('return', void 0);
 
                     case 16:
-                      _this2.log('Micro Service Framework: '.concat(_package.version), 'log');
+                      _this2.log(
+                        'Micro Service Framework: '.concat(_package.version),
+                        'log'
+                      );
 
                       _this2.log('Running in client mode...', 'log');
 
                       return _context.abrupt('return', void 0);
 
                     case 19:
-                      throw new Error("Unsupported mode detected. Valid options are 'server' or 'client'");
+                      throw new Error(
+                        "Unsupported mode detected. Valid options are 'server' or 'client'"
+                      );
 
                     case 22:
                       _context.prev = 22;
@@ -426,7 +467,9 @@ var MicroServiceFramework = (function(_ServiceCore) {
         var _this3 = this;
 
         return new Promise(function(resolve) {
-          Object.entries(Object.assign({}, _core.default, _this3.settings.coreOperations)).forEach(function(_ref6) {
+          Object.entries(
+            Object.assign({}, _core.default, _this3.settings.coreOperations)
+          ).forEach(function(_ref6) {
             var _ref7 = _slicedToArray(_ref6, 2),
               name = _ref7[0],
               func = _ref7[1];
@@ -444,27 +487,41 @@ var MicroServiceFramework = (function(_ServiceCore) {
 
         switch (true) {
           case typeof name === 'undefined': {
-            throw new Error('The name of the microservice is not defined! '.concat(name));
-          }
-
-          case typeof operations === 'undefined' || !_fs.default.existsSync(resolvedPath): {
             throw new Error(
-              'The operations path of the microservice is not defined or cannot be found! PATH: '.concat(resolvedPath)
+              'The name of the microservice is not defined! '.concat(name)
             );
           }
 
-          case _typeof(require(resolvedPath)) !== 'object' || !Object.keys(require(resolvedPath)).length: {
+          case typeof operations === 'undefined' ||
+            !_fs.default.existsSync(resolvedPath): {
             throw new Error(
-              'No operations found. Expecting an exported object with atleast one key! PATH: '.concat(resolvedPath)
+              'The operations path of the microservice is not defined or cannot be found! PATH: '.concat(
+                resolvedPath
+              )
+            );
+          }
+
+          case _typeof(require(resolvedPath)) !== 'object' ||
+            !Object.keys(require(resolvedPath)).length: {
+            throw new Error(
+              'No operations found. Expecting an exported object with atleast one key! PATH: '.concat(
+                resolvedPath
+              )
             );
           }
 
           case this.serviceInfo.hasOwnProperty(name): {
-            throw new Error('The microservice '.concat(name, ' has already been defined.'));
+            throw new Error(
+              'The microservice '.concat(name, ' has already been defined.')
+            );
           }
 
           default: {
-            this.serviceOptions[name] = Object.assign({}, defaultServiceOptions, options);
+            this.serviceOptions[name] = Object.assign(
+              {},
+              defaultServiceOptions,
+              options
+            );
             this.serviceInfo[name] = resolvedPath;
             return true;
           }
@@ -482,7 +539,9 @@ var MicroServiceFramework = (function(_ServiceCore) {
             .then(function() {
               _this4.log('Starting service core', 'log');
 
-              _this4.externalInterfaces.apiGateway = _this4.invokeListener(_this4.settings.apiGatewayPort);
+              _this4.externalInterfaces.apiGateway = _this4.invokeListener(
+                _this4.settings.apiGatewayPort
+              );
               return !_this4.externalInterfaces.apiGateway
                 ? _this4.log('Unable to start gateway, exiting!', 'error') ||
                     reject(Error('Unable to start gateway, exiting!'))
@@ -490,12 +549,18 @@ var MicroServiceFramework = (function(_ServiceCore) {
             })
             .catch(function(e) {
               _this4.log(
-                'Gateway port not free or unknown error has occurred. INFO: '.concat(JSON.stringify(e, null, 2)),
+                'Gateway port not free or unknown error has occurred. INFO: '.concat(
+                  JSON.stringify(e, null, 2)
+                ),
                 'log'
               );
 
               return reject(
-                Error('Gateway port not free or unknown error has occurred. INFO: '.concat(JSON.stringify(e, null, 2)))
+                Error(
+                  'Gateway port not free or unknown error has occurred. INFO: '.concat(
+                    JSON.stringify(e, null, 2)
+                  )
+                )
               );
             });
         });
@@ -507,24 +572,50 @@ var MicroServiceFramework = (function(_ServiceCore) {
         var _this5 = this;
 
         return new Promise(function(resolve) {
-          _this5.externalInterfaces.apiGateway.on('COM_REQUEST', function(message, data) {
-            _this5.log('['.concat(_this5.conId, '] Service core connection request recieved'), 'log');
+          _this5.externalInterfaces.apiGateway.on('COM_REQUEST', function(
+            message,
+            data
+          ) {
+            _this5.log(
+              '['.concat(
+                _this5.conId,
+                '] Service core connection request recieved'
+              ),
+              'log'
+            );
 
             data
               ? _this5.processComRequest(data, message, _this5.conId)
               : _this5.processComError(data, message, _this5.conId);
 
-            _this5.log('['.concat(_this5.conId, '] Service core connection request processed'));
+            _this5.log(
+              '['.concat(
+                _this5.conId,
+                '] Service core connection request processed'
+              )
+            );
 
             return _this5.conId++;
           });
 
-          _this5.externalInterfaces.apiGateway.on('COM_CLOSE', function(message) {
-            _this5.log('['.concat(_this5.conId, '] Service core connection close requested'));
+          _this5.externalInterfaces.apiGateway.on('COM_CLOSE', function(
+            message
+          ) {
+            _this5.log(
+              '['.concat(
+                _this5.conId,
+                '] Service core connection close requested'
+              )
+            );
 
             message.conn.destroy();
 
-            _this5.log('['.concat(_this5.conId, '] Service core connection successfully closed'));
+            _this5.log(
+              '['.concat(
+                _this5.conId,
+                '] Service core connection successfully closed'
+              )
+            );
 
             return _this5.conId++;
           });
@@ -559,43 +650,57 @@ var MicroServiceFramework = (function(_ServiceCore) {
                       });
                       httpSettings.routes
                         .filter(function(route) {
-                          if (['put', 'post', 'get', 'delete', 'patch'].includes(route.method.toLowerCase())) {
+                          if (
+                            ['put', 'post', 'get', 'delete', 'patch'].includes(
+                              route.method.toLowerCase()
+                            )
+                          ) {
                             return true;
                           }
 
                           console.warn(
-                            'This route has an unknown method, skipping: '.concat(JSON.stringify(route, null, 2))
+                            'This route has an unknown method, skipping: '.concat(
+                              JSON.stringify(route, null, 2)
+                            )
                           );
                           return false;
                         })
                         .forEach(function(route) {
-                          return expressApp[route.method.toLowerCase()](route.uri, function(req, res, next) {
-                            setTimeout(function() {
-                              try {
-                                return route.handler(req, res, {
-                                  sendRequest: _this6.sendRequest,
-                                  CommandBodyObject: _command.default,
-                                  ResponseBodyObject: _response.default
-                                });
-                              } catch (e) {
-                                console.log('I am here!');
-                                return next(e);
-                              }
-                            }, 0);
-                          });
+                          return expressApp[route.method.toLowerCase()](
+                            route.uri,
+                            function(req, res, next) {
+                              setTimeout(function() {
+                                try {
+                                  return route.handler(req, res, {
+                                    sendRequest: _this6.sendRequest,
+                                    CommandBodyObject: _command.default,
+                                    ResponseBodyObject: _response.default
+                                  });
+                                } catch (e) {
+                                  console.log('I am here!');
+                                  return next(e);
+                                }
+                              }, 0);
+                            }
+                          );
                         });
 
                       if (_typeof(httpSettings.ssl) === 'object') {
                         return (
                           _this6.httpsServer.push(
-                            _https.default.createServer(httpSettings.ssl, expressApp).listen(httpSettings.port)
+                            _https.default
+                              .createServer(httpSettings.ssl, expressApp)
+                              .listen(httpSettings.port)
                           ) && resolve()
                         );
                       }
 
                       return (
-                        _this6.httpServer.push(_http.default.createServer(expressApp).listen(httpSettings.port)) &&
-                        resolve()
+                        _this6.httpServer.push(
+                          _http.default
+                            .createServer(expressApp)
+                            .listen(httpSettings.port)
+                        ) && resolve()
                       );
                     }
 
@@ -607,7 +712,9 @@ var MicroServiceFramework = (function(_ServiceCore) {
               })
             )
           : new Promise(function(resolve) {
-              _this6.log('No HTTP(s) servers defined. Starting services only...');
+              _this6.log(
+                'No HTTP(s) servers defined. Starting services only...'
+              );
 
               return resolve();
             });
@@ -624,15 +731,23 @@ var MicroServiceFramework = (function(_ServiceCore) {
       value: function startServices() {
         var _this7 = this;
 
-        var serviceInfo = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : void 0;
-        var customInstances = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : void 0;
+        var serviceInfo =
+          arguments.length > 0 && arguments[0] !== undefined
+            ? arguments[0]
+            : void 0;
+        var customInstances =
+          arguments.length > 1 && arguments[1] !== undefined
+            ? arguments[1]
+            : void 0;
         var servicesInfo = serviceInfo || this.serviceInfo;
         return new Promise(function(resolve, reject) {
           if (Object.keys(servicesInfo)) {
             return Promise.all(
               (0, _lodash.shuffle)(
                 Object.keys(servicesInfo).reduce(function(acc, serviceName) {
-                  var instances = customInstances || _this7.serviceOptions[serviceName].instances;
+                  var instances =
+                    customInstances ||
+                    _this7.serviceOptions[serviceName].instances;
                   var processList = [];
 
                   while (instances > 0) {
@@ -648,7 +763,11 @@ var MicroServiceFramework = (function(_ServiceCore) {
                     return result === true
                       ? resolveLocal(true)
                       : rejectLocal(
-                          Error('Unable to start microservice! MORE INFO: '.concat(JSON.stringify(result, null, 2)))
+                          Error(
+                            'Unable to start microservice! MORE INFO: '.concat(
+                              JSON.stringify(result, null, 2)
+                            )
+                          )
                         );
                   });
                 });

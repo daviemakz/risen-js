@@ -105,7 +105,9 @@ export class MicroServiceFramework extends ServiceCore {
         : false
     );
     // HTTP(s) and ports
-    ['httpsServer', 'httpServer', 'inUsePorts'].forEach(prop => (this[prop] = []));
+    ['httpsServer', 'httpServer', 'inUsePorts'].forEach(
+      prop => (this[prop] = [])
+    );
     // Initialise database
     this.db =
       this.settings.databaseNames
@@ -119,9 +121,13 @@ export class MicroServiceFramework extends ServiceCore {
     process.env.settings = this.settings;
     process.env.exitedProcessPorts = [];
     // Store server external interfaces & service process
-    ['externalInterfaces', 'coreOperations', 'serviceInfo', 'serviceOptions', 'serviceData'].forEach(
-      prop => (this[prop] = {})
-    );
+    [
+      'externalInterfaces',
+      'coreOperations',
+      'serviceInfo',
+      'serviceOptions',
+      'serviceData'
+    ].forEach(prop => (this[prop] = {}));
     // Bind methods
     [
       'assignCoreFunctions',
@@ -157,7 +163,9 @@ export class MicroServiceFramework extends ServiceCore {
           this.log('Running in client mode...', 'log');
           return void 0;
         }
-        throw new Error("Unsupported mode detected. Valid options are 'server' or 'client'");
+        throw new Error(
+          "Unsupported mode detected. Valid options are 'server' or 'client'"
+        );
       } catch (e) {
         throw new Error(e);
       }
@@ -168,7 +176,9 @@ export class MicroServiceFramework extends ServiceCore {
   assignCoreFunctions() {
     return new Promise(resolve => {
       // Assign operations
-      Object.entries(Object.assign({}, serviceCoreOperations, this.settings.coreOperations)).forEach(([name, func]) => {
+      Object.entries(
+        Object.assign({}, serviceCoreOperations, this.settings.coreOperations)
+      ).forEach(([name, func]) => {
         this.coreOperations[name] = func.bind(this);
       });
       // Resolve promise
@@ -190,7 +200,8 @@ export class MicroServiceFramework extends ServiceCore {
           `The operations path of the microservice is not defined or cannot be found! PATH: ${resolvedPath}`
         );
       }
-      case typeof require(resolvedPath) !== 'object' || !Object.keys(require(resolvedPath)).length: {
+      case typeof require(resolvedPath) !== 'object' ||
+        !Object.keys(require(resolvedPath)).length: {
         throw new Error(
           `No operations found. Expecting an exported object with atleast one key! PATH: ${resolvedPath}`
         );
@@ -200,7 +211,11 @@ export class MicroServiceFramework extends ServiceCore {
       }
       default: {
         // Set options
-        this.serviceOptions[name] = Object.assign({}, defaultServiceOptions, options);
+        this.serviceOptions[name] = Object.assign(
+          {},
+          defaultServiceOptions,
+          options
+        );
         // Set information
         this.serviceInfo[name] = resolvedPath;
         // Return
@@ -219,7 +234,9 @@ export class MicroServiceFramework extends ServiceCore {
         .then(() => {
           this.log('Starting service core', 'log');
           // Initialise interface, invoke port listener
-          this.externalInterfaces.apiGateway = this.invokeListener(this.settings.apiGatewayPort);
+          this.externalInterfaces.apiGateway = this.invokeListener(
+            this.settings.apiGatewayPort
+          );
           // Check the status of the gateway
           return !this.externalInterfaces.apiGateway
             ? this.log('Unable to start gateway, exiting!', 'error') ||
@@ -227,9 +244,22 @@ export class MicroServiceFramework extends ServiceCore {
             : this.log('Service core started!', 'log') || resolve(true);
         })
         .catch(e => {
-          this.log(`Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(e, null, 2)}`, 'log');
+          this.log(
+            `Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(
+              e,
+              null,
+              2
+            )}`,
+            'log'
+          );
           return reject(
-            Error(`Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(e, null, 2)}`)
+            Error(
+              `Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(
+                e,
+                null,
+                2
+              )}`
+            )
           );
         })
     );
@@ -241,9 +271,14 @@ export class MicroServiceFramework extends ServiceCore {
       // Socket Communication Request
       this.externalInterfaces.apiGateway.on('COM_REQUEST', (message, data) => {
         // Confirm Connection
-        this.log(`[${this.conId}] Service core connection request recieved`, 'log');
+        this.log(
+          `[${this.conId}] Service core connection request recieved`,
+          'log'
+        );
         // Process Communication Request
-        data ? this.processComRequest(data, message, this.conId) : this.processComError(data, message, this.conId);
+        data
+          ? this.processComRequest(data, message, this.conId)
+          : this.processComError(data, message, this.conId);
         // Process Connection
         this.log(`[${this.conId}] Service core connection request processed`);
         // Increment
@@ -285,45 +320,68 @@ export class MicroServiceFramework extends ServiceCore {
                     // Allow access to the express instance
                     httpSettings.beforeStart(expressApp);
                     // Assign static path resources if defined
-                    httpSettings.static.forEach(path => expressApp.use(express.static(path)));
+                    httpSettings.static.forEach(path =>
+                      expressApp.use(express.static(path))
+                    );
                     // Harden http server if hardening is defined
                     httpSettings.harden && this.hardenServer(expressApp);
                     // Apply middlewares to express
-                    httpSettings.middlewares.forEach(middleware => expressApp.use(middleware));
+                    httpSettings.middlewares.forEach(middleware =>
+                      expressApp.use(middleware)
+                    );
                     // Assign routes
                     httpSettings.routes
                       .filter(route => {
-                        if (['put', 'post', 'get', 'delete', 'patch'].includes(route.method.toLowerCase())) {
+                        if (
+                          ['put', 'post', 'get', 'delete', 'patch'].includes(
+                            route.method.toLowerCase()
+                          )
+                        ) {
                           return true;
                         }
-                        console.warn(`This route has an unknown method, skipping: ${JSON.stringify(route, null, 2)}`);
+                        console.warn(
+                          `This route has an unknown method, skipping: ${JSON.stringify(
+                            route,
+                            null,
+                            2
+                          )}`
+                        );
                         return false;
                       })
                       .forEach(route =>
-                        expressApp[route.method.toLowerCase()](route.uri, (req, res, next) => {
-                          setTimeout(() => {
-                            try {
-                              return route.handler(req, res, {
-                                sendRequest: this.sendRequest,
-                                CommandBodyObject,
-                                ResponseBodyObject
-                              });
-                            } catch (e) {
-                              console.log('I am here!');
-                              return next(e);
-                            }
-                          }, 0);
-                        })
+                        expressApp[route.method.toLowerCase()](
+                          route.uri,
+                          (req, res, next) => {
+                            setTimeout(() => {
+                              try {
+                                return route.handler(req, res, {
+                                  sendRequest: this.sendRequest,
+                                  CommandBodyObject,
+                                  ResponseBodyObject
+                                });
+                              } catch (e) {
+                                console.log('I am here!');
+                                return next(e);
+                              }
+                            }, 0);
+                          }
+                        )
                       );
                     // Start HTTP(s) server
                     if (typeof httpSettings.ssl === 'object') {
                       return (
                         this.httpsServer.push(
-                          https.createServer(httpSettings.ssl, expressApp).listen(httpSettings.port)
+                          https
+                            .createServer(httpSettings.ssl, expressApp)
+                            .listen(httpSettings.port)
                         ) && resolve()
                       );
                     }
-                    return this.httpServer.push(http.createServer(expressApp).listen(httpSettings.port)) && resolve();
+                    return (
+                      this.httpServer.push(
+                        http.createServer(expressApp).listen(httpSettings.port)
+                      ) && resolve()
+                    );
                   }
                   return resolve();
                 } catch (e) {
@@ -360,7 +418,8 @@ export class MicroServiceFramework extends ServiceCore {
           shuffle(
             Object.keys(servicesInfo).reduce((acc, serviceName) => {
               // Instance count
-              let instances = customInstances || this.serviceOptions[serviceName].instances;
+              let instances =
+                customInstances || this.serviceOptions[serviceName].instances;
               // Define process list
               const processList = [];
               // Build instances
@@ -379,7 +438,15 @@ export class MicroServiceFramework extends ServiceCore {
                 this.initService(name, result =>
                   result === true
                     ? resolveLocal(true)
-                    : rejectLocal(Error(`Unable to start microservice! MORE INFO: ${JSON.stringify(result, null, 2)}`))
+                    : rejectLocal(
+                        Error(
+                          `Unable to start microservice! MORE INFO: ${JSON.stringify(
+                            result,
+                            null,
+                            2
+                          )}`
+                        )
+                      )
                 )
               )
           )

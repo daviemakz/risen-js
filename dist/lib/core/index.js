@@ -8,7 +8,12 @@ function _interopRequireDefault(obj) {
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
-    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
   } else {
     obj[key] = value;
   }
@@ -16,7 +21,9 @@ function _defineProperty(obj, key, value) {
 }
 
 function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+  return (
+    _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread()
+  );
 }
 
 function _nonIterableSpread() {
@@ -24,7 +31,10 @@ function _nonIterableSpread() {
 }
 
 function _iterableToArray(iter) {
-  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === '[object Arguments]')
+  if (
+    Symbol.iterator in Object(iter) ||
+    Object.prototype.toString.call(iter) === '[object Arguments]'
+  )
     return Array.from(iter);
 }
 
@@ -104,14 +114,22 @@ function stopService(name, instances) {
   return new Promise(function(resolve, reject) {
     var requestedInstances = Math.abs(instances);
     var actualInstances = _this.serviceData[name].port.length;
-    var instancesToTerminate = requestedInstances > actualInstances ? actualInstances : requestedInstances;
+    var instancesToTerminate =
+      requestedInstances > actualInstances
+        ? actualInstances
+        : requestedInstances;
 
     if (instancesToTerminate === 0) {
       return resolve(void 0);
     }
 
-    var ports = getRandomElements(_this.serviceData[name].port, instancesToTerminate);
-    process.env.exitedProcessPorts = uniqueArray([].concat(process.env.exitedProcessPorts, ports));
+    var ports = getRandomElements(
+      _this.serviceData[name].port,
+      instancesToTerminate
+    );
+    process.env.exitedProcessPorts = uniqueArray(
+      [].concat(process.env.exitedProcessPorts, ports)
+    );
     (typeof process.env.exitedProcessPorts === 'string'
       ? process.env.exitedProcessPorts.split(',')
       : process.env.exitedProcessPorts
@@ -145,16 +163,22 @@ function stopService(name, instances) {
                             'log'
                           );
 
-                          _this.serviceData[name].socket[index].request('SERVICE_KILL', void 0, function(res) {
-                            _this.log(
-                              'Service core has recieved acknowledgement of kill command from: '
-                                .concat(name, '/port:')
-                                .concat(ports[elIndex]),
-                              'log'
-                            );
+                          _this.serviceData[name].socket[index].request(
+                            'SERVICE_KILL',
+                            void 0,
+                            function(res) {
+                              _this.log(
+                                'Service core has recieved acknowledgement of kill command from: '
+                                  .concat(name, '/port:')
+                                  .concat(ports[elIndex]),
+                                'log'
+                              );
 
-                            res.status.command.code === 100 ? resolve(true) : reject(false);
-                          });
+                              res.status.command.code === 100
+                                ? resolve(true)
+                                : reject(false);
+                            }
+                          );
                         });
 
                       case 2:
@@ -191,29 +215,30 @@ module.exports = {
     var resObject = new _response.default();
     resObject.status.transport.responseSource = process.env.name;
     return setTimeout(function() {
-      return _this2.databaseOperation(data.body.table, data.body.method, data.body.args, function(
-        status,
-        result,
-        error
-      ) {
-        if (status) {
-          resObject.resultBody.resData = {
-            status: true,
-            message: 'The operation completed successfully!',
-            result: result
-          };
-        } else {
-          resObject.resultBody.resData = {
-            status: false,
-            message: 'The operation failed!',
-            result: result,
-            error: error
-          };
-          resObject.resultBody.errData = error;
-        }
+      return _this2.databaseOperation(
+        data.body.table,
+        data.body.method,
+        data.body.args,
+        function(status, result, error) {
+          if (status) {
+            resObject.resultBody.resData = {
+              status: true,
+              message: 'The operation completed successfully!',
+              result: result
+            };
+          } else {
+            resObject.resultBody.resData = {
+              status: false,
+              message: 'The operation failed!',
+              result: result,
+              error: error
+            };
+            resObject.resultBody.errData = error;
+          }
 
-        return socket.reply(resObject);
-      });
+          return socket.reply(resObject);
+        }
+      );
     }, 0);
   },
   changeInstances: (function() {
@@ -240,20 +265,29 @@ module.exports = {
 
                   resObject.resultBody.errData = Object.assign(baseResponse, {
                     status: false,
-                    message: 'Service "'.concat(data.body.name, '" was not found!')
+                    message: 'Service "'.concat(
+                      data.body.name,
+                      '" was not found!'
+                    )
                   });
                   _context2.next = 24;
                   break;
 
                 case 7:
-                  if (!(typeof data.body.instances !== 'number' || data.body.instances === 0)) {
+                  if (
+                    !(
+                      typeof data.body.instances !== 'number' ||
+                      data.body.instances === 0
+                    )
+                  ) {
                     _context2.next = 11;
                     break;
                   }
 
                   resObject.resultBody.errData = Object.assign(baseResponse, {
                     status: false,
-                    message: '"instance" property must be a number which is not 0!'
+                    message:
+                      '"instance" property must be a number which is not 0!'
                   });
                   _context2.next = 24;
                   break;
@@ -272,7 +306,11 @@ module.exports = {
                   _context2.next = 15;
                   return startService.call(
                     this,
-                    _defineProperty({}, data.body.name, this.serviceInfo[data.body.name]),
+                    _defineProperty(
+                      {},
+                      data.body.name,
+                      this.serviceInfo[data.body.name]
+                    ),
                     data.body.instances
                   );
 
@@ -283,7 +321,11 @@ module.exports = {
 
                 case 18:
                   _context2.next = 20;
-                  return stopService.call(this, data.body.name, data.body.instances);
+                  return stopService.call(
+                    this,
+                    data.body.name,
+                    data.body.instances
+                  );
 
                 case 20:
                   _context2.t0 = _context2.sent;
@@ -292,24 +334,30 @@ module.exports = {
                   result = _context2.t0;
                   nextPorts = this.serviceData[data.body.name].port;
                   typeof result === 'undefined'
-                    ? (resObject.resultBody.resData = Object.assign(baseResponse, {
-                        status: true,
-                        message: 'Services were modified successfully!',
-                        details: {
-                          name: data.body.name,
-                          previousPorts: previousPorts,
-                          nextPorts: nextPorts
+                    ? (resObject.resultBody.resData = Object.assign(
+                        baseResponse,
+                        {
+                          status: true,
+                          message: 'Services were modified successfully!',
+                          details: {
+                            name: data.body.name,
+                            previousPorts: previousPorts,
+                            nextPorts: nextPorts
+                          }
                         }
-                      }))
-                    : (resObject.resultBody.errData = Object.assign(baseResponse, {
-                        status: false,
-                        message: 'Services modification failed!',
-                        details: {
-                          name: data.body.name,
-                          previousPorts: previousPorts,
-                          nextPorts: nextPorts
+                      ))
+                    : (resObject.resultBody.errData = Object.assign(
+                        baseResponse,
+                        {
+                          status: false,
+                          message: 'Services modification failed!',
+                          details: {
+                            name: data.body.name,
+                            previousPorts: previousPorts,
+                            nextPorts: nextPorts
+                          }
                         }
-                      }));
+                      ));
 
                 case 24:
                   return _context2.abrupt('return', socket.reply(resObject));

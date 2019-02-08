@@ -15,9 +15,14 @@ class ServiceCommon {
   constructor() {
     // Bind methods
     return (
-      ['log', 'invokeListener', 'invokeSpeaker', 'sendRequest', 'destroyConnection', 'executeInitialFunctions'].forEach(
-        func => (this[func] = this[func].bind(this))
-      ) || this
+      [
+        'log',
+        'invokeListener',
+        'invokeSpeaker',
+        'sendRequest',
+        'destroyConnection',
+        'executeInitialFunctions'
+      ].forEach(func => (this[func] = this[func].bind(this))) || this
     );
   }
 
@@ -38,7 +43,9 @@ class ServiceCommon {
 
   // FUNCTION: Show message in log
   log(message, type) {
-    return this.settings.verbose && logTypes.includes(type) && console[type](message);
+    return (
+      this.settings.verbose && logTypes.includes(type) && console[type](message)
+    );
   }
 
   // FUNCTION: Bind listners to server
@@ -51,13 +58,21 @@ class ServiceCommon {
             if (typeof func === 'function') {
               return true;
             }
-            this.log(`This not a valid function: ${func || 'undefined or empty string'}`, 'warn');
+            this.log(
+              `This not a valid function: ${func ||
+                'undefined or empty string'}`,
+              'warn'
+            );
             return false;
           })
           .forEach(func =>
             this[opsProp].hasOwnProperty(func)
               ? this[opsProp][func]()
-              : reject(Error(`The function ${func} has not been defined in this service!`))
+              : reject(
+                  Error(
+                    `The function ${func} has not been defined in this service!`
+                  )
+                )
           );
         // Resolve promise
         return resolve();
@@ -106,7 +121,12 @@ class ServiceCommon {
           }, 1);
         }
         // Notification
-        this.log(`Unable to connect to service core. MORE INFO: ${_resBody.destination}`, 'log');
+        this.log(
+          `Unable to connect to service core. MORE INFO: ${
+            _resBody.destination
+          }`,
+          'log'
+        );
         // Create Response Object
         const responseObject = new ResponseBodyObject();
         // Build Response Object [status - transport]
@@ -141,7 +161,10 @@ class ServiceCommon {
         // Response Validation
         if (_requestData.hasOwnProperty('error')) {
           // Notification
-          this.log(`Unable to connect to service. MORE INFO: ${_resBody.destination}`, 'log');
+          this.log(
+            `Unable to connect to service. MORE INFO: ${_resBody.destination}`,
+            'log'
+          );
           // Create Response Object
           const responseObject = new ResponseBodyObject();
           // Build Response Object [status - transport]
@@ -162,7 +185,10 @@ class ServiceCommon {
             originalData: _resBody
           };
           // Console Log
-          this.log(`Unable to transmit data to: ${_resBody.destination}`, 'log');
+          this.log(
+            `Unable to transmit data to: ${_resBody.destination}`,
+            'log'
+          );
           // Callback
           if (typeof _resBody.callback === 'function') {
             _resBody.callback(responseObject, _resBody, _portSpeaker);
@@ -171,7 +197,9 @@ class ServiceCommon {
           // Get existing service status
           const serviceExists =
             this.serviceInfo.hasOwnProperty(_resBody.destination) ||
-            (process.env.service ? false : _resBody.destination === 'serviceCore');
+            (process.env.service
+              ? false
+              : _resBody.destination === 'serviceCore');
           // Console Log
           serviceExists
             ? this.log(
@@ -183,12 +211,18 @@ class ServiceCommon {
             : this.log(
                 `[${options.connectionId}] ${
                   process.env.service ? 'Micro service' : 'Service core'
-                }Service core was unable to find the service: ${_resBody.destination}`,
+                }Service core was unable to find the service: ${
+                  _resBody.destination
+                }`,
                 'log'
               );
           // Callback
           if (typeof _resBody.callback === 'function') {
-            _resBody.callback(_requestData, _resBody, serviceExists ? _portSpeaker : void 0);
+            _resBody.callback(
+              _requestData,
+              _resBody,
+              serviceExists ? _portSpeaker : void 0
+            );
           }
         }
       });
@@ -204,7 +238,10 @@ class ServiceCommon {
       socket.conn.destroy();
       return this.log(`[${id}] Connection successfully closed`, 'log');
     }
-    return this.log(`[${id}] Connection object untouched. invalid object...`, 'log');
+    return this.log(
+      `[${id}] Connection object untouched. invalid object...`,
+      'log'
+    );
   }
 }
 

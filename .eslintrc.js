@@ -108,10 +108,7 @@ module.exports = {
     'no-self-compare': 2,
     'no-sequences': 2,
     'no-throw-literal': 2,
-    'no-unused-expressions': [
-      'error',
-      { allowShortCircuit: true, allowTernary: true }
-    ],
+    'no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
     'no-warning-comments': [0, { terms: ['todo', 'fixme'], location: 'start' }],
     'no-with': 2,
     radix: 2,

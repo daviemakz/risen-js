@@ -4,14 +4,12 @@
 import ResponseBodyObject from './../template/response';
 
 // FUNCTION: Get a unique array
-function uniqueArray(arrArg) {
-  return arrArg.filter((elem, pos, arr) => {
-    return arr.indexOf(elem) === pos;
-  });
-}
+const uniqueArray = arrArg => {
+  return arrArg.filter((elem, pos, arr) => arr.indexOf(elem) === pos);
+};
 
 // FUNCTION: Get a random list of elements from array
-function getRandomElements(arr, n) {
+const getRandomElements = (arr, n) => {
   let ln = n;
   const result = new Array(ln);
   let len = arr.length;
@@ -25,7 +23,7 @@ function getRandomElements(arr, n) {
     taken[x] = --len in taken ? taken[len] : len;
   }
   return result;
-}
+};
 
 // FUNCTION: Start service instance wrapper
 function startService(serviceInfo, instances) {
@@ -38,23 +36,15 @@ function stopService(name, instances) {
     // Get highest number of instances which can be shutdown
     const requestedInstances = Math.abs(instances);
     const actualInstances = this.serviceData[name].port.length;
-    const instancesToTerminate =
-      requestedInstances > actualInstances
-        ? actualInstances
-        : requestedInstances;
+    const instancesToTerminate = requestedInstances > actualInstances ? actualInstances : requestedInstances;
     // If instance count is 0 then just resolve
     if (instancesToTerminate === 0) {
       return resolve(void 0);
     }
     // Get ports to close
-    const ports = getRandomElements(
-      this.serviceData[name].port,
-      instancesToTerminate
-    );
+    const ports = getRandomElements(this.serviceData[name].port, instancesToTerminate);
     // Assign ports which are being shutdown
-    process.env.exitedProcessPorts = uniqueArray(
-      [].concat(process.env.exitedProcessPorts, ports)
-    );
+    process.env.exitedProcessPorts = uniqueArray([].concat(process.env.exitedProcessPorts, ports));
     (typeof process.env.exitedProcessPorts === 'string'
       ? process.env.exitedProcessPorts.split(',')
       : process.env.exitedProcessPorts
@@ -69,26 +59,15 @@ function stopService(name, instances) {
         async (index, elIndex) =>
           await new Promise((resolve, reject) => {
             // Show message
-            this.log(
-              `Service core will send kill command to the service: ${name}/port:${
-                ports[elIndex]
-              }`,
-              'log'
-            );
+            this.log(`Service core will send kill command to the service: ${name}/port:${ports[elIndex]}`, 'log');
             // Send kill process message
-            this.serviceData[name].socket[index].request(
-              'SERVICE_KILL',
-              void 0,
-              res => {
-                this.log(
-                  `Service core has recieved acknowledgement of kill command from: ${name}/port:${
-                    ports[elIndex]
-                  }`,
-                  'log'
-                );
-                res.status.command.code === 100 ? resolve(true) : reject(false);
-              }
-            );
+            this.serviceData[name].socket[index].request('SERVICE_KILL', void 0, res => {
+              this.log(
+                `Service core has recieved acknowledgement of kill command from: ${name}/port:${ports[elIndex]}`,
+                'log'
+              );
+              res.status.command.code === 100 ? resolve(true) : reject(false);
+            });
           })
       );
       // Resolve
@@ -109,31 +88,26 @@ module.exports = {
     // Perform operations
     return setTimeout(
       () =>
-        this.databaseOperation(
-          data.body.table,
-          data.body.method,
-          data.body.args,
-          (status, result, error) => {
-            // Assign function result
-            if (status) {
-              resObject.resultBody.resData = {
-                status: true,
-                message: 'The operation completed successfully!',
-                result
-              };
-            } else {
-              resObject.resultBody.resData = {
-                status: false,
-                message: 'The operation failed!',
-                result,
-                error
-              };
-              resObject.resultBody.errData = error;
-            }
-            // Return
-            return socket.reply(resObject);
+        this.databaseOperation(data.body.table, data.body.method, data.body.args, (status, result, error) => {
+          // Assign function result
+          if (status) {
+            resObject.resultBody.resData = {
+              status: true,
+              message: 'The operation completed successfully!',
+              result
+            };
+          } else {
+            resObject.resultBody.resData = {
+              status: false,
+              message: 'The operation failed!',
+              result,
+              error
+            };
+            resObject.resultBody.errData = error;
           }
-        ),
+          // Return
+          return socket.reply(resObject);
+        }),
       0
     );
   },
@@ -154,10 +128,7 @@ module.exports = {
         status: false,
         message: `Service "${data.body.name}" was not found!`
       });
-    } else if (
-      typeof data.body.instances !== 'number' ||
-      data.body.instances === 0
-    ) {
+    } else if (typeof data.body.instances !== 'number' || data.body.instances === 0) {
       resObject.resultBody.errData = Object.assign(baseResponse, {
         status: false,
         message: '"instance" property must be a number which is not 0!'
@@ -168,11 +139,7 @@ module.exports = {
       // Get result
       const result =
         data.body.instances > 0
-          ? await startService.call(
-              this,
-              { [data.body.name]: this.serviceInfo[data.body.name] },
-              data.body.instances
-            )
+          ? await startService.call(this, { [data.body.name]: this.serviceInfo[data.body.name] }, data.body.instances)
           : await stopService.call(this, data.body.name, data.body.instances);
       // Get next ports
       const nextPorts = this.serviceData[data.body.name].port;

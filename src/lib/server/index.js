@@ -7,13 +7,13 @@ import isRunning from 'is-running';
 import isPortFree from 'is-port-free';
 
 // Loading libraries
-import MicroServiceCommon from './../common';
+import ServiceCommon from './../common';
 
 // Load Templates
 import ResponseBodyObject from './../template/response';
 
 // Declare class
-class MicroServer extends MicroServiceCommon {
+class MicroServer extends ServiceCommon {
   // Constructor
   constructor() {
     // Call super()
@@ -56,6 +56,7 @@ class MicroServer extends MicroServiceCommon {
           await this.initServer();
           await this.bindService();
           await this.executeInitialFunctions('operations');
+          return void 0;
         } catch (e) {
           throw new Error(e);
         }
@@ -78,9 +79,7 @@ class MicroServer extends MicroServiceCommon {
         ([name, op]) => (this.operations[name] = op.bind(_operationScope))
       );
       // Assign standard functions
-      this.standardFunctions.forEach(
-        func => (this.operations[func] = this[func].bind(_operationScope))
-      );
+      this.standardFunctions.forEach(func => (this.operations[func] = this[func].bind(_operationScope)));
       // Resolve promise
       return resolve();
     });
@@ -119,29 +118,22 @@ class MicroServer extends MicroServiceCommon {
         });
       });
       // Resolve the promise
-      resolve();
+      return resolve();
     });
   }
 
   // FUNCTION: Process management
   processManagement() {
-    return (
-      !isRunning(process.env.parentPid) &&
-      setTimeout(() => process.exit(), 1000)
-    );
+    return !isRunning(process.env.parentPid) && setTimeout(() => process.exit(), 1000);
   }
 
   // FUNCTION: Initialise Micro service
   initServer() {
     // Return
-    return new Promise((resolve, reject) => {
-      // Check that API gateway is free
+    return new Promise((resolve, reject) =>
       isPortFree(parseInt(process.env.port, 10))
         .then(() => {
-          this.log(
-            `Starting service on port: ${parseInt(process.env.port, 10)}`,
-            'log'
-          );
+          this.log(`Starting service on port: ${parseInt(process.env.port, 10)}`, 'log');
           // Initialise interface
           this.interface = this.invokeListener(parseInt(process.env.port, 10));
           // Check the status of the gateway
@@ -162,11 +154,7 @@ class MicroServer extends MicroServiceCommon {
             `Service port "${parseInt(
               process.env.port,
               10
-            )}" not free or unknown error has occurred. MORE INFO: ${JSON.stringify(
-              e,
-              null,
-              2
-            )}`,
+            )}" not free or unknown error has occurred. MORE INFO: ${JSON.stringify(e, null, 2)}`,
             'error'
           );
           // Reject
@@ -175,15 +163,11 @@ class MicroServer extends MicroServiceCommon {
               `Service port "${parseInt(
                 process.env.port,
                 10
-              )}" not free or unknown error has occurred. MORE INFO: ${JSON.stringify(
-                e,
-                null,
-                2
-              )}`
+              )}" not free or unknown error has occurred. MORE INFO: ${JSON.stringify(e, null, 2)}`
             )
           );
-        });
-    });
+        })
+    );
   }
 
   // FUNCTION: Bind listners to server
@@ -198,9 +182,7 @@ class MicroServer extends MicroServiceCommon {
           [this.conId]: socket
         };
         // Process Communication Request
-        data
-          ? this.processRequest(socket, data)
-          : this.noDataRecieved(socket, data);
+        data ? this.processRequest(socket, data) : this.noDataRecieved(socket, data);
         // Process Connection
         this.log(`[${this.conId}] Micro service connection request processed!`);
         // Return
@@ -217,11 +199,7 @@ class MicroServer extends MicroServiceCommon {
           [this.conId]: socket
         };
         // Process Connection
-        this.log(
-          `[${
-            this.conId
-          }] Micro service connection request processed, kill command recieved!`
-        );
+        this.log(`[${this.conId}] Micro service connection request processed, kill command recieved!`);
         // Return
         this.conId++;
         // Build Response Object [status - transport]

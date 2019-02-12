@@ -406,6 +406,7 @@ export class MicroServiceFramework extends ServiceCore {
                           }
                         )
                       );
+                    this.log('Starting HTTP server(s)...', 'log');
                     // Start HTTP(s) server
                     if (typeof httpSettings.ssl === 'object') {
                       return (

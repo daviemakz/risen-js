@@ -42,9 +42,11 @@ class ServiceCommon {
   }
 
   // FUNCTION: Show message in log
-  log(message, type) {
+  log(message, type, override = false) {
     return (
-      this.settings.verbose && logTypes.includes(type) && console[type](message)
+      (this.settings.verbose || override) &&
+      logTypes.includes(type) &&
+      console[type](message)
     );
   }
 

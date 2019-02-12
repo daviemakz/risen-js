@@ -206,6 +206,7 @@ var MicroServer = (function(_ServiceCommon) {
     _this.options = JSON.parse(process.env.options);
     _this.serviceInfo = JSON.parse(process.env.serviceInfo);
     _this.standardFunctions = ['echoData'];
+    process.env.verbose = _this.settings.verbose;
     [
       'noDataRecieved',
       'echoData',

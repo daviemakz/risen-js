@@ -5,12 +5,12 @@ import './lib/runtime';
 
 // Load NPM modules
 import isPortFree from 'is-port-free';
-import path from 'path';
-import fs from 'fs';
 import https from 'https';
 import http from 'http';
 import helmet from 'helmet';
 import express from 'express';
+import { resolve } from 'path';
+import { existsSync, readFileSync } from 'fs';
 import { shuffle } from 'lodash';
 
 // Load package.json
@@ -49,8 +49,9 @@ const buildSecureOptions = ssl => {
             ssl
           )
         )
+          .filter(([optionKey, filePath]) => filePath)
           .map(([optionKey, filePath]) => ({
-            [optionKey]: fs.readFileSync(filePath)
+            [optionKey]: readFileSync(resolve(filePath)).toString()
           }))
           .reduce((acc, x) => Object.assign(acc, x), {})
       : ssl;
@@ -60,15 +61,21 @@ const buildSecureOptions = ssl => {
 };
 
 // HTTP options
-const buildHttpOptions = options => ({
-  port: 80,
-  ssl: buildSecureOptions(options.ssl),
-  harden: true,
-  beforeStart: express => express,
-  middlewares: [],
-  static: [],
-  routes: []
-});
+const buildHttpOptions = options => {
+  return {
+    port: options.hasOwnProperty('port') ? options.port : 8888,
+    ssl: buildSecureOptions(options.ssl),
+    harden: options.hasOwnProperty('harden') ? options.harden : true,
+    beforeStart: options.hasOwnProperty('beforeStart')
+      ? options.beforeStart
+      : express => express,
+    middlewares: options.hasOwnProperty('middlewares')
+      ? options.middlewares
+      : [],
+    static: options.hasOwnProperty('static') ? options.static : [],
+    routes: options.hasOwnProperty('routes') ? options.routes : []
+  };
+};
 
 // Instance options
 const defaultInstanceOptions = {
@@ -94,16 +101,17 @@ export class MicroServiceFramework extends ServiceCore {
   constructor(options) {
     // Super
     super(options);
+    // Set service start status
+    this.microServiceStarted = false;
     // Connection tracking number
     this.conId = 0;
     // Declare settings
-    this.settings = Object.assign(
-      defaultInstanceOptions,
-      options,
-      Array.isArray(options.http) && options.http.length
-        ? options.http.map(httpSettings => buildHttpOptions(httpSettings))
-        : false
-    );
+    this.settings = Object.assign({}, defaultInstanceOptions, options, {
+      http:
+        Array.isArray(options.http) && options.http.length
+          ? options.http.map(httpSettings => buildHttpOptions(httpSettings))
+          : false
+    });
     // HTTP(s) and ports
     ['httpsServer', 'httpServer', 'inUsePorts'].forEach(
       prop => (this[prop] = [])
@@ -126,7 +134,8 @@ export class MicroServiceFramework extends ServiceCore {
       'coreOperations',
       'serviceInfo',
       'serviceOptions',
-      'serviceData'
+      'serviceData',
+      'eventHandlers'
     ].forEach(prop => (this[prop] = {}));
     // Bind methods
     [
@@ -138,6 +147,17 @@ export class MicroServiceFramework extends ServiceCore {
       'hardenServer',
       'startHttpServer'
     ].forEach(func => (this[func] = this[func].bind(this)));
+    // Assign external event listners
+    this.eventHandlers = Object.assign(
+      {},
+      ...['onConRequest', 'onConClose'].map(func =>
+        typeof options[func] === 'function'
+          ? { [func]: options[func].bind(this) }
+          : {}
+      )
+    );
+    // Set verbose to enviromental variable
+    process.env.verbose = this.settings.verbose === true;
   }
 
   // FUNCTION: Start server failed
@@ -147,29 +167,41 @@ export class MicroServiceFramework extends ServiceCore {
 
   // FUNCTION: Start the server
   startServer() {
-    return (async () => {
-      try {
-        if (['client', 'server'].includes(this.settings.mode)) {
-          if (this.settings.mode === 'server') {
-            await this.assignCoreFunctions();
-            await this.initGateway();
-            await this.bindGateway();
-            await this.startServices();
-            await this.startHttpServer();
-            await this.executeInitialFunctions('coreOperations', 'settings');
-            return void 0;
+    // Return
+    return !this.microServiceStarted
+      ? (async () => {
+          try {
+            // Set start service to true
+            this.microServiceStarted = true;
+            // Check mode
+            if (['client', 'server'].includes(this.settings.mode)) {
+              if (this.settings.mode === 'server') {
+                await this.assignCoreFunctions();
+                await this.initGateway();
+                await this.bindGateway();
+                await this.startServices();
+                await this.startHttpServer();
+                await this.executeInitialFunctions(
+                  'coreOperations',
+                  'settings'
+                );
+                return void 0;
+              }
+              this.log(`Micro Service Framework: ${version}`, 'log');
+              this.log('Running in client mode...', 'log');
+              return void 0;
+            }
+            throw new Error(
+              "Unsupported mode detected. Valid options are 'server' or 'client'"
+            );
+          } catch (e) {
+            throw new Error(e);
           }
-          this.log(`Micro Service Framework: ${version}`, 'log');
-          this.log('Running in client mode...', 'log');
-          return void 0;
-        }
-        throw new Error(
-          "Unsupported mode detected. Valid options are 'server' or 'client'"
+        })()
+      : this.log(
+          'Micro service framework has already been initialised!',
+          'warn'
         );
-      } catch (e) {
-        throw new Error(e);
-      }
-    })();
   }
 
   // FUNCTION: Assign core functions
@@ -189,13 +221,13 @@ export class MicroServiceFramework extends ServiceCore {
   // FUNCTION: Add micro service to the instance
   defineService(name, operations, options) {
     // Variables
-    const resolvedPath = `${path.resolve(operations)}.js`;
+    const resolvedPath = `${resolve(operations)}.js`;
     // Check that the server doesnt already exist
     switch (true) {
       case typeof name === 'undefined': {
         throw new Error(`The name of the microservice is not defined! ${name}`);
       }
-      case typeof operations === 'undefined' || !fs.existsSync(resolvedPath): {
+      case typeof operations === 'undefined' || !existsSync(resolvedPath): {
         throw new Error(
           `The operations path of the microservice is not defined or cannot be found! PATH: ${resolvedPath}`
         );
@@ -227,21 +259,21 @@ export class MicroServiceFramework extends ServiceCore {
   // FUNCTION: Initialise api gateway
   initGateway() {
     // Initial message
-    this.log(`Micro Service Framework: ${version}`, 'log');
+    this.log(`Micro Service Framework: ${version}`, 'log', true);
     // Return
     return new Promise((resolve, reject) =>
       isPortFree(this.settings.apiGatewayPort)
         .then(() => {
-          this.log('Starting service core', 'log');
+          this.log('Starting service core...', 'log', true);
           // Initialise interface, invoke port listener
           this.externalInterfaces.apiGateway = this.invokeListener(
             this.settings.apiGatewayPort
           );
           // Check the status of the gateway
           return !this.externalInterfaces.apiGateway
-            ? this.log('Unable to start gateway, exiting!', 'error') ||
+            ? this.log('Unable to start gateway, exiting!', 'error', true) ||
                 reject(Error('Unable to start gateway, exiting!'))
-            : this.log('Service core started!', 'log') || resolve(true);
+            : this.log('Service core started!', 'log', true) || resolve(true);
         })
         .catch(e => {
           this.log(
@@ -275,6 +307,9 @@ export class MicroServiceFramework extends ServiceCore {
           `[${this.conId}] Service core connection request recieved`,
           'log'
         );
+        // Execute handlers
+        this.eventHandlers.hasOwnProperty('onConRequest') &&
+          this.eventHandlers.onConRequest(data);
         // Process Communication Request
         data
           ? this.processComRequest(data, message, this.conId)
@@ -288,6 +323,9 @@ export class MicroServiceFramework extends ServiceCore {
       this.externalInterfaces.apiGateway.on('COM_CLOSE', message => {
         // Connection Close Requested
         this.log(`[${this.conId}] Service core connection close requested`);
+        // Execute handlers
+        this.eventHandlers.hasOwnProperty('onConClose') &&
+          this.eventHandlers.onConClose();
         // Destroy Socket (Close Connection)
         message.conn.destroy();
         // Connection Closed
@@ -339,18 +377,20 @@ export class MicroServiceFramework extends ServiceCore {
                         ) {
                           return true;
                         }
-                        console.warn(
+                        this.log(
                           `This route has an unknown method, skipping: ${JSON.stringify(
                             route,
                             null,
                             2
-                          )}`
+                          )}`,
+                          'warn'
                         );
                         return false;
                       })
                       .forEach(route =>
                         expressApp[route.method.toLowerCase()](
                           route.uri,
+                          ...(route.middleware || []),
                           (req, res, next) => {
                             setTimeout(() => {
                               try {
@@ -360,7 +400,6 @@ export class MicroServiceFramework extends ServiceCore {
                                   ResponseBodyObject
                                 });
                               } catch (e) {
-                                console.log('I am here!');
                                 return next(e);
                               }
                             }, 0);

@@ -4,6 +4,8 @@ var _findFreePort = _interopRequireDefault(require('find-free-port'));
 
 var _mkdirp = _interopRequireDefault(require('mkdirp'));
 
+var _v = _interopRequireDefault(require('uuid/v4'));
+
 var _fs = require('fs');
 
 var _child_process = require('child_process');
@@ -280,7 +282,7 @@ var ServiceCore = (function(_ServiceCommon) {
     },
     {
       key: 'addServerToTracking',
-      value: function addServerToTracking(name, port) {
+      value: function addServerToTracking(name, port, processId) {
         !this.inUsePorts.includes(port) && this.inUsePorts.push(port);
         process.env.exitedProcessPorts = (typeof process.env
           .exitedProcessPorts === 'string'
@@ -302,6 +304,7 @@ var ServiceCore = (function(_ServiceCommon) {
               {
                 socket: this.serviceData[name].socket.concat(void 0),
                 port: this.serviceData[name].port.concat(port),
+                processId: this.serviceData[name].processId.concat(processId),
                 process: this.serviceData[name].process.concat(void 0),
                 connectionCount: this.serviceData[name].connectionCount.concat(
                   0
@@ -313,6 +316,7 @@ var ServiceCore = (function(_ServiceCommon) {
 
         return (
           (this.serviceData[name] = {
+            processId: [processId],
             socket: [void 0],
             status: false,
             error: false,
@@ -332,6 +336,7 @@ var ServiceCore = (function(_ServiceCommon) {
         });
 
         if (socketIndex > -1) {
+          this.serviceData[name].processId.splice(socketIndex, 1);
           this.serviceData[name].socket.splice(socketIndex, 1);
           this.serviceData[name].port.splice(socketIndex, 1);
           this.serviceData[name].process.splice(socketIndex, 1);
@@ -347,6 +352,7 @@ var ServiceCore = (function(_ServiceCommon) {
         var _this3 = this;
 
         var port = void 0;
+        var processId = (0, _v.default)();
 
         var findAFreePort = function findAFreePort() {
           return new Promise(function(resolve) {
@@ -372,7 +378,10 @@ var ServiceCore = (function(_ServiceCommon) {
 
         var handleOnData = function handleOnData(name, type, data) {
           var logOutput = processStdio(
-            ''.concat(name, '/port:').concat(port),
+            ''
+              .concat(name, '/port:')
+              .concat(port, '/id:')
+              .concat(processId),
             type,
             data
           );
@@ -410,7 +419,7 @@ var ServiceCore = (function(_ServiceCommon) {
                             );
 
                           case 6:
-                            _this3.addServerToTracking(name, port);
+                            _this3.addServerToTracking(name, port, processId);
 
                             _this3.serviceData[name].error = false;
                             _this3.serviceData[name].process[
@@ -421,7 +430,9 @@ var ServiceCore = (function(_ServiceCommon) {
                                 maxBuffer: 1024 * _this3.settings.maxBuffer,
                                 env: {
                                   parentPid: process.pid,
+                                  verbose: process.env.verbose,
                                   name: name,
+                                  processId: processId,
                                   port: port,
                                   service: true,
                                   operations: _this3.serviceInfo[name],

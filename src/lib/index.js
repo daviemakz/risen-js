@@ -3,6 +3,7 @@
 // Load NPM Modules
 import getFreePort from 'find-free-port';
 import makeDirectory from 'mkdirp';
+import guid from 'uuid/v4';
 import { writeFile } from 'fs';
 import { exec } from 'child_process';
 import { dirname } from 'path';
@@ -67,7 +68,7 @@ class ServiceCore extends ServiceCommon {
   }
 
   // FUNCTION: Add new server to tracking object. This contains all the information for microservices
-  addServerToTracking(name, port) {
+  addServerToTracking(name, port, processId) {
     // Assign port to used list
     !this.inUsePorts.includes(port) && this.inUsePorts.push(port);
     // Clean out exited port if its there
@@ -84,6 +85,7 @@ class ServiceCore extends ServiceCommon {
         (this.serviceData[name] = Object.assign({}, this.serviceData[name], {
           socket: this.serviceData[name].socket.concat(void 0),
           port: this.serviceData[name].port.concat(port),
+          processId: this.serviceData[name].processId.concat(processId),
           process: this.serviceData[name].process.concat(void 0),
           connectionCount: this.serviceData[name].connectionCount.concat(0)
         })) && true
@@ -92,6 +94,7 @@ class ServiceCore extends ServiceCommon {
     // Add the server to the tracking
     return (
       (this.serviceData[name] = {
+        processId: [processId],
         socket: [void 0],
         status: false,
         error: false,
@@ -104,13 +107,14 @@ class ServiceCore extends ServiceCommon {
 
   // FUNCTION: Removes the service from the tracking object
   removeServerFromTracking(name, port) {
-    // Get index of name and port
+    // Get index by name and port
     const socketIndex = this.serviceData[name].port.indexOf(port);
     // Remove port from used port list
     this.inUsePorts = this.inUsePorts.filter(usedPort => usedPort !== port);
     // Remove tracking information for service
     if (socketIndex > -1) {
       // Remove service tracking information
+      this.serviceData[name].processId.splice(socketIndex, 1);
       this.serviceData[name].socket.splice(socketIndex, 1);
       this.serviceData[name].port.splice(socketIndex, 1);
       this.serviceData[name].process.splice(socketIndex, 1);
@@ -124,6 +128,7 @@ class ServiceCore extends ServiceCommon {
   initService(name, callback) {
     // Define port
     let port = void 0;
+    let processId = guid();
     // Get a free port
     const findAFreePort = () => {
       return new Promise(resolve =>
@@ -145,7 +150,11 @@ class ServiceCore extends ServiceCommon {
     // Handle stdio
     const handleOnData = (name, type, data) => {
       // Build text
-      const logOutput = processStdio(`${name}/port:${port}`, type, data);
+      const logOutput = processStdio(
+        `${name}/port:${port}/id:${processId}`,
+        type,
+        data
+      );
       // Write to log
       this.writeToLogFile(logOutput);
       // Show in parent console
@@ -163,7 +172,7 @@ class ServiceCore extends ServiceCommon {
               return setTimeout(ensurePortFree, 50);
             }
             // Check that the retrieving a port was successful
-            this.addServerToTracking(name, port);
+            this.addServerToTracking(name, port, processId);
             // Reset error status
             this.serviceData[name].error = false;
             // Assign process to instance
@@ -175,7 +184,9 @@ class ServiceCore extends ServiceCommon {
                 maxBuffer: 1024 * this.settings.maxBuffer,
                 env: {
                   parentPid: process.pid,
+                  verbose: process.env.verbose,
                   name,
+                  processId,
                   port,
                   service: true,
                   operations: this.serviceInfo[name],

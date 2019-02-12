@@ -71,7 +71,8 @@ var SpeakerReconnector = (function(_super) {
       port,
       host,
       function() {
-        console.log('Successfully connected on port: '.concat(port));
+        process.env.verbose === 'true' &&
+          console.log('Successfully connected on port: '.concat(port));
         return _this.sockets.push(socket);
       }
     );
@@ -117,7 +118,8 @@ var SpeakerReconnector = (function(_super) {
           })
           .includes(port)
       ) {
-        console.log('Attempting to connect to port: '.concat(port));
+        process.env.verbose === 'true' &&
+          console.log('Attempting to connect to port: '.concat(port));
         var index;
         var sock;
 

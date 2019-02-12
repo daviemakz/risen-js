@@ -33,6 +33,8 @@ class MicroServer extends ServiceCommon {
     this.serviceInfo = JSON.parse(process.env.serviceInfo);
     // Standard functions
     this.standardFunctions = ['echoData'];
+    // Set verbose to enviromental variable
+    process.env.verbose = this.settings.verbose;
     // Bind methods
     [
       'noDataRecieved',

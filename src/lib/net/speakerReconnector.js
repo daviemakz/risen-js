@@ -61,7 +61,8 @@ const SpeakerReconnector = (function(_super) {
       port,
       host,
       () => {
-        console.log(`Successfully connected on port: ${port}`);
+        process.env.verbose === 'true' &&
+          console.log(`Successfully connected on port: ${port}`);
         return _this.sockets.push(socket);
       }
     );
@@ -95,7 +96,8 @@ const SpeakerReconnector = (function(_super) {
           .map(port => parseInt(port, 10))
           .includes(port)
       ) {
-        console.log(`Attempting to connect to port: ${port}`);
+        process.env.verbose === 'true' &&
+          console.log(`Attempting to connect to port: ${port}`);
         let index;
         let sock;
         let _i;

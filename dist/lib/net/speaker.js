@@ -1,10 +1,12 @@
 'use strict';
 
-var _net = _interopRequireDefault(require("net"));
+var _net = _interopRequireDefault(require('net'));
 
-var _networkBase = _interopRequireDefault(require("./networkBase"));
+var _networkBase = _interopRequireDefault(require('./networkBase'));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 var ERR_REQ_REFUSED = -1;
 var MAX_WAITERS = 9999999;
@@ -26,7 +28,7 @@ var extendsObj = function extendsObj(child, parent) {
   return child;
 };
 
-var Speaker = function (_super) {
+var Speaker = (function(_super) {
   extendsObj(Speaker, _super);
 
   function Speaker(addresses) {
@@ -49,7 +51,7 @@ var Speaker = function (_super) {
     }
   }
 
-  Speaker.prototype.connect = function (address) {
+  Speaker.prototype.connect = function(address) {
     var host;
     var port;
     var self;
@@ -65,11 +67,16 @@ var Speaker = function (_super) {
     socket.setEncoding('utf8');
     socket.setNoDelay(true);
     socket.setMaxListeners(Infinity);
-    socket.connect(port, host, function () {
-      process.env.verbose === 'true' && console.log("Successfully connected on port: ".concat(port));
-      return _this.sockets.push(socket);
-    });
-    socket.on('data', function (data) {
+    socket.connect(
+      port,
+      host,
+      function() {
+        process.env.verbose === 'true' &&
+          console.log('Successfully connected on port: '.concat(port));
+        return _this.sockets.push(socket);
+      }
+    );
+    socket.on('data', function(data) {
       var message;
       var messageText;
 
@@ -102,7 +109,7 @@ var Speaker = function (_super) {
     return void 0;
   };
 
-  Speaker.prototype.request = function (subject, data, callback) {
+  Speaker.prototype.request = function(subject, data, callback) {
     if (callback === null) {
       callback = null;
     }
@@ -110,7 +117,7 @@ var Speaker = function (_super) {
     return this.send(subject, data, callback);
   };
 
-  Speaker.prototype.send = function (subject, data, callback) {
+  Speaker.prototype.send = function(subject, data, callback) {
     var messageId;
     var payload;
 
@@ -145,7 +152,7 @@ var Speaker = function (_super) {
     return this.sockets[this.socketIterator++].write(payload);
   };
 
-  Speaker.prototype.shout = function (subject, data) {
+  Speaker.prototype.shout = function(subject, data) {
     var payload;
     var socket;
 
@@ -173,10 +180,10 @@ var Speaker = function (_super) {
     return _results;
   };
 
-  Speaker.prototype.generateUniqueId = function () {
+  Speaker.prototype.generateUniqueId = function() {
     var id;
     var newId;
-    id = "id-".concat(this.uniqueId);
+    id = 'id-'.concat(this.uniqueId);
 
     if (!this.waiters[id]) {
       return id;
@@ -186,7 +193,7 @@ var Speaker = function (_super) {
       this.uniqueId = 1;
     }
 
-    if (this.waiters[newId = "id-".concat(this.uniqueId)]) {
+    if (this.waiters[(newId = 'id-'.concat(this.uniqueId))]) {
       delete this.waiters[newId];
     }
 
@@ -194,6 +201,6 @@ var Speaker = function (_super) {
   };
 
   return Speaker;
-}(_networkBase.default);
+})(_networkBase.default);
 
 module.exports = Speaker;

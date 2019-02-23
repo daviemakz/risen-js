@@ -25,18 +25,21 @@ import LocalDatabase from './lib/db';
 import ServiceCore from './lib';
 
 // Load templates
-import CommandBodyObject from './lib/template/command.js';
-import ResponseBodyObject from './lib/template/response.js';
+import CommandBodyObject from './lib/template/command';
+import ResponseBodyObject from './lib/template/response';
+
+// Load validation options
+import { validateServiceOptions, validateOptions } from './lib/validate';
 
 // Microservice options
-const defaultServiceOptions = {
+export const defaultServiceOptions = {
   loadBalancing: 'roundRobin',
   runOnStart: [],
   instances: 1
 };
 
 // HTTPS options
-const buildSecureOptions = ssl => {
+export const buildSecureOptions = ssl => {
   try {
     return typeof ssl === 'object'
       ? Object.entries(
@@ -62,7 +65,7 @@ const buildSecureOptions = ssl => {
 };
 
 // HTTP options
-const buildHttpOptions = options => {
+export const buildHttpOptions = options => {
   return {
     port: options.hasOwnProperty('port') ? options.port : 8888,
     ssl: buildSecureOptions(options.ssl),
@@ -79,7 +82,7 @@ const buildHttpOptions = options => {
 };
 
 // Instance options
-const defaultInstanceOptions = {
+export const defaultInstanceOptions = {
   mode: 'server',
   http: false,
   databaseNames: ['_defaultTable'],
@@ -102,6 +105,8 @@ export class MicroServiceFramework extends ServiceCore {
   constructor(options) {
     // Super
     super(options);
+    // Validate options before starting
+    !validateOptions(options) && process.exit();
     // Set service start status
     this.microServiceStarted = false;
     // Connection tracking number
@@ -221,6 +226,13 @@ export class MicroServiceFramework extends ServiceCore {
 
   // FUNCTION: Add micro service to the instance
   defineService(name, operations, options) {
+    // Validate options
+    if (!validateServiceOptions(options || defaultServiceOptions)) {
+      return this.log(
+        `Unable to add ${name} because the options are not valid! Check options and try again!`,
+        'log'
+      );
+    }
     // Variables
     const resolvedPath = `${resolve(operations)}.js`;
     // Check that the server doesnt already exist

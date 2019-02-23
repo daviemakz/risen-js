@@ -43,6 +43,9 @@ class ServiceCommon {
 
   // FUNCTION: Show message in log
   log(message, type, override = false) {
+    // Write to log file
+    typeof this.writeToLogFile === 'function' && this.writeToLogFile(message);
+    // Return
     return (
       (this.settings.verbose || override) &&
       logTypes.includes(type) &&

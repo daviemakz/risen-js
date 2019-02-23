@@ -4,7 +4,7 @@
 import getFreePort from 'find-free-port';
 import makeDirectory from 'mkdirp';
 import guid from 'uuid/v4';
-import { writeFile } from 'fs';
+import { createWriteStream, writeFile } from 'fs';
 import { exec } from 'child_process';
 import { dirname } from 'path';
 
@@ -47,7 +47,7 @@ class ServiceCore extends ServiceCommon {
 
   // FUNCTION: Process a database operation
   databaseOperation(table, method, args, callback) {
-    return setTimeout(() => {
+    return setImmediate(() => {
       try {
         return this.db.hasOwnProperty(table)
           ? callback(true, this.db[table][method](...args), null)
@@ -59,7 +59,7 @@ class ServiceCore extends ServiceCommon {
       } catch (e) {
         return callback(false, void 0, e);
       }
-    }, 0);
+    });
   }
 
   // FUNCTION: Get the index of the instance via port & name
@@ -277,10 +277,18 @@ class ServiceCore extends ServiceCommon {
       this.settings.logPath &&
       makeDirectory(dirname(this.settings.logPath), err => {
         // Throw error if failed to write to log file
-        err &&
+        if (err) {
           this.log(`Unable to write to log file. MORE INFO: ${err}`, 'warn');
+          return void 0;
+        }
+        // Check that a writable stream is open and create one if not
+        if (!this.logFileStream) {
+          this.logFileStream = createWriteStream(this.settings.logPath, {
+            flags: 'a'
+          });
+        }
         // Write the file
-        writeFile(this.settings.logPath, contents, () => void 0);
+        return this.logFileStream.write(contents + '\n');
       })
     );
   }
@@ -591,19 +599,17 @@ class ServiceCore extends ServiceCommon {
     switch (true) {
       case _data.destination === process.env.name: {
         // Return
-        return setTimeout(
-          () =>
-            this.coreOperations.hasOwnProperty(_data.data.funcName)
-              ? this.coreOperations[_data.data.funcName](
-                  _foreignSocket,
-                  _data.data
-                )
-              : this.sentReplyToSocket(
-                  this.functionUnknown(_data),
-                  _foreignSocket,
-                  false
-                ),
-          0
+        return setImmediate(() =>
+          this.coreOperations.hasOwnProperty(_data.data.funcName)
+            ? this.coreOperations[_data.data.funcName](
+                _foreignSocket,
+                _data.data
+              )
+            : this.sentReplyToSocket(
+                this.functionUnknown(_data),
+                _foreignSocket,
+                false
+              )
         );
       }
       case this.serviceData.hasOwnProperty(_data.destination): {

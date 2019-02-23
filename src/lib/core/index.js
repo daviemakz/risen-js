@@ -105,34 +105,32 @@ module.exports = {
     // Build Response Object [status - transport]
     resObject.status.transport.responseSource = process.env.name;
     // Perform operations
-    return setTimeout(
-      () =>
-        this.databaseOperation(
-          data.body.table,
-          data.body.method,
-          data.body.args,
-          (status, result, error) => {
-            // Assign function result
-            if (status) {
-              resObject.resultBody.resData = {
-                status: true,
-                message: 'The operation completed successfully!',
-                result
-              };
-            } else {
-              resObject.resultBody.resData = {
-                status: false,
-                message: 'The operation failed!',
-                result,
-                error
-              };
-              resObject.resultBody.errData = error;
-            }
-            // Return
-            return socket.reply(resObject);
+    return setImmediate(() =>
+      this.databaseOperation(
+        data.body.table,
+        data.body.method,
+        data.body.args,
+        (status, result, error) => {
+          // Assign function result
+          if (status) {
+            resObject.resultBody.resData = {
+              status: true,
+              message: 'The operation completed successfully!',
+              result
+            };
+          } else {
+            resObject.resultBody.resData = {
+              status: false,
+              message: 'The operation failed!',
+              result,
+              error
+            };
+            resObject.resultBody.errData = error;
           }
-        ),
-      0
+          // Return
+          return socket.reply(resObject);
+        }
+      )
     );
   },
   changeInstances: async function(socket, data) {

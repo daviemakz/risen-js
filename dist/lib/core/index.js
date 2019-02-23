@@ -214,7 +214,7 @@ module.exports = {
 
     var resObject = new _response.default();
     resObject.status.transport.responseSource = process.env.name;
-    return setTimeout(function() {
+    return setImmediate(function() {
       return _this2.databaseOperation(
         data.body.table,
         data.body.method,
@@ -239,7 +239,7 @@ module.exports = {
           return socket.reply(resObject);
         }
       );
-    }, 0);
+    });
   },
   changeInstances: (function() {
     var _changeInstances = _asyncToGenerator(

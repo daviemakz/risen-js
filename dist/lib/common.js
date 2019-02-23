@@ -78,6 +78,8 @@ var ServiceCommon = (function() {
           arguments.length > 2 && arguments[2] !== undefined
             ? arguments[2]
             : false;
+        typeof this.writeToLogFile === 'function' &&
+          this.writeToLogFile(message);
         return (
           (this.settings.verbose || override) &&
           logTypes.includes(type) &&

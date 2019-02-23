@@ -250,7 +250,7 @@ var ServiceCore = (function(_ServiceCommon) {
       value: function databaseOperation(table, method, args, callback) {
         var _this2 = this;
 
-        return setTimeout(function() {
+        return setImmediate(function() {
           try {
             var _this2$db$table;
 
@@ -271,7 +271,7 @@ var ServiceCore = (function(_ServiceCommon) {
           } catch (e) {
             return callback(false, void 0, e);
           }
-        }, 0);
+        });
       }
     },
     {
@@ -595,14 +595,25 @@ var ServiceCore = (function(_ServiceCommon) {
           (0, _mkdirp.default)(
             (0, _path.dirname)(this.settings.logPath),
             function(err) {
-              err &&
+              if (err) {
                 _this4.log(
                   'Unable to write to log file. MORE INFO: '.concat(err),
                   'warn'
                 );
-              (0, _fs.writeFile)(_this4.settings.logPath, contents, function() {
+
                 return void 0;
-              });
+              }
+
+              if (!_this4.logFileStream) {
+                _this4.logFileStream = (0, _fs.createWriteStream)(
+                  _this4.settings.logPath,
+                  {
+                    flags: 'a'
+                  }
+                );
+              }
+
+              return _this4.logFileStream.write(contents + '\n');
             }
           )
         );
@@ -933,7 +944,7 @@ var ServiceCore = (function(_ServiceCommon) {
 
         switch (true) {
           case _data.destination === process.env.name: {
-            return setTimeout(function() {
+            return setImmediate(function() {
               return _this9.coreOperations.hasOwnProperty(_data.data.funcName)
                 ? _this9.coreOperations[_data.data.funcName](
                     _foreignSocket,
@@ -944,7 +955,7 @@ var ServiceCore = (function(_ServiceCommon) {
                     _foreignSocket,
                     false
                   );
-            }, 0);
+            });
           }
 
           case this.serviceData.hasOwnProperty(_data.destination): {

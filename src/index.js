@@ -6,6 +6,7 @@ import './lib/runtime';
 // Load NPM modules
 import isPortFree from 'is-port-free';
 import https from 'https';
+import guid from 'uuid/v4';
 import http from 'http';
 import helmet from 'helmet';
 import express from 'express';
@@ -162,7 +163,7 @@ export class MicroServiceFramework extends ServiceCore {
 
   // FUNCTION: Start server failed
   startServerFailed() {
-    return setTimeout(() => process.exit(), 0);
+    return setImmediate(() => process.exit());
   }
 
   // FUNCTION: Start the server
@@ -390,9 +391,46 @@ export class MicroServiceFramework extends ServiceCore {
                       .forEach(route =>
                         expressApp[route.method.toLowerCase()](
                           route.uri,
-                          ...(route.middleware || []),
+                          ...(route.preMiddleware || []),
                           (req, res, next) => {
-                            setTimeout(() => {
+                            // Scope request
+                            const resultSend = res.send;
+                            const requestId = guid();
+                            // Grab this reference for later..
+                            const eventList = [
+                              'uncaughtException',
+                              'unhandledRejection'
+                            ];
+                            // Error handling functions and request identification
+                            const handleException = ((
+                              res,
+                              requestIdScoped
+                            ) => err => {
+                              if (requestIdScoped === requestId) {
+                                // Remove error listerners
+                                eventList.forEach(event =>
+                                  process.removeListener(event, handleException)
+                                );
+                                // Send to next pre middleware
+                                next(err);
+                              }
+                            })(res, requestId);
+                            // Add process listeners
+                            eventList.forEach(event =>
+                              process.on(event, handleException)
+                            );
+                            // Set timeout
+                            setImmediate(() => {
+                              // Modify send to remove error handler for this request once its done
+                              res.send = (...args) => {
+                                // Remove error listerners
+                                eventList.forEach(event =>
+                                  process.removeListener(event, handleException)
+                                );
+                                // Send request to actual send instance
+                                resultSend.call(res, ...args);
+                              };
+                              // Perform action
                               try {
                                 return route.handler(req, res, {
                                   sendRequest: this.sendRequest,
@@ -402,8 +440,9 @@ export class MicroServiceFramework extends ServiceCore {
                               } catch (e) {
                                 return next(e);
                               }
-                            }, 0);
-                          }
+                            });
+                          },
+                          ...(route.postMiddleware || [])
                         )
                       );
                     this.log('Starting HTTP server(s)...', 'log');

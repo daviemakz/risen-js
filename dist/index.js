@@ -25,6 +25,8 @@ var _isPortFree = _interopRequireDefault(require('is-port-free'));
 
 var _https = _interopRequireDefault(require('https'));
 
+var _v = _interopRequireDefault(require('uuid/v4'));
+
 var _http = _interopRequireDefault(require('http'));
 
 var _helmet = _interopRequireDefault(require('helmet'));
@@ -425,9 +427,9 @@ var MicroServiceFramework = (function(_ServiceCore) {
     {
       key: 'startServerFailed',
       value: function startServerFailed() {
-        return setTimeout(function() {
+        return setImmediate(function() {
           return process.exit();
-        }, 0);
+        });
       }
     },
     {
@@ -749,10 +751,61 @@ var MicroServiceFramework = (function(_ServiceCore) {
                           return expressApp[route.method.toLowerCase()].apply(
                             expressApp,
                             [route.uri].concat(
-                              _toConsumableArray(route.middleware || []),
+                              _toConsumableArray(route.preMiddleware || []),
                               [
                                 function(req, res, next) {
-                                  setTimeout(function() {
+                                  var resultSend = res.send;
+                                  var requestId = (0, _v.default)();
+                                  var eventList = [
+                                    'uncaughtException',
+                                    'unhandledRejection'
+                                  ];
+
+                                  var handleException = (function(
+                                    res,
+                                    requestIdScoped
+                                  ) {
+                                    return function(err) {
+                                      if (requestIdScoped === requestId) {
+                                        eventList.forEach(function(event) {
+                                          return process.removeListener(
+                                            event,
+                                            handleException
+                                          );
+                                        });
+                                        next(err);
+                                      }
+                                    };
+                                  })(res, requestId);
+
+                                  eventList.forEach(function(event) {
+                                    return process.on(event, handleException);
+                                  });
+                                  setImmediate(function() {
+                                    res.send = function() {
+                                      eventList.forEach(function(event) {
+                                        return process.removeListener(
+                                          event,
+                                          handleException
+                                        );
+                                      });
+
+                                      for (
+                                        var _len = arguments.length,
+                                          args = new Array(_len),
+                                          _key = 0;
+                                        _key < _len;
+                                        _key++
+                                      ) {
+                                        args[_key] = arguments[_key];
+                                      }
+
+                                      resultSend.call.apply(
+                                        resultSend,
+                                        [res].concat(args)
+                                      );
+                                    };
+
                                     try {
                                       return route.handler(req, res, {
                                         sendRequest: _this6.sendRequest,
@@ -762,9 +815,10 @@ var MicroServiceFramework = (function(_ServiceCore) {
                                     } catch (e) {
                                       return next(e);
                                     }
-                                  }, 0);
+                                  });
                                 }
-                              ]
+                              ],
+                              _toConsumableArray(route.postMiddleware || [])
                             )
                           );
                         });

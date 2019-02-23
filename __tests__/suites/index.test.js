@@ -153,18 +153,18 @@ describe('src/index', () => {
       expect(MSFrameworkInstance).toMatchSnapshot();
     });
 
-    test('integration: micro service works', async () => {
-      MSFrameworkInstance.startServer();
-      let resultFromService = await new Promise(resolve => {
-        setTimeout(
-          () =>
-            request('https://localhost:12000', {}, (err, res, body) =>
-              resolve(body)
-            ),
-          5000
-        );
-      });
-      expect(resultFromService).toMatchSnapshot();
-    });
+    // test('integration: micro service works', async () => {
+    //   MSFrameworkInstance.startServer();
+    //   let resultFromService = await new Promise(resolve => {
+    //     setTimeout(
+    //       () =>
+    //         request('https://localhost:12000', {}, (err, res, body) =>
+    //           resolve(body)
+    //         ),
+    //       5000
+    //     );
+    //   });
+    //   expect(resultFromService).toMatchSnapshot();
+    // });
   });
 });

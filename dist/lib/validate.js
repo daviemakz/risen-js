@@ -76,15 +76,17 @@ var validateRouteOptions = function validateRouteOptions(route) {
       throw new Error('The http route option "uri" must be a string!');
     }
 
-    case !Array.isArray(route.preMiddleware): {
+    case route.hasOwnProperty('preMiddleware') &&
+      !Array.isArray(route.preMiddleware): {
       throw new Error(
-        'The http route option "preMiddleware" must be an array!'
+        'The http route option "preMiddleware" must be an array if its defined!'
       );
     }
 
-    case !Array.isArray(route.postMiddleware): {
+    case route.hasOwnProperty('postMiddleware') &&
+      !Array.isArray(route.postMiddleware): {
       throw new Error(
-        'The http route option "postMiddleware" must be an array!'
+        'The http route option "postMiddleware" must be an array if its defined!'
       );
     }
 
@@ -132,10 +134,13 @@ var validateHttpOptions = function validateHttpOptions(httpOptions) {
         throw new Error('The http option "static" must be an array!');
       }
 
-      case http.hasOwnProperty('routes') &&
-        !Array.isArray(http.routes) &&
-        !validateRouteOptions(http.routes): {
-        throw new Error('The http option "routes" must be an array!');
+      case (http.hasOwnProperty('routes') && !Array.isArray(http.routes)) ||
+        !http.routes.every(function(route) {
+          return validateRouteOptions(route);
+        }): {
+        throw new Error(
+          'The http option "routes" must be an array with valid configuration!'
+        );
       }
 
       default: {

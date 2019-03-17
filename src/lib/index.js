@@ -4,7 +4,7 @@
 import getFreePort from 'find-free-port';
 import makeDirectory from 'mkdirp';
 import guid from 'uuid/v4';
-import { createWriteStream, writeFile } from 'fs';
+import { createWriteStream } from 'fs';
 import { exec } from 'child_process';
 import { dirname } from 'path';
 

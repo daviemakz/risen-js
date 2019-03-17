@@ -171,7 +171,11 @@ MicroServiceFramework {
   "bindGateway": [Function],
   "checkConnection": [Function],
   "conId": 0,
-  "coreOperations": Object {},
+  "coreOperations": Object {
+    "changeInstances": [Function],
+    "end": [Function],
+    "storage": [Function],
+  },
   "databaseOperation": [Function],
   "db": Object {
     "_defaultDatabase": table {
@@ -192,10 +196,7 @@ MicroServiceFramework {
   },
   "destinationUnknown": [Function],
   "destroyConnection": [Function],
-  "eventHandlers": Object {
-    "onConClose": [Function],
-    "onConRequest": [Function],
-  },
+  "eventHandlers": Object {},
   "executeInitialFunctions": [Function],
   "externalInterfaces": Object {},
   "functionUnknown": [Function],
@@ -211,21 +212,33 @@ MicroServiceFramework {
   "invokeSpeaker": [Function],
   "log": [Function],
   "microServerCommunication": [Function],
-  "microServiceStarted": false,
+  "microServiceStarted": true,
   "processComError": [Function],
   "processComRequest": [Function],
   "removeServerFromTracking": [Function],
   "sendRequest": [Function],
   "sentReplyToSocket": [Function],
   "serviceData": Object {},
-  "serviceInfo": Object {},
-  "serviceOptions": Object {},
+  "serviceInfo": Object {
+    "echoService": "/home/david/dev/micro-service-framework/__tests__/source/services/echoService.js",
+    "testService": "/home/david/dev/micro-service-framework/__tests__/source/services/testService.js",
+  },
+  "serviceOptions": Object {
+    "echoService": Object {
+      "instances": 1,
+      "loadBalancing": "roundRobin",
+      "runOnStart": Array [],
+    },
+    "testService": Object {
+      "instances": 2,
+      "loadBalancing": "roundRobin",
+      "runOnStart": Array [],
+    },
+  },
   "settings": Object {
     "apiGatewayPort": 8080,
     "connectionTimeout": 1000,
-    "coreOperations": Object {
-      "runScript": [Function],
-    },
+    "coreOperations": Object {},
     "databaseNames": Array [
       "_defaultDatabase",
     ],
@@ -241,7 +254,17 @@ MicroServiceFramework {
             "method": "GET",
             "postMiddleware": Array [],
             "preMiddleware": Array [],
-            "uri": "/service",
+            "uri": "/checkRedirection",
+          },
+          Object {
+            "handler": [Function],
+            "method": "GET",
+            "uri": "/checkDb",
+          },
+          Object {
+            "handler": [Function],
+            "method": "GET",
+            "uri": "/endProcess",
           },
         ],
         "ssl": Object {
@@ -308,18 +331,42 @@ mO7W51tU6ExL/VQfqjpSRPE=
     "microServiceConnectionAttempts": 1000,
     "microServiceConnectionTimeout": 10000,
     "mode": "server",
-    "onConClose": [Function],
-    "onConRequest": [Function],
     "portRangeFinish": 65535,
     "portRangeStart": 1024,
     "restartTimeout": 50,
     "runOnStart": Array [],
-    "verbose": true,
+    "verbose": false,
   },
   "startHttpServer": [Function],
   "startServer": [Function],
   "startServerFailed": [Function],
 }
+`;
+
+exports[`src/index class MicroServiceFramework() integration internal database service works 1`] = `
+"
+            <html>
+               <head>
+                  <title>Database Verification</title>
+               </head>
+               <body>
+                  <p>Fixed Number: 1024</p>
+               </body>
+            </html>
+            "
+`;
+
+exports[`src/index class MicroServiceFramework() integration service to service redirection works 1`] = `
+"
+        <html>
+           <head>
+              <title>Test Service Response</title>
+           </head>
+           <body>
+              <p>Service to service communication verified!</p>
+           </body>
+        </html>
+        "
 `;
 
 exports[`src/index const defaultInstanceOptions snapshot is expected 1`] = `

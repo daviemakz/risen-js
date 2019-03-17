@@ -11,14 +11,16 @@ export const validateRouteOptions = route => {
     case typeof route.uri !== 'string': {
       throw new Error('The http route option "uri" must be a string!');
     }
-    case !Array.isArray(route.preMiddleware): {
+    case route.hasOwnProperty('preMiddleware') &&
+      !Array.isArray(route.preMiddleware): {
       throw new Error(
-        'The http route option "preMiddleware" must be an array!'
+        'The http route option "preMiddleware" must be an array if its defined!'
       );
     }
-    case !Array.isArray(route.postMiddleware): {
+    case route.hasOwnProperty('postMiddleware') &&
+      !Array.isArray(route.postMiddleware): {
       throw new Error(
-        'The http route option "postMiddleware" must be an array!'
+        'The http route option "postMiddleware" must be an array if its defined!'
       );
     }
     case typeof route.handler !== 'function': {
@@ -57,10 +59,11 @@ export const validateHttpOptions = httpOptions =>
       case http.hasOwnProperty('static') && !Array.isArray(http.static): {
         throw new Error('The http option "static" must be an array!');
       }
-      case http.hasOwnProperty('routes') &&
-        !Array.isArray(http.routes) &&
-        !validateRouteOptions(http.routes): {
-        throw new Error('The http option "routes" must be an array!');
+      case (http.hasOwnProperty('routes') && !Array.isArray(http.routes)) ||
+        !http.routes.every(route => validateRouteOptions(route)): {
+        throw new Error(
+          'The http option "routes" must be an array with valid configuration!'
+        );
       }
       default: {
         return true;
@@ -172,6 +175,7 @@ export const validateOptions = options => {
   }
 };
 
+// Validate service options
 export const validateServiceOptions = serviceOption => {
   switch (true) {
     case serviceOption.hasOwnProperty('runOnStart') &&

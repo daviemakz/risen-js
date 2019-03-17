@@ -4,12 +4,12 @@
 import ResponseBodyObject from './../template/response';
 
 // FUNCTION: Get a unique array
-const uniqueArray = arrArg => {
+export const uniqueArray = arrArg => {
   return arrArg.filter((elem, pos, arr) => arr.indexOf(elem) === pos);
 };
 
 // FUNCTION: Get a random list of elements from array
-const getRandomElements = (arr, n) => {
+export const getRandomElements = (arr, n) => {
   let ln = n;
   const result = new Array(ln);
   let len = arr.length;
@@ -26,12 +26,12 @@ const getRandomElements = (arr, n) => {
 };
 
 // FUNCTION: Start service instance wrapper
-function startService(serviceInfo, instances) {
+export function startService(serviceInfo, instances) {
   return this.startServices(serviceInfo, instances);
 }
 
 // FUNCTION:Stop service instance wrapper
-function stopService(name, instances) {
+export function stopService(name, instances) {
   return new Promise((resolve, reject) => {
     // Get highest number of instances which can be shutdown
     const requestedInstances = Math.abs(instances);
@@ -99,6 +99,27 @@ function stopService(name, instances) {
 
 // EXPORTS
 module.exports = {
+  end: function(socket) {
+    // Invoke Template(s)
+    const resObject = new ResponseBodyObject();
+    // Build Response Object [status - transport]
+    resObject.status.transport.responseSource = process.env.name;
+    // Set base options
+    const baseResponse = {
+      error: null,
+      details: {}
+    };
+    // Assign message
+    resObject.resultBody.resData = Object.assign(baseResponse, {
+      status: true,
+      message: 'Shutting down micro service framework.',
+      details: {}
+    });
+    // Respond To Source
+    socket.reply(resObject);
+    // Kill process
+    return setTimeout(() => process.exit(0), 1000);
+  },
   storage: function(socket, data) {
     // Invoke Template(s)
     const resObject = new ResponseBodyObject();

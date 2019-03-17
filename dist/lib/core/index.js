@@ -1,5 +1,12 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.startService = startService;
+exports.stopService = stopService;
+exports.getRandomElements = exports.uniqueArray = void 0;
+
 var _response = _interopRequireDefault(require('./../template/response'));
 
 function _interopRequireDefault(obj) {
@@ -85,6 +92,8 @@ var uniqueArray = function uniqueArray(arrArg) {
   });
 };
 
+exports.uniqueArray = uniqueArray;
+
 var getRandomElements = function getRandomElements(arr, n) {
   var ln = n;
   var result = new Array(ln);
@@ -103,6 +112,8 @@ var getRandomElements = function getRandomElements(arr, n) {
 
   return result;
 };
+
+exports.getRandomElements = getRandomElements;
 
 function startService(serviceInfo, instances) {
   return this.startServices(serviceInfo, instances);
@@ -209,6 +220,23 @@ function stopService(name, instances) {
 }
 
 module.exports = {
+  end: function end(socket) {
+    var resObject = new _response.default();
+    resObject.status.transport.responseSource = process.env.name;
+    var baseResponse = {
+      error: null,
+      details: {}
+    };
+    resObject.resultBody.resData = Object.assign(baseResponse, {
+      status: true,
+      message: 'Shutting down micro service framework.',
+      details: {}
+    });
+    socket.reply(resObject);
+    return setTimeout(function() {
+      return process.exit(0);
+    }, 1000);
+  },
   storage: function storage(socket, data) {
     var _this2 = this;
 

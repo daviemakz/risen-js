@@ -25,6 +25,8 @@ Using Yarn:
 
     yarn add risen
 
+# Features
+
 # Error Codes
 
 ## Transport

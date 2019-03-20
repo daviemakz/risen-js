@@ -1,7 +1,9 @@
 # Risen Micro Services Framework
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen?ref=badge_shield)
+
 [![NPM](https://nodei.co/npm/risen.png?compact=true)](https://www.npmjs.com/package/risen)
+
 [![Build Status](https://travis-ci.org/daviemakz/risen.svg?branch=master)](https://travis-ci.org/daviemakz/risen)
 [![Downloads](https://img.shields.io/github/downloads/daviemakz/risen/total.svg)](https://www.npmjs.com/package/risen)
 [![dependencies Status](https://david-dm.org/daviemakz/risen/status.svg)](https://david-dm.org/daviemakz/risen)

@@ -7,7 +7,7 @@
 [![dependencies Status](https://david-dm.org/daviemakz/risen/status.svg)](https://david-dm.org/daviemakz/risen)
 [![devDependencies Status](https://david-dm.org/daviemakz/risen/dev-status.svg)](https://david-dm.org/daviemakz/risen?type=dev)
 
-Moleculer is a fast, modern and powerful microservices framework for Node.js. It helps you to build efficient, reliable & scalable services. Moleculer provides many features for building and managing your microservices.
+Risen is a fast, modern and powerful microservices framework for Node.JS. It helps you to build efficient, reliable & scalable HTTP(s) or local micro services.
 
 _Supports Node 6.x +_
 

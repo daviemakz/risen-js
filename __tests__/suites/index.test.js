@@ -282,10 +282,6 @@ describe('src/index', () => {
       instances: 1
     });
 
-    test('initialisation snapshot is expected', () => {
-      expect(MSFrameworkInstance).toMatchSnapshot();
-    });
-
     describe('integration', () => {
       // Start server
       MSFrameworkInstance.startServer();

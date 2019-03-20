@@ -1,13 +1,13 @@
-# .JS Micro Services Framework
+# Risen Micro Services Framework
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework?ref=badge_shield)
-[![NPM](https://nodei.co/npm/micro-services-framework.png?compact=true)](https://www.npmjs.com/package/micro-services-framework)
-[![Build Status](https://travis-ci.org/daviemakz/micro-services-framework.svg?branch=master)](https://travis-ci.org/daviemakz/micro-services-framework)
-[![Downloads](https://img.shields.io/github/downloads/daviemakz/micro-services-framework/total.svg)](https://www.npmjs.com/package/micro-services-framework)
-[![dependencies Status](https://david-dm.org/daviemakz/micro-services-framework/status.svg)](https://david-dm.org/daviemakz/micro-services-framework)
-[![devDependencies Status](https://david-dm.org/daviemakz/micro-services-framework/dev-status.svg)](https://david-dm.org/daviemakz/micro-services-framework?type=dev)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen?ref=badge_shield)
+[![NPM](https://nodei.co/npm/risen.png?compact=true)](https://www.npmjs.com/package/risen)
+[![Build Status](https://travis-ci.org/daviemakz/risen.svg?branch=master)](https://travis-ci.org/daviemakz/risen)
+[![Downloads](https://img.shields.io/github/downloads/daviemakz/risen/total.svg)](https://www.npmjs.com/package/risen)
+[![dependencies Status](https://david-dm.org/daviemakz/risen/status.svg)](https://david-dm.org/daviemakz/risen)
+[![devDependencies Status](https://david-dm.org/daviemakz/risen/dev-status.svg)](https://david-dm.org/daviemakz/risen?type=dev)
 
-Devis is a framework capable of creating and managing microservices under node.js.
+Moleculer is a fast, modern and powerful microservices framework for Node.js. It helps you to build efficient, reliable & scalable services. Moleculer provides many features for building and managing your microservices.
 
 _Supports Node 6.x +_
 
@@ -17,11 +17,11 @@ To install please follow the below instructions:
 
 Using NPM:
 
-    npm install micro-services-framework --save
+    npm install risen --save
 
 Using Yarn:
 
-    yarn add micro-services-framework
+    yarn add risen
 
 # Error Codes
 
@@ -62,8 +62,8 @@ Run the following commands to test the module:
 
 ## Contributing
 
-All contributions are very welcome, please read my [CONTRIBUTING.md](https://github.com/daviemakz/micro-services-framework/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/daviemakz/micro-services-framework/pulls) or as [GitHub issues](https://github.com/daviemakz/micro-services-framework/issues). If you'd like to improve code, please feel free!
+All contributions are very welcome, please read my [CONTRIBUTING.md](https://github.com/daviemakz/risen/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/daviemakz/risen/pulls) or as [GitHub issues](https://github.com/daviemakz/risen/issues). If you'd like to improve code, please feel free!
 
 ## License
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen?ref=badge_large)

@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`src/lib/validate CommandTemplate() to match snapshot 1`] = `
+Object {
+  "body": Object {},
+  "destination": undefined,
+  "funcName": "",
+}
+`;
+
+exports[`src/lib/validate ResponseTemplate() to match snapshot 1`] = `
+Object {
+  "resultBody": Object {
+    "errData": Object {},
+    "resData": Object {},
+  },
+  "status": Object {
+    "command": Object {
+      "code": 100,
+      "message": "Command completed successfully",
+    },
+    "transport": Object {
+      "code": 1000,
+      "message": "Transport completed successfully",
+      "responseSource": "",
+    },
+  },
+}
+`;

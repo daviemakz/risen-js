@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`src/lib/db to match snapshot 1`] = `
+FrameworkDatabase {
+  "db": table {
+    "add": [Function],
+    "all": [Function],
+    "delete": [Function],
+    "fetch": [Function],
+    "fetchAll": [Function],
+    "get": [Function],
+    "has": [Function],
+    "includes": [Function],
+    "push": [Function],
+    "set": [Function],
+    "startsWith": [Function],
+    "subtract": [Function],
+    "tableName": "exampleTable",
+  },
+}
+`;

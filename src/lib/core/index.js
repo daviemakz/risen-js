@@ -1,5 +1,7 @@
 'use strict';
 
+!global._babelPolyfill && require('@babel/polyfill');
+
 // Load Templates
 import ResponseBodyObject from './../template/response';
 
@@ -216,5 +218,7 @@ module.exports = {
     }
     // Respond To Source
     return socket.reply(resObject);
-  }
+  },
+  uniqueArray,
+  getRandomElements
 };

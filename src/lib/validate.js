@@ -198,7 +198,8 @@ export const validateServiceOptions = serviceOption => {
     }
     case serviceOption.hasOwnProperty('instances') &&
       (typeof serviceOption.instances !== 'number' ||
-        serviceOption.instances >= 1): {
+        (typeof serviceOption.instances === 'number' &&
+          serviceOption.instances < 1)): {
       throw new Error(
         'The service options "instances" option is not valid, it must be an number above 1'
       );

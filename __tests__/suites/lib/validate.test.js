@@ -330,4 +330,49 @@ describe('src/lib/validate', () => {
       );
     });
   });
+  describe('validateServiceOptions()', () => {
+    const getOptions = (omitList, overwriteProps) =>
+      omit(
+        Object.assign(
+          {},
+          {
+            runOnStart: [],
+            loadBalancing: 'random',
+            instances: 5
+          },
+          overwriteProps
+        ),
+        omitList
+      );
+
+    test('throw new error: runOnStart is incorrect', () => {
+      expect(() => {
+        validateServiceOptions(getOptions([], { runOnStart: [99] }));
+      }).toThrow(
+        new Error(
+          'The service options "runOnStart" option is not valid, it must be a valid array'
+        )
+      );
+    });
+    test('throw new error: loadBalancing is incorrect', () => {
+      expect(() => {
+        validateServiceOptions(
+          getOptions([], { loadBalancing: 'fakeLoadBalancing' })
+        );
+      }).toThrow(
+        new Error(
+          'The service options "loadBalancing" option is not valid, can either be "random" or "roundRobin" or a function(socketList)'
+        )
+      );
+    });
+    test('throw new error: instances is incorrect', () => {
+      expect(() => {
+        validateServiceOptions(getOptions([], { instances: 'FAKE' }));
+      }).toThrow(
+        new Error(
+          'The service options "instances" option is not valid, it must be an number above 1'
+        )
+      );
+    });
+  });
 });

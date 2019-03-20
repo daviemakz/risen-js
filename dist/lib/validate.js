@@ -83,7 +83,8 @@ var validateRouteOptions = function validateRouteOptions(route) {
       );
     }
 
-    case !Array.isArray(route.postMiddleware): {
+    case route.hasOwnProperty('preMiddleware') &&
+      !Array.isArray(route.postMiddleware): {
       throw new Error(
         'The http route option "postMiddleware" must be an array!'
       );
@@ -286,10 +287,14 @@ exports.validateOptions = validateOptions;
 
 var validateServiceOptions = function validateServiceOptions(serviceOption) {
   switch (true) {
-    case serviceOption.hasOwnProperty('runOnStart') &&
-      !Array.isArray(serviceOption.runOnStart): {
+    case (serviceOption.hasOwnProperty('runOnStart') &&
+      !Array.isArray(serviceOption.runOnStart)) ||
+      (Array.isArray(serviceOption.runOnStart) &&
+        serviceOption.runOnStart.some(function(op) {
+          return typeof op !== 'string';
+        })): {
       throw new Error(
-        'The service options "runOnStart" option is not valid, it must be an array'
+        'The service options "runOnStart" option is not valid, it must be a valid array'
       );
     }
 
@@ -301,8 +306,8 @@ var validateServiceOptions = function validateServiceOptions(serviceOption) {
     }
 
     case serviceOption.hasOwnProperty('instances') &&
-      typeof serviceOption.instances !== 'number' &&
-      serviceOption.instances >= 1: {
+      (typeof serviceOption.instances !== 'number' ||
+        serviceOption.instances >= 1): {
       throw new Error(
         'The service options "instances" option is not valid, it must be an number above 1'
       );

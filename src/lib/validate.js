@@ -14,13 +14,12 @@ export const validateRouteOptions = route => {
     case route.hasOwnProperty('preMiddleware') &&
       !Array.isArray(route.preMiddleware): {
       throw new Error(
-        'The http route option "preMiddleware" must be an array if its defined!'
+        'The http route option "preMiddleware" must be an array!'
       );
     }
-    case route.hasOwnProperty('postMiddleware') &&
-      !Array.isArray(route.postMiddleware): {
+    case !Array.isArray(route.postMiddleware): {
       throw new Error(
-        'The http route option "postMiddleware" must be an array if its defined!'
+        'The http route option "postMiddleware" must be an array!'
       );
     }
     case typeof route.handler !== 'function': {
@@ -73,10 +72,12 @@ export const validateHttpOptions = httpOptions =>
 
 // Validate core operations
 export const validateCoreOperations = options =>
-  Object.entries(options).every(
-    ([functionName, functionOp]) =>
-      typeof functionName === 'string' && typeof functionOp === 'function'
-  );
+  options instanceof Object
+    ? Object.entries(options).every(
+        ([functionName, functionOp]) =>
+          typeof functionName === 'string' && typeof functionOp === 'function'
+      )
+    : false;
 
 // Validate options
 export const validateOptions = options => {
@@ -147,7 +148,7 @@ export const validateOptions = options => {
     case options.hasOwnProperty('portRangeStart') &&
       typeof options.portRangeStart !== 'number': {
       throw new Error(
-        'The "apiGateportRangeStartwayPort" option is not valid, it must be a number'
+        'The "portRangeStart" option is not valid, it must be a number'
       );
     }
     case options.hasOwnProperty('portRangeFinish') &&
@@ -156,9 +157,11 @@ export const validateOptions = options => {
         'The "portRangeFinish" option is not valid, it must be a number'
       );
     }
-    case options.hasOwnProperty('runOnStart') &&
-      !Array.isArray(options.runOnStart) &&
-      options.runOnStart.every(op => typeof op === 'string'): {
+    case (options.hasOwnProperty('runOnStart') &&
+      !Array.isArray(options.runOnStart)) ||
+      (Array.isArray(options.runOnStart) &&
+        options.runOnStart.length &&
+        options.runOnStart.every(op => typeof op !== 'string')): {
       throw new Error(
         'The "runOnStart" option is not valid, it must be a array of strings corresponding to defined operations'
       );

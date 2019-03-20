@@ -79,14 +79,13 @@ var validateRouteOptions = function validateRouteOptions(route) {
     case route.hasOwnProperty('preMiddleware') &&
       !Array.isArray(route.preMiddleware): {
       throw new Error(
-        'The http route option "preMiddleware" must be an array if its defined!'
+        'The http route option "preMiddleware" must be an array!'
       );
     }
 
-    case route.hasOwnProperty('postMiddleware') &&
-      !Array.isArray(route.postMiddleware): {
+    case !Array.isArray(route.postMiddleware): {
       throw new Error(
-        'The http route option "postMiddleware" must be an array if its defined!'
+        'The http route option "postMiddleware" must be an array!'
       );
     }
 
@@ -153,13 +152,17 @@ var validateHttpOptions = function validateHttpOptions(httpOptions) {
 exports.validateHttpOptions = validateHttpOptions;
 
 var validateCoreOperations = function validateCoreOperations(options) {
-  return Object.entries(options).every(function(_ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-      functionName = _ref2[0],
-      functionOp = _ref2[1];
+  return options instanceof Object
+    ? Object.entries(options).every(function(_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+          functionName = _ref2[0],
+          functionOp = _ref2[1];
 
-    return typeof functionName === 'string' && typeof functionOp === 'function';
-  });
+        return (
+          typeof functionName === 'string' && typeof functionOp === 'function'
+        );
+      })
+    : false;
 };
 
 exports.validateCoreOperations = validateCoreOperations;
@@ -243,7 +246,7 @@ var validateOptions = function validateOptions(options) {
     case options.hasOwnProperty('portRangeStart') &&
       typeof options.portRangeStart !== 'number': {
       throw new Error(
-        'The "apiGateportRangeStartwayPort" option is not valid, it must be a number'
+        'The "portRangeStart" option is not valid, it must be a number'
       );
     }
 
@@ -254,11 +257,13 @@ var validateOptions = function validateOptions(options) {
       );
     }
 
-    case options.hasOwnProperty('runOnStart') &&
-      !Array.isArray(options.runOnStart) &&
-      options.runOnStart.every(function(op) {
-        return typeof op === 'string';
-      }): {
+    case (options.hasOwnProperty('runOnStart') &&
+      !Array.isArray(options.runOnStart)) ||
+      (Array.isArray(options.runOnStart) &&
+        options.runOnStart.length &&
+        options.runOnStart.every(function(op) {
+          return typeof op !== 'string';
+        })): {
       throw new Error(
         'The "runOnStart" option is not valid, it must be a array of strings corresponding to defined operations'
       );

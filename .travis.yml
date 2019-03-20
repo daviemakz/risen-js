@@ -1,4 +1,4 @@
-mlanguage: node_js
+language: node_js
 sudo: true
 node_js:
   - "6"

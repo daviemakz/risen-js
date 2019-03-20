@@ -1,4 +1,4 @@
-# Node.JS Micro Services Framework
+# .JS Micro Services Framework
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Fmicro-services-framework?ref=badge_shield)
 [![NPM](https://nodei.co/npm/micro-services-framework.png?compact=true)](https://www.npmjs.com/package/micro-services-framework)
@@ -7,7 +7,7 @@
 [![dependencies Status](https://david-dm.org/daviemakz/micro-services-framework/status.svg)](https://david-dm.org/daviemakz/micro-services-framework)
 [![devDependencies Status](https://david-dm.org/daviemakz/micro-services-framework/dev-status.svg)](https://david-dm.org/daviemakz/micro-services-framework?type=dev)
 
-This package allows streaming &amp; non-streaming micro-services to be build on the front-end and the back-end. Within the browser it uses Web Workers while in the server-side it utilises child processes
+Devis is a framework capable of creating and managing microservices under node.js.
 
 _Supports Node 6.x +_
 
@@ -21,7 +21,7 @@ Using NPM:
 
 Using Yarn:
 
-    yarn add micro-services-framework -W
+    yarn add micro-services-framework
 
 # Error Codes
 

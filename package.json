@@ -31,7 +31,17 @@
     "node",
     "react",
     "angular",
-    "child-process"
+    "child-process",
+    "micro",
+    "service",
+    "microservice",
+    "micro-service",
+    "microservices",
+    "micro-services",
+    "services",
+    "micro services",
+    "micro service",
+    "framework"
   ],
   "author": "David Makuni",
   "license": "MIT",

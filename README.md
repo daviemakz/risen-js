@@ -1,13 +1,13 @@
-# Risen Micro Services Framework
+# Risen - JS Micro Services Framework
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen?ref=badge_shield)
 
-[![NPM](https://nodei.co/npm/risen.png?compact=true)](https://www.npmjs.com/package/risen)
+[![NPM](https://nodei.co/npm/micro-service-framework.png?compact=true)](https://www.npmjs.com/package/micro-service-framework)
 
-[![Build Status](https://travis-ci.org/daviemakz/risen.svg?branch=master)](https://travis-ci.org/daviemakz/risen)
-[![Downloads](https://img.shields.io/github/downloads/daviemakz/risen/total.svg)](https://www.npmjs.com/package/risen)
-[![dependencies Status](https://david-dm.org/daviemakz/risen/status.svg)](https://david-dm.org/daviemakz/risen)
-[![devDependencies Status](https://david-dm.org/daviemakz/risen/dev-status.svg)](https://david-dm.org/daviemakz/risen?type=dev)
+[![Build Status](https://travis-ci.org/daviemakz/micro-service-framework.svg?branch=master)](https://travis-ci.org/daviemakz/micro-service-framework)
+[![Downloads](https://img.shields.io/github/downloads/daviemakz/micro-service-framework/total.svg)](https://www.npmjs.com/package/micro-service-framework)
+[![dependencies Status](https://david-dm.org/daviemakz/micro-service-framework/status.svg)](https://david-dm.org/daviemakz/micro-service-framework)
+[![devDependencies Status](https://david-dm.org/daviemakz/micro-service-framework/dev-status.svg)](https://david-dm.org/daviemakz/micro-service-framework?type=dev)
 
 Risen is a fast, modern and powerful microservices framework for Node.JS. It helps you to build efficient, reliable & scalable HTTP(s) or local micro services.
 
@@ -19,11 +19,11 @@ To install please follow the below instructions:
 
 Using NPM:
 
-    npm install risen --save
+    npm install micro-service-framework --save
 
 Using Yarn:
 
-    yarn add risen
+    yarn add micro-service-framework
 
 # Features
 
@@ -66,7 +66,7 @@ Run the following commands to test the module:
 
 ## Contributing
 
-All contributions are very welcome, please read my [CONTRIBUTING.md](https://github.com/daviemakz/risen/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/daviemakz/risen/pulls) or as [GitHub issues](https://github.com/daviemakz/risen/issues). If you'd like to improve code, please feel free!
+All contributions are very welcome, please read my [CONTRIBUTING.md](https://github.com/daviemakz/micro-service-framework/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/daviemakz/micro-service-framework/pulls) or as [GitHub issues](https://github.com/daviemakz/micro-service-framework/issues). If you'd like to improve code, please feel free!
 
 ## License
 

@@ -218,7 +218,7 @@ const frameworkOptions = {
     }
   ],
   runOnStart: [],
-  verbose: false
+  verbose: true
 };
 
 // Define path to the operations file

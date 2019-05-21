@@ -1,10 +1,12 @@
 'use strict';
 
-var _net = _interopRequireDefault(require("net"));
+var _net = _interopRequireDefault(require('net'));
 
-var _networkBase = _interopRequireDefault(require("./networkBase"));
+var _networkBase = _interopRequireDefault(require('./networkBase'));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 var ERR_REQ_REFUSED = -1;
 var MAX_WAITERS = 9999999;
@@ -26,7 +28,7 @@ var extendsObj = function extendsObj(child, parent) {
   return child;
 };
 
-var SpeakerReconnector = function (_super) {
+var SpeakerReconnector = (function(_super) {
   extendsObj(SpeakerReconnector, _super);
 
   function SpeakerReconnector(addresses) {
@@ -49,7 +51,7 @@ var SpeakerReconnector = function (_super) {
     }
   }
 
-  SpeakerReconnector.prototype.connect = function (address) {
+  SpeakerReconnector.prototype.connect = function(address) {
     var host;
     var port;
     var self;
@@ -65,11 +67,16 @@ var SpeakerReconnector = function (_super) {
     socket.setEncoding('utf8');
     socket.setNoDelay(true);
     socket.setMaxListeners(Infinity);
-    socket.connect(port, host, function () {
-      process.env.verbose === 'true' && console.log("Successfully connected on port: ".concat(port));
-      return _this.sockets.push(socket);
-    });
-    socket.on('data', function (data) {
+    socket.connect(
+      port,
+      host,
+      function() {
+        process.env.verbose === 'true' &&
+          console.log('Successfully connected on port: '.concat(port));
+        return _this.sockets.push(socket);
+      }
+    );
+    socket.on('data', function(data) {
       var message;
       var messageText;
 
@@ -99,12 +106,20 @@ var SpeakerReconnector = function (_super) {
 
       return _results;
     });
-    socket.on('error', function () {});
-    return socket.on('close', function () {
-      if (!(typeof process.env.exitedProcessPorts === 'string' ? process.env.exitedProcessPorts.split(',') : process.env.exitedProcessPorts).map(function (port) {
-        return parseInt(port, 10);
-      }).includes(port)) {
-        process.env.verbose === 'true' && console.log("Attempting to connect to port: ".concat(port));
+    socket.on('error', function() {});
+    return socket.on('close', function() {
+      if (
+        !(typeof process.env.exitedProcessPorts === 'string'
+          ? process.env.exitedProcessPorts.split(',')
+          : process.env.exitedProcessPorts
+        )
+          .map(function(port) {
+            return parseInt(port, 10);
+          })
+          .includes(port)
+      ) {
+        process.env.verbose === 'true' &&
+          console.log('Attempting to connect to port: '.concat(port));
         var index;
         var sock;
 
@@ -130,14 +145,14 @@ var SpeakerReconnector = function (_super) {
         _this.sockets.splice(index, 1);
 
         socket.destroy();
-        return setTimeout(function () {
+        return setTimeout(function() {
           return self.connect(address);
         }, 100);
       }
     });
   };
 
-  SpeakerReconnector.prototype.request = function (subject, data, callback) {
+  SpeakerReconnector.prototype.request = function(subject, data, callback) {
     if (callback === null) {
       callback = null;
     }
@@ -145,7 +160,7 @@ var SpeakerReconnector = function (_super) {
     return this.send(subject, data, callback);
   };
 
-  SpeakerReconnector.prototype.send = function (subject, data, callback) {
+  SpeakerReconnector.prototype.send = function(subject, data, callback) {
     var messageId;
     var payload;
 
@@ -180,7 +195,7 @@ var SpeakerReconnector = function (_super) {
     return this.sockets[this.socketIterator++].write(payload);
   };
 
-  SpeakerReconnector.prototype.shout = function (subject, data) {
+  SpeakerReconnector.prototype.shout = function(subject, data) {
     var payload;
     var socket;
 
@@ -208,10 +223,10 @@ var SpeakerReconnector = function (_super) {
     return _results;
   };
 
-  SpeakerReconnector.prototype.generateUniqueId = function () {
+  SpeakerReconnector.prototype.generateUniqueId = function() {
     var id;
     var newId;
-    id = "id-".concat(this.uniqueId);
+    id = 'id-'.concat(this.uniqueId);
 
     if (!this.waiters[id]) {
       return id;
@@ -221,7 +236,7 @@ var SpeakerReconnector = function (_super) {
       this.uniqueId = 1;
     }
 
-    if (this.waiters[newId = "id-".concat(this.uniqueId)]) {
+    if (this.waiters[(newId = 'id-'.concat(this.uniqueId))]) {
       delete this.waiters[newId];
     }
 
@@ -229,6 +244,6 @@ var SpeakerReconnector = function (_super) {
   };
 
   return SpeakerReconnector;
-}(_networkBase.default);
+})(_networkBase.default);
 
 module.exports = SpeakerReconnector;

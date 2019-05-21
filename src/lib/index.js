@@ -396,7 +396,10 @@ class ServiceCore extends ServiceCommon {
     console.log('foreignSocket', foreignSocket);
     console.log('localSocket', localSocket);
     console.log('conId', conId);
-
+    console.log(
+      'getMicroServiceSocket',
+      this.getMicroServiceSocket(recData.destination, localSocket.socket)
+    );
     // Check Socket Readiness...
     if (localSocket.status === 0) {
       return 'connectionNotReady';

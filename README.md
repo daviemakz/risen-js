@@ -11,7 +11,7 @@
 
 Risen is a fast, modern and powerful microservices framework for Node.JS. It helps you to build efficient, reliable & scalable HTTP(s) or local micro services.
 
-_Supports Node 6.x +_
+_Supports Node 8.x +_
 
 # Installation
 

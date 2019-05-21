@@ -19,8 +19,8 @@ import {
 } from './../../dist';
 
 // Hide console
-console.log = () => void 0;
-console.warn = () => void 0;
+// console.log = () => void 0;
+// console.warn = () => void 0;
 
 // Define SSL variables
 const sslOptions = {

@@ -2,12 +2,12 @@
 
 var networkBase;
 
-networkBase = (function() {
+networkBase = function () {
   function networkBase() {
     this.savedBuffer = '';
   }
 
-  networkBase.prototype.getHostByAddress = function(address) {
+  networkBase.prototype.getHostByAddress = function (address) {
     if (typeof address === 'number') {
       return null;
     }
@@ -19,7 +19,7 @@ networkBase = (function() {
     return void 0;
   };
 
-  networkBase.prototype.getPortByAddress = function(address) {
+  networkBase.prototype.getPortByAddress = function (address) {
     if (typeof address === 'number') {
       return address;
     }
@@ -31,11 +31,11 @@ networkBase = (function() {
     return void 0;
   };
 
-  networkBase.prototype.prepareJsonToSend = function(json) {
-    return ''.concat(JSON.stringify(json), '\0');
+  networkBase.prototype.prepareJsonToSend = function (json) {
+    return "".concat(JSON.stringify(json), "\0");
   };
 
-  networkBase.prototype.tokenizeData = function(data) {
+  networkBase.prototype.tokenizeData = function (data) {
     var tokens;
     this.savedBuffer += data;
     tokens = this.savedBuffer.split('\0');
@@ -49,6 +49,6 @@ networkBase = (function() {
   };
 
   return networkBase;
-})();
+}();
 
 module.exports = networkBase;

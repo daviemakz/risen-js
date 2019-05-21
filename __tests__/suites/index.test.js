@@ -334,6 +334,14 @@ describe('src/index', () => {
         });
         expect(sqLiteData).toBeDefined();
       });
+
+      afterAll(() => {
+        request(
+          'https://localhost:12000/endProcess',
+          requestOptions,
+          () => void 0
+        );
+      });
     });
   });
 });

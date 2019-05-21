@@ -6,7 +6,7 @@
   "scripts": {
     "build": "babel src --out-dir dist",
     "devInstall": "yarn install --production=false",
-    "test": "jest --forceExit",
+    "test": "jest",
     "test:single": "jest ./__tests__/suites/lib/validate.test.js",
     "prepublishOnly": "rimraf dist && babel src --out-dir dist && yarn format && git commit -a -m 'version update & formatting' && yarn version --patch",
     "postversion": "git push",

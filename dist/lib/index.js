@@ -731,15 +731,6 @@ var ServiceCore = (function(_ServiceCommon) {
       ) {
         var _this7 = this;
 
-        console.log('recData', recData);
-        console.log('foreignSocket', foreignSocket);
-        console.log('localSocket', localSocket);
-        console.log('conId', conId);
-        console.log(
-          'getMicroServiceSocket',
-          this.getMicroServiceSocket(recData.destination, localSocket.socket)
-        );
-
         if (localSocket.status === 0) {
           return 'connectionNotReady';
         }

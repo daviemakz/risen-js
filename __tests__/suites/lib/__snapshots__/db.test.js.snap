@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`src/lib/db to match snapshot 1`] = `
+exports[`dist/lib/db to match snapshot 1`] = `
 FrameworkDatabase {
   "db": table {
     "add": [Function],

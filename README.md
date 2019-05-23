@@ -1,4 +1,4 @@
-# Risen - JS Micro Services Framework
+# Risen.JS - JS Micro Services Framework
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen?ref=badge_shield)
 
@@ -9,7 +9,9 @@
 [![dependencies Status](https://david-dm.org/daviemakz/micro-service-framework/status.svg)](https://david-dm.org/daviemakz/micro-service-framework)
 [![devDependencies Status](https://david-dm.org/daviemakz/micro-service-framework/dev-status.svg)](https://david-dm.org/daviemakz/micro-service-framework?type=dev)
 
-Risen is a fast, modern and powerful micro services framework for Node.JS. It helps you to build efficient, reliable & scalable HTTP(s) or local micro services all running in a node environment This module is already being used in a live AWS environment and is fully tested.
+Risen.JS is a framework for building efficient, scalable Node.JS server-side applications. It uses ES6+ JavaScript and combines elements of OOP (Object Oriented Programming) and FP (Functional Programming).
+
+Under the hood, Risen.JS makes use of the well known and robust Express HTTP(s) package, and the native child process feature baked in Node.JS. Risen.JS provides a level of abstraction above these frameworks, but also exposes their APIs directly to the developer. This allows for easy use of the myriad third-party modules which are available for each platform.
 
 _Supports Node 8.x +_
 

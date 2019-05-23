@@ -9,7 +9,7 @@
 [![dependencies Status](https://david-dm.org/daviemakz/micro-service-framework/status.svg)](https://david-dm.org/daviemakz/micro-service-framework)
 [![devDependencies Status](https://david-dm.org/daviemakz/micro-service-framework/dev-status.svg)](https://david-dm.org/daviemakz/micro-service-framework?type=dev)
 
-Risen is a fast, modern and powerful microservices framework for Node.JS. It helps you to build efficient, reliable & scalable HTTP(s) or local micro services.
+Risen is a fast, modern and powerful micro services framework for Node.JS. It helps you to build efficient, reliable & scalable HTTP(s) or local micro services all running in a node environment This module is already being used in a live AWS environment and is fully tested.
 
 _Supports Node 8.x +_
 

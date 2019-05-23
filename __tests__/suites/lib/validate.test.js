@@ -13,7 +13,7 @@ import {
 } from './../../../dist/lib/validate';
 
 // Test suite
-describe('src/lib/validate', () => {
+describe('dist/lib/validate', () => {
   describe('validateRouteOptions()', () => {
     const getOptions = (omitList, overwriteProps) =>
       omit(

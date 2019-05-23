@@ -4,7 +4,7 @@
 import Core, { uniqueArray, getRandomElements } from './../../../dist/lib/core';
 
 // Test suite
-describe('src/lib/db', () => {
+describe('dist/lib/db', () => {
   describe('uniqueArray()', () => {
     test('to match snapshot', () => {
       expect(uniqueArray([1, 1, 1, 2, 3, 4, 5])).toMatchSnapshot();

@@ -4,7 +4,7 @@
 import Db from './../../../dist/lib/db';
 
 // Test suite
-describe('src/lib/db', () => {
+describe('dist/lib/db', () => {
   test('to match snapshot', () => {
     expect(new Db({ databaseName: 'exampleTable' })).toMatchSnapshot();
   });

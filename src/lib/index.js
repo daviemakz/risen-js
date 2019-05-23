@@ -179,7 +179,7 @@ class ServiceCore extends ServiceCommon {
             this.serviceData[name].process[
               this.getProcessIndex(name, port)
             ] = exec(
-              `node ${__dirname}/server/index.js`,
+              `${process.execPath} ${__dirname}/server/index.js`,
               {
                 maxBuffer: 1024 * this.settings.maxBuffer,
                 env: {

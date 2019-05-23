@@ -425,7 +425,9 @@ var ServiceCore = (function(_ServiceCommon) {
                             _this3.serviceData[name].process[
                               _this3.getProcessIndex(name, port)
                             ] = (0, _child_process.exec)(
-                              'node '.concat(__dirname, '/server/index.js'),
+                              ''
+                                .concat(process.execPath, ' ')
+                                .concat(__dirname, '/server/index.js'),
                               {
                                 maxBuffer: 1024 * _this3.settings.maxBuffer,
                                 env: {

@@ -19,7 +19,7 @@ import {
 } from './../../dist';
 
 // Hide console
-// console.log = () => void 0;
+console.log = () => void 0;
 console.warn = () => void 0;
 
 // Define SSL variables
@@ -336,11 +336,11 @@ describe('src/index', () => {
       });
 
       afterAll(() => {
-        request(
-          'https://localhost:12000/endProcess',
-          requestOptions,
-          () => void 0
-        );
+        return new Promise(resolve => {
+          request('https://localhost:12000/endProcess', requestOptions, () =>
+            resolve()
+          );
+        });
       });
     });
   });

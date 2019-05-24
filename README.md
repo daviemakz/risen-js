@@ -21,7 +21,9 @@ From inserting and retrieving data from a separate external database (e.g. Redis
 
 # Philosophy
 
-There are a lot of Node.JS based micro service frameworks out there and some of them are very powerful, however generally speaking they are quite complicated and require a significant amount of knowledge outside of JavaScript to utilise effectively or securely (especially in a production environment). This package was created to handle a lot of the complexity involved in deploying robust and dependable micro services. These are the key principles which led the design of this package:
+There are a lot of Node.JS based micro service frameworks out there and some of them are very powerful, however generally speaking they are quite complicated and require a significant amount of knowledge outside of JavaScript to utilise effectively or securely (especially in a production environment).
+
+This package was created to handle a lot of the complexity involved in deploying robust and dependable micro services. These are the key principles which led the design of this package:
 
 - The framework should not require extensive knowledge outside of JavaScript
 - The framework should allow you to define multiple "services" designed to handle multiple workloads
@@ -326,25 +328,30 @@ And there we are, in less than **200 lines** we have created micro service frame
 
 ### Extra Notes
 
-It’s worth noting that this framework _intentionally_ has a function which blocks the event loop while calculating the prime numbers as well as using `renderToString` which is also synchronous. This is to demonstrate that blocking a service will not stop Risen.JS serving content and routing requests to their destinations. Of course, you should design your services in a way which does not block your "service" from receiving and processing new requests. This package is built with that assumption in mind so it’s worth noting.
+It’s worth noting that this framework _intentionally_ has a function which blocks the event loop while calculating the prime numbers as well as using `renderToString` which is also synchronous. This is to demonstrate that blocking a service will not stop Risen.JS serving content and routing requests to their destinations.
+
+Of course, you should design your services in a way which does not block your service instances from receiving and processing new requests.
+
+_This package is built with that assumption in mind so it’s worth noting._
 
 # Documentation:
 
 ## Terminology:
 
-`Service core` - This is the core process which manages all other services. Communication to the services from express and between micro services always pass through this process first.
-`Micro services / services` - This would be a service you have already defined.
-`Service instances` - These are copies of a particular service, a micro service needs at-least one instance (by default) to be started.
-`Risen instances` - These are distinct instances of the Risen.JS framework.
+`Service core` - This is the core process which manages all other services. Communication to the services from express and between micro services always pass through this process first.  
+`Micro services / services` - This would be a service you have already defined.  
+`Service instances` - These are copies of a particular service, a micro service needs at-least one instance (by default) to be started.  
+`Risen instances` - These are distinct instances of the Risen.JS framework.  
+`HTTP route handlers` - These functions are applied to express routes and connect express with the framework.  
 `Risen.JS` - Refers to the combination of the `service core` and `micro services` working under framework.
 
 ## API Methods
 
-`defineService(name, operations, options)`: Please see the [Defining A Server](#defining-a-service) section for more details.
-`startServer()`: After you have configured your server you use this method to start the server. It does nothing if you are in `client` mode.
-`sendRequest()`: This method is available from the service instance(s), service core and HTTP route handlers. This is the only function which allows communication between the different processes.
+`defineService(name, operations, options)` - Please see the [Defining A Server](#defining-a-service) section for more details.  
+`startServer()` - After you have configured your server you use this method to start the server. It does nothing if you are in `client` mode.  
+`sendRequest(commandBody, serviceName, keepSocketAlive, customRisenJSTarget, openSocket, callback)` - This method is available from the service instance(s), service core and HTTP route handlers. This is the only function which allows communication between the different processes.
 
-### defineService()
+### defineService(...args)
 
 This is discussed in more detail [here](#defining-a-service).
 
@@ -363,7 +370,7 @@ RisenInstance.defineService(...args);
 RisenInstance.startServer();
 ```
 
-### sendRequest()
+### sendRequest(...args)
 
 The method `sendRequest` is where all communication happens and below are the parameters:
 
@@ -383,7 +390,9 @@ _NOTE: Reusing sockets will result in better performance as you are not initiati
 
 ## Risen.JS Framework Configuration
 
-Before you use Risen.JS you need to create a new instance of the Risen.JS object. You can have multiple instances running at the same time if you wish and have them communicate with each other. When the service core is starting instances of services it will automatically look for the next available port to bind the service to. So, you won’t need to worry about doing this yourself. Below are the options for the framework:
+Before you use Risen.JS you need to create a new instance of the Risen.JS object. You can have multiple instances running at the same time if you wish and have them communicate with each other.
+
+When the service core is starting instances of services it will automatically look for the next available port to bind the service to. So, you won’t need to worry about doing this yourself. Below are the options for the framework:
 
 #### Defaults:
 
@@ -409,21 +418,21 @@ Before you use Risen.JS you need to create a new instance of the Risen.JS object
 
 #### Options
 
-`mode [string]`: This tells which mode the particular Risen.JS instance will operate under. "server" will have the instance run like a server while "client" will give you access to the `sendRequest(...args)` method. This is how you would communicate with another running Risen.JS instance in "server" mode. The `apiGatewayPort` will need to match on both instances.
-`http [bool]`: Please see [HTTP Configuration](#http-configuration) section.
-`databaseNames [array]`: The number of databases you want in the Risen.JS instance. Once declared you can use the method defined in this section to create/modify/delete data. Please see the [Database Configuration](#database-configuration) section.
-`verbose [bool]`: Whether to print more verbose logs of what the instance is doing. Note this has no effect on what the client will see for security reasons.
-`maxBuffer [number]`: This option specifies the largest number of bytes allowed on stdout or stderr combined. If this value is exceeded, then the service instance is restarted.
-`logPath [string]`: If you want to log to a file what you would see in the console. If you want more information set `{ verbose: true }`
-`restartTimeout [number]`: How long to wait before restarting a service instance (in ms).
-`connectionTimeout [number]`: How long to wait while attempting to acquire a connection to the service core before trying again (in ms).
-`microServiceConnectionTimeout [number]`: How the service core should wait while it attempting to connect to a service instance before timing out and returning an error to the source.
-`microServiceConnectionAttempts [number]`: How many times the service core should try to acquire a connection to a service instance if the connection is rejected before returning an error to the source.
-`apiGatewayPort [number]`: The main port where the service core listens to new connections. _NOTE: To bind below ports 1024 you need to have privileged access._
-`portRangeStart [number]`: What port the service core should begin while trying to find a free port for a service instance.
-`portRangeFinish [number]`: What port the service core should end its search if it cannot find a free port. At this point the service core will throw an error.
-`coreOperations [object]`: This follows the same structure as defining operations for services. You can add new functions here which will be available for any instance (including the service core ) to use. Please see the [Service Core Operations](#service-core-operations) section for the default core operations.
-`runOnStart [array]`: What core operations you want to be executed on start-up to perform a function of your choice. This would be for example where you would put any polling if you were so inclined.
+`mode [string]` - This tells which mode the particular Risen.JS instance will operate under. "server" will have the instance run like a server while "client" will give you access to the `sendRequest(...args)` method. This is how you would communicate with another running Risen.JS instance in "server" mode. The `apiGatewayPort` will need to match on both instances.  
+`http [bool]` - Please see [HTTP Configuration](#http-configuration) section.  
+`databaseNames [array]` - The number of databases you want in the Risen.JS instance. Once declared you can use the method defined in this section to create/modify/delete data. Please see the [Service Core Operations](#service-core-operations) section.  
+`verbose [bool]` - Whether to print more verbose logs of what the instance is doing. Note this has no effect on what the client will see for security reasons.  
+`maxBuffer [number]` - This option specifies the largest number of bytes allowed on stdout or stderr combined. If this value is exceeded, then the service instance is restarted.  
+`logPath [string]` - If you want to log to a file what you would see in the console. If you want more information set `{ verbose: true }`.  
+`restartTimeout [number]` - How long to wait before restarting a service instance (in ms).  
+`connectionTimeout [number]` - How long to wait while attempting to acquire a connection to the service core before trying again (in ms).  
+`microServiceConnectionTimeout [number]` - How the service core should wait while it attempting to connect to a service instance before timing out and returning an error to the source.  
+`microServiceConnectionAttempts [number]` - How many times the service core should try to acquire a connection to a service instance if the connection is rejected before returning an error to the source.  
+`apiGatewayPort [number]` - The main port where the service core listens to new connections. _NOTE: To bind below ports 1024 you need to have privileged access._  
+`portRangeStart [number]` - What port the service core should begin while trying to find a free port for a service instance.  
+`portRangeFinish [number]` - What port the service core should end its search if it cannot find a free port. At this point the service core will throw an error.  
+`coreOperations [object]` - This follows the same structure as defining operations for services. You can add new functions here which will be available for any instance (including the service core ) to use. Please see the [Service Core Operations](#service-core-operations) section for the default core operations.  
+`runOnStart [array]` - What core operations you want to be executed on start-up to perform a function of your choice. This would be for example where you would put any polling if you were so inclined.
 
 ## HTTP Configuration
 
@@ -453,14 +462,14 @@ Here you can as well as communicate directly with a Risen.JS instance in `client
 
 #### Options
 
-`port [number]`: The port to listen on.
-`host [string]`: If you want to bind to a specific address. If omitted it will bind to `0.0.0.0` (all interfaces).
-`ssl [bool|object]`: Whether HTTPS will be enabled. `false` will run the express server in HTTP and supplying an object (e.g. `{ key: '', cert: '', ca: '' }`) will switch to HTTPS. The `ca` property is optional.
-`harden [bool]`: This hardening follows the guidance from this [link](https://expressjs.com/en/advanced/best-practice-security.html).
-`beforeStart [function (express) => { ... }]`: Allows you access to the express instance before initialisation.
-`middlewares [array]`: If you want to apply middleware to your express instance before initialisation.  
-`static [array]`: Allows you to serve [static](https://expressjs.com/en/starter/static-files.html) content, relative to the folder where Risen.JS is executed.
-`routes [array]`: Please see [Route Alias Configuration](#route-alias-configuration) on how you map incoming requests to services.
+`port [number]` - The port to listen on.  
+`host [string]` - If you want to bind to a specific address. If omitted it will bind to `0.0.0.0` (all interfaces).  
+`ssl [bool|object]` - Whether HTTPS will be enabled. `false` will run the express server in HTTP and supplying an object (e.g. `{ key: '', cert: '', ca: '' }`) will switch to HTTPS. The `ca` property is optional.  
+`harden [bool]` - This hardening follows the guidance from this [link](https://expressjs.com/en/advanced/best-practice-security.html).  
+`beforeStart [function (express) => { ... }]` - Allows you access to the express instance before initialisation.  
+`middlewares [array]` - If you want to apply middleware to your express instance before initialisation.  
+`static [array]` - Allows you to serve [static](https://expressjs.com/en/starter/static-files.html) content, relative to the folder where Risen.JS is executed.  
+`routes [array]` - Please see [Route Alias Configuration](#route-alias-configuration) on how you map incoming requests to services.
 
 ## Route Alias Configuration
 
@@ -468,11 +477,11 @@ Routes are defined as a collection of objects within an array. Below are the opt
 
 #### Options
 
-`method [string]`: The method of the URI, case sensitive.
-`uri [string]`: The URI which this route will be mapped to.
-`preMiddleware [array]`: Any middleware you want the request to pass through before running your handler.
-`postMiddleware [array]`: Any middleware you want the request to pass through after running your handler.
-`handler [function (req, res, { sendRequest, CommandBodyObject, ResponseBodyObject }) => { res.send(/* response to client */)}]`: This is where you link express with the framework. It’s here where you receive a request from a client, you then send a request to your chosen service, receive a response from the service and send the data back to the client via `res.send()`.
+`method [string]` - The method of the URI, case sensitive.  
+`uri [string]` - The URI which this route will be mapped to.  
+`preMiddleware [array]` - Any middleware you want the request to pass through before running your handler.  
+`postMiddleware [array]` - Any middleware you want the request to pass through after running your handler.  
+`handler [function (req, res, { sendRequest, CommandBodyObject, ResponseBodyObject }) => { res.send(/* response to client */)}]` - This is where you link express with the framework. It’s here where you receive a request from a client, you then send a request to your chosen service, receive a response from the service and send the data back to the client via `res.send()`.
 
 **The handler used in the above example:**
 
@@ -481,9 +490,8 @@ Routes are defined as a collection of objects within an array. Below are the opt
 
   /*
 
-   This is the handler which "connects" express to your service core and thus micro-services. In this example
-   the micro-service is doing the calculation and returning HTML which is then sent back to the client.
-   Below I'm getting a new command object because all requests to micro services need to be done via a command object.
+   This is the handler which "connects" express to your service core and thus micro-services. Below I'm
+   getting a new command object because all requests to micro services need to be done via a command object.
 
   */
 
@@ -501,11 +509,11 @@ Routes are defined as a collection of objects within an array. Below are the opt
 
   // Send request to micro service and send the response back to the origin
   return sendRequest(
-    exampleCommandBody, // The command body which will be sent to service core and routed to an available "service instance"
-    'primeCalculator', // The name of the micro service you are targeting
+    exampleCommandBody, // The command body which will be sent to service core and routed according to the destination
+    'exampleService', // The name of the micro service you are targeting, in this case "exampleService"
     false, // Whether to keep the connection alive, this improves performance because you get a socket object back you can reuse
     void 0, // You can target another instance of this framework running on a different port if you want e.g. { port: [another risen-js instance port] }
-    void 0, // If you have set keepalive to true above you must pass your existing socket here
+    void 0, // You must pass your existing socket here if the previous request had 'keepAlive' set to true
     response => res.send(response.resultBody.resData.pageOutput) // Send the request back to the client
   );
 }
@@ -520,22 +528,23 @@ Now let’s look at defining a service. There are two things you need to do:
 ```
 module.exports = {
   exampleOperation: (socket, data) => {
+
     // Invoke template(s)
     const resObject = new ResponseBodyObject();
 
     // Perform operations on next tick
     return setImmediate(() => {
 
-      // Get the list of prime numbers
+      // Get some result
       const someResult = someCalculation(data.body.argument);
 
       // Assign the process name to the response
       resObject.status.transport.responseSource = process.env.name;
 
       /*
-        Assign result to response body. If there is an error assign the result to "errData"
-        instead so the service core can take appropriate action. You will still need to handle this result
-        in your handler depending on the output here. i.e. assign status codes etc...
+        Assign result to response body. If there is an error assign the result to "errData" instead
+        so the service core can take appropriate action. You will still need to handle this result
+        in your HTTP handler however this should be straightforward. An empty resultBody.errData === 'GOOD'!
       */
 
       if (some condition I want to check) {
@@ -552,20 +561,23 @@ module.exports = {
         };
       }
 
-      // Send the response back to the broker which manages connections between client and server using reply()
+      // Send the response back to the service core using reply()
       return socket.reply(resObject);
     });
   }
 };
 ```
 
-2. Before you start your service you need to define it in Risen.JS. This is done using the method below:
+2. Before you start your service you need to define it in Risen.JS. This is done using the pattern below:
 
 ```
+// Define my framework options
+const frameworkOptions = { ... }
+
 // Initialise instance, you have not started it yet but simply set the configuration
 const RisenInstance = new Risen(frameworkOptions);
 
-// Define path to the file which will define the operations a service can perform (without .js extension)
+// Define path to the file which will define the operations a service will have (without .js extension)
 const pathToAboveFile = './exampleOperationDefinitions';
 
 // Define a micro service
@@ -576,11 +588,29 @@ RisenInstance.defineService('exampleServiceName', pathToAboveFile, {
 });
 ```
 
-If you wanted persistent process executing on an instance of a service, you would likely use `runOnStart` and setup some kind of recursive polling o.e.
+The key of the object is the name of the operation on a service. If you wanted persistent process executing on an instance of a service, you would likely use `runOnStart` and setup some kind of recursive polling o.e.
 
 ## Data Messaging Structure
 
-Below is a description of how data (messages) are sent in Risen.JS. All messages must be sent via the `new CommandBodyObject()` constructor and all responses must utilise the `new ResponseBodyObject()` constructor. This is to limit the number of possible outcomes and provide greater consistency.
+Below is a description of how data (messages) are sent in Risen.JS. All messages must be sent via the `new CommandBodyObject()` constructor and all responses must utilise the `new ResponseBodyObject()` constructor. This is to ensure communication is uniform and consistent.
+
+### Command Object
+
+Executing the following code on the constructor `new CommandBodyObject()` will return this result:
+
+```
+{
+  destination: void 0,
+  funcName: '',
+  body: {}
+}
+```
+
+#### Details:
+
+`destination` - The name of the service you want to target.  
+`funcName` - The operation which will receive the command body as defined in the file containing operations for the service. The key of the object is the function name.  
+`body` - Any data you want to send to a service instance. The data here must be serializable. If not convert it to a format which can and reconvert it once it arrives inside a service instance operation.
 
 The command body is then passed to `sendRequest()` like so:
 
@@ -600,49 +630,6 @@ return sendRequest(
   ...args
 );
 ```
-
-When an operation within a service instance receives this command object, the response would be sent like so:
-
-```
-(socket, data) => {
-  // NOTE: "data" is the exampleCommandBody we defined above
-
-  // Invoke template(s)
-  const resObject = new ResponseBodyObject();
-
-  // Assign the process name to the response
-  resObject.status.transport.responseSource = process.env.name;
-
-  // Assign result to response body (assuming success conditions)
-  resObject.resultBody.resData = {
-    status: true,
-    message: 'The operation completed successfully!',
-    result: true
-  };
-
-  // Send the response back to the service core using reply(). This can only be called once!
-  return socket.reply(resObject);
-}
-
-```
-
-### Command Object
-
-Executing the following code on the constructor `new CommandBodyObject()` will return this result:
-
-```
-{
-  destination: void 0,
-  funcName: '',
-  body: {}
-}
-```
-
-#### Details:
-
-`destination`: The name of the service you want to target
-`funcName`: The operation which will receive the command body as defined in the file containing operations for the service. The key of the object is the function name.
-`body`: Any data you want to send to a service instance. The data here must be serializable. If not convert it to a format which can and reconvert it once it arrives inside a service instance.
 
 ### Response Object
 
@@ -670,12 +657,39 @@ Executing the following code on the constructor `new ResponseBodyObject()` will 
 
 #### Details:
 
-`status`: This is where the service core will put any important information such as error details and codes, including the where the request has been. You shouldn't be directly editing this however nothing stops you from doing so either. It’s likely any data put here will be overwritten.
-`resultBody`: For all your requests this is where you should be putting your data. If there was no error place your data within `resultBody.resData = { ... }` else place in within `resultBody.errData = { ... }`. This distinction is very important as its one of the only ways the service core will know what went on within a service instance.
+`status` - This is where the service core will put any important information such as error details and codes, including the where the request has been. You shouldn't be directly editing this however nothing stops you from doing so either. It’s likely any data put here will be overwritten.  
+`resultBody` - For all your requests this is where you should be putting your data. If there was no error place your data within `resultBody.resData = { ... }` else place in within `resultBody.errData = { ... }`. This distinction is very important as its one of the only ways the service core will know what went on within a service instance.
+
+When an operation within a service instance receives this command object, the response once any work is finished should be sent like so:
+
+```
+(socket, data) => {
+  // NOTE: "data" is the exampleCommandBody we defined above
+
+  // Invoke template(s)
+  const resObject = new ResponseBodyObject();
+
+  // Assign the process name to the response
+  resObject.status.transport.responseSource = process.env.name;
+
+  // Assign result to response body (assuming success conditions)
+  resObject.resultBody.resData = {
+    status: true,
+    message: 'The operation completed successfully!',
+    result: true
+  };
+
+  // Send the response back to the service core using reply(). This can only be called once!
+  return socket.reply(resObject);
+}
+
+```
 
 ## Service Core Operations
 
-Service core operations work exactly as they do in the micro services themselves and receive the same parameters. The only difference is they are executed in the service core process, so if you are not careful you could block your framework if you do something CPU intensive, stopping further communication. Avoid doing this. To access these operations, you must set the destination of your `new CommandBodyObject()` to `serviceCore` with the `funcName` being one of the following:
+Service core operations work exactly as they do in the micro services themselves and receive the same parameters. The only difference is they are executed in the service core process, so if you are not careful you could block your framework if you do something CPU intensive, stopping further communication.
+
+Avoid doing this. To access these operations, you must set the destination of your `new CommandBodyObject()` to `serviceCore` with the `funcName` being one of the following:
 
 ### end()
 
@@ -709,7 +723,9 @@ Because you can initialise multiple tables at start-up you can separate your dat
 
 ### changeInstances()
 
-This is one of the key core operations in Risen.JS because this function allows you to increase and decrease the instances of any services you have already defined dynamically. This means it’s possible to have a service dedicated to monitoring load and increasing/decreasing instance count where necessary. The command is very simple, define the name of the service you want to change the instance count and define how many instances you want to add/remove.
+This is one of the key core operations in Risen.JS because this function allows you to increase and decrease the instance count of any services you have already defined during runtime.
+
+This means it’s possible to have a service dedicated to monitoring load and increasing/decreasing the instance count of various services where necessary. The command is very simple, define the name of the service you want to change the instance count and define how many instances you want to add/remove.
 
 Command body for adding **3** instances to a service:
 

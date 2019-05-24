@@ -543,7 +543,7 @@ var Risen = (function(_ServiceCore) {
       value: function initGateway() {
         var _this4 = this;
 
-        this.log('Micro Service Framework: '.concat(_package.version), 'log', true);
+        this.log('Risen.JS Micro Service Framework: '.concat(_package.version), 'log', true);
         return new Promise(function(resolve, reject) {
           return (0, _isPortFree.default)(_this4.settings.apiGatewayPort)
             .then(function() {

@@ -244,7 +244,7 @@ export class Risen extends ServiceCore {
   // FUNCTION: Initialise api gateway
   initGateway() {
     // Initial message
-    this.log(`Micro Service Framework: ${version}`, 'log', true);
+    this.log(`Risen.JS Micro Service Framework: ${version}`, 'log', true);
     // Return
     return new Promise((resolve, reject) =>
       isPortFree(this.settings.apiGatewayPort)

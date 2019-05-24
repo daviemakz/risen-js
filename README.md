@@ -382,7 +382,7 @@ return sendRequest(
   false, // Whether to keep the connection alive, this improves performance because you get a socket object you can reuse
   void 0, // You can target another instance of this framework running on a different port if you want e.g. { port: [another risen-js apiGatewayPort] }
   void 0, // If want to reuse a socket which you did not close (by setting keepalive to true above) pass it here
-  response => { // Send the request back to its origin }
+  (responseData, originalData, socket) => { // Send the request back to its origin }
 );
 ```
 

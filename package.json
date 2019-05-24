@@ -1,5 +1,5 @@
 {
-  "name": "micro-service-framework",
+  "name": "risen-js",
   "version": "1.0.0",
   "description": "This package allows streaming & non-streaming microservices to be build on the frontend and the backend.",
   "main": "dist/index.js",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/daviemakz/micro-service-framework.git"
+    "url": "git+https://github.com/daviemakz/risen-js.git"
   },
   "keywords": [
     "micro",
@@ -46,9 +46,9 @@
   "author": "David Makuni",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/daviemakz/micro-service-framework/issues"
+    "url": "https://github.com/daviemakz/risen-js/issues"
   },
-  "homepage": "https://github.com/daviemakz/micro-service-framework#readme",
+  "homepage": "https://github.com/daviemakz/risen-js#readme",
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.3",

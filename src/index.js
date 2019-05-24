@@ -101,7 +101,7 @@ export const defaultInstanceOptions = {
 };
 
 // Declare class
-export class MicroServiceFramework extends ServiceCore {
+export class Risen extends ServiceCore {
   constructor(options) {
     // Super
     super(options);

@@ -15,7 +15,7 @@ import {
   defaultInstanceOptions,
   CommandBodyObject,
   ResponseBodyObject,
-  MicroServiceFramework
+  Risen
 } from './../../dist';
 
 // Hide console
@@ -266,9 +266,9 @@ describe('src/index', () => {
       expect(CommandBodyObject()).toMatchSnapshot();
     });
   });
-  describe('class MicroServiceFramework()', () => {
+  describe('class Risen()', () => {
     // Initialise instance
-    const MSFrameworkInstance = new MicroServiceFramework(frameworkOptions);
+    const MSFrameworkInstance = new Risen(frameworkOptions);
 
     // Define a micro service
     MSFrameworkInstance.defineService('testService', testServerOperationsPath, {

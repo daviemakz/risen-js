@@ -164,7 +164,7 @@ mO7W51tU6ExL/VQfqjpSRPE=
 }
 `;
 
-exports[`src/index class MicroServiceFramework() integration internal database service works 1`] = `
+exports[`src/index class Risen() integration internal database service works 1`] = `
 "
             <html>
                <head>
@@ -177,7 +177,7 @@ exports[`src/index class MicroServiceFramework() integration internal database s
             "
 `;
 
-exports[`src/index class MicroServiceFramework() integration service to service redirection works 1`] = `
+exports[`src/index class Risen() integration service to service redirection works 1`] = `
 "
         <html>
            <head>

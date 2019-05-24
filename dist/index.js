@@ -15,7 +15,7 @@ Object.defineProperty(exports, 'ResponseBodyObject', {
     return _response.default;
   }
 });
-exports.MicroServiceFramework = exports.defaultInstanceOptions = exports.buildHttpOptions = exports.buildSecureOptions = exports.defaultServiceOptions = void 0;
+exports.Risen = exports.defaultInstanceOptions = exports.buildHttpOptions = exports.buildSecureOptions = exports.defaultServiceOptions = void 0;
 
 require('@babel/polyfill');
 
@@ -344,17 +344,17 @@ var defaultInstanceOptions = {
 };
 exports.defaultInstanceOptions = defaultInstanceOptions;
 
-var MicroServiceFramework = (function(_ServiceCore) {
-  _inherits(MicroServiceFramework, _ServiceCore);
+var Risen = (function(_ServiceCore) {
+  _inherits(Risen, _ServiceCore);
 
-  function MicroServiceFramework(options) {
+  function Risen(options) {
     var _this;
 
-    _classCallCheck(this, MicroServiceFramework);
+    _classCallCheck(this, Risen);
 
     _this = _possibleConstructorReturn(
       this,
-      _getPrototypeOf(MicroServiceFramework).call(this, options)
+      _getPrototypeOf(Risen).call(this, options)
     );
     !(0, _validate.validateOptions)(options) && process.exit();
     _this.microServiceStarted = false;
@@ -431,7 +431,7 @@ var MicroServiceFramework = (function(_ServiceCore) {
     return _this;
   }
 
-  _createClass(MicroServiceFramework, [
+  _createClass(Risen, [
     {
       key: 'startServerFailed',
       value: function startServerFailed() {
@@ -949,7 +949,7 @@ var MicroServiceFramework = (function(_ServiceCore) {
     }
   ]);
 
-  return MicroServiceFramework;
+  return Risen;
 })(_lib.default);
 
-exports.MicroServiceFramework = MicroServiceFramework;
+exports.Risen = Risen;

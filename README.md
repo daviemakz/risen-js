@@ -691,7 +691,7 @@ Service core operations work exactly as they do in the micro services themselves
 
 Avoid doing this. To access these operations, you must set the destination of your `new CommandBodyObject()` to `serviceCore` with the `funcName` being one of the following:
 
-### end()
+### end
 
 This function shuts down the Risen.JS micro service framework. The service instances are shut down first and then the service core. Command body:
 
@@ -703,7 +703,7 @@ This function shuts down the Risen.JS micro service framework. The service insta
 }
 ```
 
-### storage()
+### storage
 
 This is the operation which provides access to persistent storage for a running Risen.JS instance. All storage operations only happen on the service core. The storage is powered by [Quick-DB](https://www.npmjs.com/package/quick.db) so please have a look at available methods to use. Command body:
 
@@ -721,7 +721,7 @@ This is the operation which provides access to persistent storage for a running 
 
 Because you can initialise multiple tables at start-up you can separate your data as you need. The data will be stored in a `json.sqlite` file in your `__dirname` folder.
 
-### changeInstances()
+### changeInstances
 
 This is one of the key core operations in Risen.JS because this function allows you to increase and decrease the instance count of any services you have already defined during runtime.
 

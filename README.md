@@ -11,9 +11,13 @@
 
 Risen.JS is a framework for building efficient, scalable non-blocking Node.JS server-side applications. It uses ES6+ JavaScript and combines elements of OOP (Object Oriented Programming) and FP (Functional Programming).
 
-Under the hood, Risen.JS makes use of the well known and robust [Express](https://www.npmjs.com/package/express) HTTP(s) package, [Quick-DB](https://www.npmjs.com/package/quick.db) for long term persistent storage, and the native [child process](https://nodejs.org/api/child_process.html) feature in Node.JS. Risen.JS provides a level of abstraction above these frameworks, but also exposes their APIs directly to the developer. This allows for easy use of the myriad third-party modules, packages and middlewares which are available for each platform.
+Under the hood, Risen.JS makes use of the well known and robust [Express](http://expressjs.com) HTTP(s) package, [Quick-DB](https://www.npmjs.com/package/quick.db) for long term persistent storage, and the native [child process](https://nodejs.org/api/child_process.html) feature in Node.JS.
 
-Because the "services" you will create run as Node.JS processes, this means you can build micro services utilising the tens of thousands of NPM packages which currently exist and are added everyday. Simply put anything you can do in Node.JS, you can build a micro service to do for you. From inserting and retrieving data from a separate external database (e.g. Redis) to a service which converts images. Its even possible to use this framework alongside [server side rendering](https://reactjs.org/docs/react-dom-server.html) in [React.JS](https://reactjs.org), the possibilities are endless!
+Risen.JS provides a level of abstraction above these frameworks, but also exposes their APIs directly to the developer. This allows for easy use of the myriad third-party modules, packages and middlewares which are available for each platform.
+
+Because the "services" you will create run as Node.JS processes, this means you can build micro services utilising the tens of thousands of NPM packages which currently exist and are added everyday. Simply put anything you can do in Node.JS, you can build a micro service to do for you.
+
+From inserting and retrieving data from a separate external database (e.g. Redis) to a service which converts images. Its even possible to use this framework alongside [server side rendering](https://reactjs.org/docs/react-dom-server.html) in [React.JS](https://reactjs.org), the possibilities are endless!
 
 # Philosophy
 
@@ -21,7 +25,7 @@ There are a lot of Node.JS based micro service frameworks out there and some of 
 
 - The framework should not require extensive knowledge outside of JavaScript
 - The framework should allow you to define multiple "services" designed to handle multiple workloads
-- The framework should allow RESTful API communication to multiple HTTP and HTTP(s) [Express](https://www.npmjs.com/package/express) instances concurrently
+- The framework should allow RESTful API communication to multiple HTTP and HTTP(s) [Express](http://expressjs.com) instances concurrently
 - The framework should allow Node.JS based communication
 - The framework should allow the number of discrete "services" to be scaled depending on load & support multiple load balance strategies
 - The framework should allow instancing of "services" for better load balancing
@@ -49,27 +53,37 @@ Using Yarn:
 
 # How Fast Can I Deploy A Micro Service Framework?
 
-Well, lets show you! We are going to create a simple HTTP based micro service framework which will use React.JS server side rendering with the aim of calculating all the prime numbers up to a certain number, defined within a query string and return a rendered [React.JS](https://reactjs.org) page back to your browser. The example will be based on Linux however you can do the exact same thing with MacOS & Windows. We will skip going through each line of JavaScript code as this example assumes basic knowledge of Node.JS.
+Well, lets show you! We are going to create a simple HTTP based micro service framework which will use React.JS server side rendering with the aim of calculating all the prime numbers up to a certain number, defined within a query string and return a rendered [React.JS](https://reactjs.org) page back to your browser.
+
+The example will be based on Linux however you can do the exact same thing with MacOS & Windows. We will skip going through each line of JavaScript code as this example assumes basic knowledge of Node.JS.
 
 ## Simple React.JS Server Side Rendering Server
 
 1. Create a new folder and cd into the said folder:
 
-`mkdir prime-calculator && cd prime-calculator`
+```
+mkdir prime-calculator && cd prime-calculator
+```
 
 2. Initialise the directory as an NPM package:
 
-`npm init -y`
+```
+npm init -y
+```
 
 3. Install node dependencies (fixing the react version in case of future changes):
 
-`yarn add @babel/register @babel/preset-react @babel/preset-env react-dom@16.8.6 react-dom@16.8.6 antd@3.18.2 risen-js@latest`
+```
+yarn add @babel/register @babel/preset-react @babel/preset-env react-dom@16.8.6 react@16.8.6 antd@3.18.2 risen-js@latest
+```
 
 _NOTE: We are using babel to transpile JSX on the micro service, thats why its here._
 
 3. Create the file which will contain the functions which a micro service will have:
 
-`touch calculator.js`
+```
+touch calculator.js
+```
 
 4. Paste the following into this file.
 
@@ -85,7 +99,9 @@ module.exports = require('./App');
 
 5. Create the file which will contain the server configuration you are going to execute:
 
-`touch server.js`.
+```
+touch server.js
+```
 
 6. Paste the following code into the file you've just created:
 
@@ -104,12 +120,14 @@ const getPrimeNumber = {
     // In this example the microservice is doing the calculation and returning HTML which is then sent back
     // to the client. Below im getting a new object because all requests to micro services need to be done via a command object.
     const primeNumberCommandBody = new CommandBodyObject();
+
     // Assign command information
     primeNumberCommandBody.destination = 'primeCalculator';
     primeNumberCommandBody.funcName = 'calculatePrime';
     primeNumberCommandBody.body = {
       primeUpTo: req.query.primeUpTo
     };
+
     // Send request to micro service and send the response back to the origin
     return sendRequest(
       primeNumberCommandBody, // The command body which will be sent to service core and routed to an available "service"
@@ -136,7 +154,7 @@ const httpOptions = [
 const frameworkOptions = {
   mode: 'server',
   http: httpOptions,
-  verbose: true //  To see whats going on :)
+  verbose: true // To see whats going on :)
 };
 
 // Initialise instance, you have not started it yet but simply set the configuration
@@ -152,13 +170,16 @@ RisenInstance.defineService('primeCalculator', primeNumberServiceOperations, {
 
 // Start the framework
 RisenInstance.startServer();
+
 ```
 
 7. Create the file which will contain the server you are going to execute:
 
-`touch App.jsx`.
+```
+touch App.jsx
+```
 
-8. Paste the following code into the file you've just created. The example uses React.JS server side rendering simply to show the true capabilities of the package:
+8. Paste the following code into the file you've just created. This is to make the React.JS server side rendering work and demonstrate the true capabilities of the package:
 
 ```
 'use strict';
@@ -251,8 +272,10 @@ module.exports = {
   calculatePrime: (socket, data) => {
     // Invoke template(s)
     const resObject = new ResponseBodyObject();
+
     // Get the prime number from data body
     const primeUpTo = data.body.primeUpTo;
+
     // Perform operations on next tick
     return setImmediate(() => {
       // Get the list of prime numbers
@@ -270,6 +293,7 @@ module.exports = {
           />
         )
       };
+
       // Send the response back to the broker which manages connections between client and server using reply()
       return socket.reply(resObject);
     });
@@ -277,17 +301,15 @@ module.exports = {
 };
 ```
 
-9.Navigate to: http://localhost:9898/getPrimeNumbers?primeUpTo=1000
+9. Navigate to the this endpoint:
 
-###
+http://localhost:9898/getPrimeNumbers?primeUpTo=1000
 
-And
+You should see a website showing you a group of prime numbers. Try refreshing the page a couple times and notice how the `Instance ID` at the bottom of the page changes with each page load.
 
-# Architecture:
+And there we are, in less than **200 lines** we have created micro service framework, with 5 identical instances of a React.JS server side renderer with an express HTTP server allowing for a RESTful interface between client and back-end. This is the philosophy of this framework, simple, fast and efficient!
 
-Below is a diagram of how the framework routes data to different instances:
-
-# Features
+# Documentation:
 
 # Error Codes
 
@@ -321,3 +343,11 @@ All contributions are very welcome, please read my [CONTRIBUTING.md](https://git
 ## License
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_large)
+
+```
+
+```
+
+```
+
+```

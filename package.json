@@ -1,6 +1,6 @@
 {
   "name": "risen-js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Risen is a fast, modern and powerful microservices framework for Node.JS",
   "main": "dist/index.js",
   "license": "MIT",
@@ -48,7 +48,6 @@
     "framework"
   ],
   "author": "David Makuni",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/daviemakz/risen-js/issues"
   },

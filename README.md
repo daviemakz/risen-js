@@ -343,11 +343,3 @@ All contributions are very welcome, please read my [CONTRIBUTING.md](https://git
 ## License
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_large)
-
-```
-
-```
-
-```
-
-```

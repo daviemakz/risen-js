@@ -12,9 +12,7 @@ describe('dist/lib/db', () => {
   });
   describe('getRandomElements()', () => {
     test('to match snapshot', () => {
-      expect(
-        Array.isArray(getRandomElements([1, 1, 1, 2, 3, 4, 5], 2))
-      ).toMatchSnapshot();
+      expect(Array.isArray(getRandomElements([1, 1, 1, 2, 3, 4, 5], 2))).toMatchSnapshot();
     });
   });
   describe('EXPORTS: Core', () => {

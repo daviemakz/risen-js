@@ -1,10 +1,7 @@
 'use strict';
 
 // Load NPM modules
-const {
-  ResponseBodyObject,
-  CommandBodyObject
-} = require('./../../../dist/index.js');
+const { ResponseBodyObject, CommandBodyObject } = require('./../../../dist/index.js');
 
 // EXPORTS
 module.exports = {

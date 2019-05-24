@@ -73,15 +73,9 @@ const checkRedirection = {
     testServiceCommandBody.funcName = 'getInfoFromSuperService';
     testServiceCommandBody.body = null;
     // Send initial request to micro service
-    sendRequest(
-      testServiceCommandBody,
-      'testService',
-      false,
-      void 0,
-      void 0,
-      response => {
-        // Send back to response
-        const getPage = message => `
+    sendRequest(testServiceCommandBody, 'testService', false, void 0, void 0, response => {
+      // Send back to response
+      const getPage = message => `
         <html>
            <head>
               <title>Test Service Response</title>
@@ -91,12 +85,11 @@ const checkRedirection = {
            </body>
         </html>
         `;
-        // Build HTML
-        const pageOutput = getPage(response.resultBody.resData);
-        // Return
-        res.send(pageOutput);
-      }
-    );
+      // Build HTML
+      const pageOutput = getPage(response.resultBody.resData);
+      // Return
+      res.send(pageOutput);
+    });
   }
 };
 
@@ -124,25 +117,13 @@ const checkDb = {
       table: '_defaultDatabase'
     };
     // Send initial request to write to database
-    sendRequest(
-      writeToDb,
-      'serviceCore',
-      true,
-      void 0,
-      void 0,
-      (resData, origData, socket) => {
-        // Send request to services
-        sendRequest(
-          readFromDb,
-          'serviceCore',
-          false,
-          void 0,
-          socket,
-          response => {
-            // Get message from service
-            const messageFromDb = response.resultBody.resData.result;
-            // Send back to response
-            const getPage = title => `
+    sendRequest(writeToDb, 'serviceCore', true, void 0, void 0, (resData, origData, socket) => {
+      // Send request to services
+      sendRequest(readFromDb, 'serviceCore', false, void 0, socket, response => {
+        // Get message from service
+        const messageFromDb = response.resultBody.resData.result;
+        // Send back to response
+        const getPage = title => `
             <html>
                <head>
                   <title>Database Verification</title>
@@ -152,14 +133,12 @@ const checkDb = {
                </body>
             </html>
             `;
-            // Build HTML
-            const pageOutput = getPage(messageFromDb);
-            // Return
-            res.send(pageOutput);
-          }
-        );
-      }
-    );
+        // Build HTML
+        const pageOutput = getPage(messageFromDb);
+        // Return
+        res.send(pageOutput);
+      });
+    });
   }
 };
 
@@ -290,10 +269,8 @@ describe('src/index', () => {
         let requestResult = await new Promise((resolve, reject) => {
           setTimeout(
             () =>
-              request(
-                'https://localhost:12000/checkRedirection',
-                requestOptions,
-                (err, res, body) => (err === null ? resolve(body) : reject(err))
+              request('https://localhost:12000/checkRedirection', requestOptions, (err, res, body) =>
+                err === null ? resolve(body) : reject(err)
               ),
             2000
           );
@@ -304,10 +281,8 @@ describe('src/index', () => {
         let requestResult = await new Promise((resolve, reject) => {
           setTimeout(
             () =>
-              request(
-                'https://localhost:12000/checkDb',
-                requestOptions,
-                (err, res, body) => (err === null ? resolve(body) : reject(err))
+              request('https://localhost:12000/checkDb', requestOptions, (err, res, body) =>
+                err === null ? resolve(body) : reject(err)
               ),
             2000
           );
@@ -337,9 +312,7 @@ describe('src/index', () => {
 
       afterAll(() => {
         return new Promise(resolve => {
-          request('https://localhost:12000/endProcess', requestOptions, () =>
-            resolve()
-          );
+          request('https://localhost:12000/endProcess', requestOptions, () => resolve());
         });
       });
     });

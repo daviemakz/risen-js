@@ -71,8 +71,7 @@ var Speaker = (function(_super) {
       port,
       host,
       function() {
-        process.env.verbose === 'true' &&
-          console.log('Successfully connected on port: '.concat(port));
+        process.env.verbose === 'true' && console.log('Successfully connected on port: '.concat(port));
         return _this.sockets.push(socket);
       }
     );

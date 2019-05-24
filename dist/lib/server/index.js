@@ -21,10 +21,7 @@ function _typeof(obj) {
     };
   } else {
     _typeof = function _typeof(obj) {
-      return obj &&
-        typeof Symbol === 'function' &&
-        obj.constructor === Symbol &&
-        obj !== Symbol.prototype
+      return obj && typeof Symbol === 'function' && obj.constructor === Symbol && obj !== Symbol.prototype
         ? 'symbol'
         : typeof obj;
     };
@@ -34,12 +31,7 @@ function _typeof(obj) {
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
+    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
   } else {
     obj[key] = value;
   }
@@ -47,9 +39,7 @@ function _defineProperty(obj, key, value) {
 }
 
 function _slicedToArray(arr, i) {
-  return (
-    _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest()
-  );
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
 }
 
 function _nonIterableRest() {
@@ -62,11 +52,7 @@ function _iterableToArrayLimit(arr, i) {
   var _d = false;
   var _e = undefined;
   try {
-    for (
-      var _i = arr[Symbol.iterator](), _s;
-      !(_n = (_s = _i.next()).done);
-      _n = true
-    ) {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
       if (i && _arr.length === i) break;
     }
@@ -179,9 +165,7 @@ function _setPrototypeOf(o, p) {
 
 function _assertThisInitialized(self) {
   if (self === void 0) {
-    throw new ReferenceError(
-      "this hasn't been initialised - super() hasn't been called"
-    );
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
   }
   return self;
 }
@@ -194,10 +178,7 @@ var MicroServer = (function(_ServiceCommon) {
 
     _classCallCheck(this, MicroServer);
 
-    _this = _possibleConstructorReturn(
-      this,
-      _getPrototypeOf(MicroServer).call(this)
-    );
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(MicroServer).call(this));
     _this.conId = 0;
     _this.interface = void 0;
     _this.connectionIndex = {};
@@ -218,9 +199,7 @@ var MicroServer = (function(_ServiceCommon) {
       'bindService',
       'initServer'
     ].forEach(function(func) {
-      return (_this[func] = _this[func].bind(
-        _assertThisInitialized(_assertThisInitialized(_this))
-      ));
+      return (_this[func] = _this[func].bind(_assertThisInitialized(_assertThisInitialized(_this))));
     });
     setInterval(_this.processManagement, 1000);
     return _possibleConstructorReturn(
@@ -288,9 +267,7 @@ var MicroServer = (function(_ServiceCommon) {
             operations: _this2.operations,
             localStorage: {}
           };
-          Object.entries(require(process.env.operations)).forEach(function(
-            _ref2
-          ) {
+          Object.entries(require(process.env.operations)).forEach(function(_ref2) {
             var _ref3 = _slicedToArray(_ref2, 2),
               name = _ref3[0],
               op = _ref3[1];
@@ -299,9 +276,7 @@ var MicroServer = (function(_ServiceCommon) {
           });
 
           _this2.standardFunctions.forEach(function(func) {
-            return (_this2.operations[func] = _this2[func].bind(
-              _operationScope
-            ));
+            return (_this2.operations[func] = _this2[func].bind(_operationScope));
           });
 
           return resolve();
@@ -319,9 +294,7 @@ var MicroServer = (function(_ServiceCommon) {
 
             _resObject.status.transport = {
               code: 2006,
-              message: 'Micro service process exited unexpectedly. CODE: '.concat(
-                code
-              )
+              message: 'Micro service process exited unexpectedly. CODE: '.concat(code)
             };
             _resObject.status.command = {
               code: 200,
@@ -329,9 +302,7 @@ var MicroServer = (function(_ServiceCommon) {
             };
             _resObject.resultBody.errData = {
               entity: 'Unknown error',
-              action: 'Micro service process exited unexpectedly. CODE: '.concat(
-                code
-              ),
+              action: 'Micro service process exited unexpectedly. CODE: '.concat(code),
               errorType: 'ERROR',
               originalData: null
             };
@@ -363,16 +334,9 @@ var MicroServer = (function(_ServiceCommon) {
         return new Promise(function(resolve, reject) {
           return (0, _isPortFree.default)(parseInt(process.env.port, 10))
             .then(function() {
-              _this4.log(
-                'Starting service on port: '.concat(
-                  parseInt(process.env.port, 10)
-                ),
-                'log'
-              );
+              _this4.log('Starting service on port: '.concat(parseInt(process.env.port, 10)), 'log');
 
-              _this4.interface = _this4.invokeListener(
-                parseInt(process.env.port, 10)
-              );
+              _this4.interface = _this4.invokeListener(parseInt(process.env.port, 10));
 
               if (!_this4.interface) {
                 _this4.log('Unable to start Micro service!', 'log');
@@ -389,10 +353,7 @@ var MicroServer = (function(_ServiceCommon) {
 
               _this4.log(
                 'Service port "'
-                  .concat(
-                    parseInt(process.env.port, 10),
-                    '" not free or unknown error has occurred. MORE INFO: '
-                  )
+                  .concat(parseInt(process.env.port, 10), '" not free or unknown error has occurred. MORE INFO: ')
                   .concat(JSON.stringify(e, null, 2)),
                 'error'
               );
@@ -400,10 +361,7 @@ var MicroServer = (function(_ServiceCommon) {
               return reject(
                 Error(
                   'Service port "'
-                    .concat(
-                      parseInt(process.env.port, 10),
-                      '" not free or unknown error has occurred. MORE INFO: '
-                    )
+                    .concat(parseInt(process.env.port, 10), '" not free or unknown error has occurred. MORE INFO: ')
                     .concat(JSON.stringify(e, null, 2))
                 )
               );
@@ -418,24 +376,12 @@ var MicroServer = (function(_ServiceCommon) {
 
         return new Promise(function(resolve) {
           _this5.interface.on('SERVICE_REQUEST', function(socket, data) {
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Micro service connection request received'
-              )
-            );
+            _this5.log('['.concat(_this5.conId, '] Micro service connection request received'));
 
             _this5.connectionIndex = _defineProperty({}, _this5.conId, socket);
-            data
-              ? _this5.processRequest(socket, data)
-              : _this5.noDataRecieved(socket, data);
+            data ? _this5.processRequest(socket, data) : _this5.noDataRecieved(socket, data);
 
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Micro service connection request processed!'
-              )
-            );
+            _this5.log('['.concat(_this5.conId, '] Micro service connection request processed!'));
 
             return _this5.conId++;
           });
@@ -443,20 +389,12 @@ var MicroServer = (function(_ServiceCommon) {
           _this5.interface.on('SERVICE_KILL', function(socket) {
             var _resObject = new _response.default();
 
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Micro service connection request received'
-              )
-            );
+            _this5.log('['.concat(_this5.conId, '] Micro service connection request received'));
 
             _this5.connectionIndex = _defineProperty({}, _this5.conId, socket);
 
             _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Micro service connection request processed, kill command recieved!'
-              )
+              '['.concat(_this5.conId, '] Micro service connection request processed, kill command recieved!')
             );
 
             _this5.conId++;

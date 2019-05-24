@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "description": "Risen is a fast, modern and powerful microservices framework for Node.JS",
   "main": "dist/index.js",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.0.0 <12.0.0"
+  },
   "scripts": {
     "build": "babel src --out-dir dist",
     "devInstall": "yarn install --production=false",
     "test": "jest",
-    "test:single": "jest ./__tests__/suites/lib/validate.test.js",
+    "test:single": "jest ./__tests__/suites/index.test.js",
     "prepublishOnly": "rimraf dist && babel src --out-dir dist && yarn format && git commit -a -m 'version update & formatting' && yarn version --patch",
     "postversion": "git push",
     "format": "prettier --config ./.prettierrc --write './**/*.js'",

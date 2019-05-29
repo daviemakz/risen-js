@@ -12,7 +12,6 @@
     "devInstall": "yarn install --production=false",
     "test": "jest",
     "test:single": "jest ./__tests__/suites/index.test.js",
-    "prepublishOnly": "rimraf dist && babel src --out-dir dist && yarn format && (git diff-index --quiet HEAD || git commit -a -m 'version update & formatting') && yarn version --patch",
     "postversion": "git push",
     "format": "prettier --config ./.prettierrc --write './**/*.js'",
     "format-windows": "prettier --config ./.prettierrc --write ./**/*.js",

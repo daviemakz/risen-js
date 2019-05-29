@@ -5,7 +5,7 @@
 [![NPM](https://nodei.co/npm/risen-js.png?compact=true)](https://www.npmjs.com/package/risen-js)
 
 [![Build Status](https://travis-ci.org/daviemakz/risen-js.svg?branch=master)](https://travis-ci.org/daviemakz/risen-js)
-[![Downloads](https://img.shields.io/github/downloads/daviemakz/risen-js/total.svg)](https://www.npmjs.com/package/risen-js)
+[![Downloads](https://img.shields.io/npm/dm/risen-js.svg)](https://www.npmjs.com/package/risen-js)
 [![dependencies Status](https://david-dm.org/daviemakz/risen-js/status.svg)](https://david-dm.org/daviemakz/risen-js)
 [![devDependencies Status](https://david-dm.org/daviemakz/risen-js/dev-status.svg)](https://david-dm.org/daviemakz/risen-js?type=dev)
 

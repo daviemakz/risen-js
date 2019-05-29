@@ -117,7 +117,7 @@ const { Risen } = require('risen-js');
 const getPrimeNumber = {
   method: 'GET', // The method which the request must have
   uri: '/getPrimeNumbers', // The url route (after the domain)
-  handler: (req, res, { sendRequest, CommandBodyObject }) => {
+  handler: (req, res, { sendRequest, destroyConnection, CommandBodyObject }) => {
     // This is the handler which "connects" express to your service core and thus microservices.
     // In this example the microservice is doing the calculation and returning HTML which is then sent back
     // to the client. Below im getting a new object because all requests to micro services need to be done via a command object.
@@ -350,6 +350,7 @@ _This package is built with that assumption in mind so it’s worth noting._
 `defineService(name, operations, options)` - Please see the [Defining A Server](#defining-a-service) section for more details.  
 `startServer()` - After you have configured your server you use this method to start the server. It does nothing if you are in `client` mode.  
 `sendRequest(commandBody, serviceName, keepSocketAlive, customRisenJSTarget, openSocket, callback)` - This method is available from the service instance(s), service core and HTTP route handlers. This is the only function which allows communication between the different processes.
+`destroyConnection(socket, connectionId)` - Allows you to destroy a socket connection.
 
 ### defineService(...args)
 
@@ -369,6 +370,10 @@ RisenInstance.defineService(...args);
 // Start the framework
 RisenInstance.startServer();
 ```
+
+### destroyConnection(...args)
+
+The method allows you to destroy a connection at any point, it may be you don't want to send a response back so you don't need the connection open at that time.
 
 ### sendRequest(...args)
 
@@ -431,8 +436,10 @@ When the service core is starting instances of services it will automatically lo
 `apiGatewayPort [number]` - The main port where the service core listens to new connections. _NOTE: To bind below ports 1024 you need to have privileged access._  
 `portRangeStart [number]` - What port the service core should begin while trying to find a free port for a service instance.  
 `portRangeFinish [number]` - What port the service core should end its search if it cannot find a free port. At this point the service core will throw an error.  
-`coreOperations [object]` - This follows the same structure as defining operations for services. You can add new functions here which will be available for any instance (including the service core ) to use. Please see the [Service Core Operations](#service-core-operations) section for the default core operations.  
+`coreOperations [object]` - This follows the same structure as defining operations for services. You can add new functions here which will be available for any instance (including the service core) to use. Please see the [Service Core Operations](#service-core-operations) section for the default core operations.  
 `runOnStart [array]` - What core operations you want to be executed on start-up to perform a function of your choice. This would be for example where you would put any polling if you were so inclined.
+`onConRequest [function]` - A function which is executed when a connection is received by the service core.
+`onConClose [function]` - A function which is executed when a connection is closed by the service core.
 
 ## HTTP Configuration
 
@@ -481,12 +488,12 @@ Routes are defined as a collection of objects within an array. Below are the opt
 `uri [string]` - The URI which this route will be mapped to.  
 `preMiddleware [array]` - Any middleware you want the request to pass through before running your handler.  
 `postMiddleware [array]` - Any middleware you want the request to pass through after running your handler.  
-`handler [function (req, res, { sendRequest, CommandBodyObject, ResponseBodyObject }) => { res.send(/* response to client */)}]` - This is where you link express with the framework. It’s here where you receive a request from a client, you then send a request to your chosen service, receive a response from the service and send the data back to the client via `res.send()`.
+`handler [function (req, res, { sendRequest, destroyConnection, CommandBodyObject, ResponseBodyObject }) => { res.send(/* response to client */)}]` - This is where you link express with the framework. It’s here where you receive a request from a client, you then send a request to your chosen service, receive a response from the service and send the data back to the client via `res.send()`.
 
 **The handler used in the above example:**
 
 ```
-(req, res, { sendRequest, CommandBodyObject, ResponseBodyObject }) => {
+(req, res, { sendRequest, destroyConnection, CommandBodyObject, ResponseBodyObject }) => {
 
   /*
 
@@ -589,6 +596,29 @@ RisenInstance.defineService('exampleServiceName', pathToAboveFile, {
 ```
 
 The key of the object is the name of the operation on a service. If you wanted persistent process executing on an instance of a service, you would likely use `runOnStart` and setup some kind of recursive polling o.e.
+
+### Load Balancing Options
+
+For the load balancing above you can use either:
+
+`random` - Randomly send data to instances
+`roundRobin` - Send the data sequentially to each instance
+`function function(socketList) => [socketList[0], 0]` - A custom function which will receive an array containing sockets. Return an array consisting of: `[socket, socketIndex]`
+
+### Operation Function Scope
+
+Each operation defined in a service is bound to a shared scope (accessible via `this`) which looks like so:
+
+```
+{
+  sendRequest: [Function], // See above for parameters
+  destroyConnection: [Function], // See above for parameters
+  operations: [Object], // You can access any operations you defined for the service here
+  localStorage: [Object] // Local storage if needed
+}
+```
+
+While there is nothing which stops you storing any data inside `this.localStorage` you should not store data in an instance which will be required elsewhere, perhaps by the same service. Instances in this context should be treated as "copies" of a service, the result from one instance of a service should be the same as the responses from the other remaining instances.
 
 ## Data Messaging Structure
 

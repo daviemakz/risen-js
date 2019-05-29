@@ -437,8 +437,8 @@ When the service core is starting instances of services it will automatically lo
 `portRangeStart [number]` - What port the service core should begin while trying to find a free port for a service instance.  
 `portRangeFinish [number]` - What port the service core should end its search if it cannot find a free port. At this point the service core will throw an error.  
 `coreOperations [object]` - This follows the same structure as defining operations for services. You can add new functions here which will be available for any instance (including the service core) to use. Please see the [Service Core Operations](#service-core-operations) section for the default core operations.  
-`runOnStart [array]` - What core operations you want to be executed on start-up to perform a function of your choice. This would be for example where you would put any polling if you were so inclined.
-`onConRequest [function]` - A function which is executed when a connection is received by the service core.
+`runOnStart [array]` - What core operations you want to be executed on start-up to perform a function of your choice. This would be for example where you would put any polling if you were so inclined.  
+`onConRequest [function]` - A function which is executed when a connection is received by the service core.  
 `onConClose [function]` - A function which is executed when a connection is closed by the service core.
 
 ## HTTP Configuration

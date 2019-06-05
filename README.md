@@ -17,7 +17,9 @@ Risen.JS provides a level of abstraction above these frameworks, but also expose
 
 Because the "services" you will create run as Node.JS processes, this means you can build micro services utilising the tens of thousands of NPM packages which currently exist and are added every day. Simply put anything you can do in Node.JS, you can build a micro service to do for you.
 
-From inserting and retrieving data from a separate external database (e.g. Redis) to a service which converts images. It’s even possible to use this framework alongside [server-side rendering](https://reactjs.org/docs/react-dom-server.html) in [React.JS](https://reactjs.org), the possibilities are endless!
+From inserting and retrieving data from a separate external database (e.g. Redis) to a service which converts images. It’s even possible to use this framework alongside [server-side rendering](https://reactjs.org/docs/react-dom-server.html) in , the possibilities are endless!
+
+Click [here](https://medium.com/@daviemakz/a-simple-way-to-deploy-react-multi-threaded-server-side-rendering-with-risen-js-eba4db97407) to read a Medium article on Risen.JS!
 
 # Philosophy
 

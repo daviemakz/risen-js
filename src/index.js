@@ -56,7 +56,7 @@ export const buildSecureOptions = ssl => {
             ssl
           )
         )
-          .filter(([optionKey, filePath]) => filePath)
+          .filter(([, filePath]) => filePath)
           .map(([optionKey, filePath]) => ({
             [optionKey]: readFileSync(resolve(filePath)).toString()
           }))

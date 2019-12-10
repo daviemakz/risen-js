@@ -259,7 +259,6 @@ var buildSecureOptions = function buildSecureOptions(ssl) {
         )
           .filter(function(_ref) {
             var _ref2 = _slicedToArray(_ref, 2),
-              optionKey = _ref2[0],
               filePath = _ref2[1];
 
             return filePath;

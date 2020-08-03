@@ -814,6 +814,32 @@ Run the following commands to test the module:
 
 `yarn && yarn test`
 
+## Future Development:
+
+### Version 2
+
+### To Do:
+
+0. Improve project configuration
+
+1. Reuse HTTP connection from express server
+
+1. Update relevant NPM modules & clean up unused packages
+
+1. Single file configuration with on execution bundling into self contained code
+
+1. Customisable babel transpilation from configuration
+
+1. Allow connection to services via HTTPS
+
+1. Allow service connections outside of localhost: server:port
+
+1. Reformat service messages and document schema
+
+1. Migrate the repository to typescript migration
+
+1. Create GitHub docs website to formalise documentation
+
 ## Contributing
 
 All contributions are very welcome, please read my [CONTRIBUTING.md](https://github.com/daviemakz/risen-js/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/daviemakz/risen-js/pulls) or as [GitHub issues](https://github.com/daviemakz/risen-js/issues). If you'd like to improve code, please feel free!

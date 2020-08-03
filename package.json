@@ -63,12 +63,16 @@
     "@babel/register": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",
-    "eslint": "^6.7.2",
-    "eslint-config-airbnb": "^18.0.1",
+    "eslint": "^7.4.0",
+    "eslint-config-airbnb": "^18.2.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.14.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-json": "^2.1.1",
     "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-markdown": "^1.0.2",
     "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-react": "^7.12.2",
     "eslint-plugin-standard": "^4.0.0",
@@ -104,7 +108,6 @@
     "quick.db": "^7.0.0-b21",
     "sleep-async": "^1.0.5",
     "tmp": "0.0.33",
-    "uuid": "^3.3.2",
-    "yarn": "^1.13.0"
+    "uuid": "^3.3.2"
   }
 }

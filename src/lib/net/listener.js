@@ -1,12 +1,14 @@
 'use strict';
 
+/* eslint-disable */
+
 // Load NPM modules
 import net from 'net';
 
 // Load libs
 import networkBase from './networkBase';
 
-// FUNCTION: Extend object
+// Extend object
 const extendsObj = function(child, parent) {
   for (const key in parent) {
     if ({}.hasOwnProperty.call(parent, key)) {
@@ -22,7 +24,7 @@ const extendsObj = function(child, parent) {
   return child;
 };
 
-// FUNCTION: Listener
+// Listener
 const Listener = (function(_super) {
   extendsObj(Listener, _super);
   function Listener(address) {
@@ -67,7 +69,7 @@ const Listener = (function(_super) {
   };
   Listener.prototype.prepare = function(message) {
     const _this = this;
-    const subject = message.subject;
+    const { subject } = message;
     let i = 0;
     message.reply = function(json) {
       return message.conn.write(
@@ -79,22 +81,25 @@ const Listener = (function(_super) {
     };
     message.next = function() {
       let _ref;
-      return (_ref = _this.remoteMethods[subject]) !== null ? _ref[i++](message, message.data) : void 0;
+      return (_ref = _this.remoteMethods[subject]) !== null
+        ? _ref[i++](message, message.data)
+        : void 0;
     };
     return message;
   };
   Listener.prototype.dispatch = function(message) {
-    const subject = message.subject;
+    const { subject } = message;
     return message.next();
   };
   Listener.prototype.on = function() {
     let methods;
     let subject;
-    (subject = arguments[0]), (methods = arguments.length >= 2 ? [].slice.call(arguments, 1) : []);
+    (subject = arguments[0]),
+      (methods = arguments.length >= 2 ? [].slice.call(arguments, 1) : []);
     return (this.remoteMethods[subject] = methods);
   };
   return Listener;
 })(networkBase);
 
 // EXPORTS
-module.exports = Listener;
+export default Listener;

@@ -7,14 +7,49 @@
   "engines": {
     "node": ">=8.0.0"
   },
+  "moduleRoots": [
+    "src",
+    "."
+  ],
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn test",
+      "pre-commit": " yarn build && lint-staged && git add dist",
+      "post-commit": "run-if-changed",
+      "post-checkout": "run-if-changed",
+      "post-merge": "run-if-changed",
+      "post-rewrite": "run-if-changed"
+    }
+  },
+  "run-if-changed": {
+    "yarn.lock": "yarn install --prefer-offline --pure-lockfile"
+  },
+  "lint-staged": {
+    "**/*": [
+      "eslint --ignore-path .eslintignore --config .eslintrc.js --fix --quiet"
+    ],
+    "src/**/*": [
+      "prettier --write"
+    ],
+    "dist/**/*": [
+      "prettier --write"
+    ]
+  },
   "scripts": {
     "build": "babel src --out-dir dist",
     "devInstall": "yarn install --production=false",
-    "test": "jest",
-    "test:single": "jest ./__tests__/suites/index.test.js",
+    "format": "(yarn prettier:fix) && (yarn lint:fix)",
+    "lint:check": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
+    "lint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --fix",
     "postversion": "git push",
-    "format": "prettier --config ./.prettierrc --write './**/*.js'",
-    "format-windows": "prettier --config ./.prettierrc --write ./**/*.js",
+    "prettier:fix": "yarn prettier --write \"**/*.{js,jsx,ts,tsx,html}\"",
+    "test": "jest && (yarn lint:check)",
+    "test:ci": "jest --runInBand",
+    "test:noCov": "jest --no-coverage --verbose",
+    "test:single": "jest --verbose",
+    "test:single:noCov": "jest --no-coverage --verbose",
+    "test:update": "jest -u && (yarn lint:check)",
+    "test:watch": "jest --watch",
     "watch": "babel --watch src --out-dir dist"
   },
   "repository": {
@@ -52,19 +87,21 @@
   },
   "homepage": "https://github.com/daviemakz/risen-js#readme",
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
+    "@babel/cli": "^7.10.5",
     "@babel/core": "^7.3.3",
     "@babel/plugin-syntax-throw-expressions": "^7.2.0",
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/plugin-transform-runtime": "^7.3.4",
-    "@babel/polyfill": "^7.2.5",
-    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-env": "^7.11.0",
     "@babel/register": "^7.0.0",
+    "@hkdobrev/run-if-changed": "^0.3.1",
+    "@typescript-eslint/eslint-plugin": "^3.9.1",
+    "@typescript-eslint/parser": "^3.9.1",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^24.1.0",
-    "eslint": "^7.4.0",
-    "eslint-config-airbnb": "^18.2.0",
+    "babel-jest": "^26.3.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
@@ -73,15 +110,17 @@
     "eslint-plugin-markdown": "^1.0.2",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-react": "^7.12.2",
+    "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
-    "jest": "^24.1.0",
+    "husky": "^4.2.5",
+    "jest": "^26.4.2",
+    "lint-staged": "^10.2.11",
     "prettier": "^1.13.7",
-    "prettier-eslint": "^9.0.1",
+    "prettier-eslint": "^11.0.0",
     "prettier-eslint-cli": "^5.0.0",
     "request": "^2.88.0",
-    "rimraf": "^3.0.0"
+    "rimraf": "^3.0.0",
+    "typescript": "3.9.7"
   },
   "dependencies": {
     "autobind": "^1.0.3",
@@ -90,6 +129,7 @@
     "child-process": "^1.0.2",
     "child_process": "^1.0.2",
     "cookie-parser": "^1.4.3",
+    "core-js": "^3.6.5",
     "deepmerge": "^4.2.2",
     "eslint-config-standard": "^14.1.0",
     "express": "^4.16.4",
@@ -106,6 +146,7 @@
     "net": "^1.0.2",
     "path": "^0.12.7",
     "quick.db": "^7.0.0-b21",
+    "regenerator-runtime": "^0.13.7",
     "sleep-async": "^1.0.5",
     "tmp": "0.0.33",
     "uuid": "^3.3.2"

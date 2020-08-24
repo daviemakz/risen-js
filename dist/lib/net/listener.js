@@ -1,5 +1,10 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = void 0;
+
 var _net = _interopRequireDefault(require('net'));
 
 var _networkBase = _interopRequireDefault(require('./networkBase'));
@@ -46,7 +51,7 @@ var Listener = (function(_super) {
   Listener.prototype.startServer = function() {
     var _this = this;
 
-    var tcpServer = _net.default.createServer(function(connection) {
+    var tcpServer = _net['default'].createServer(function(connection) {
       return connection.on('data', function(data) {
         var message;
         var messageText;
@@ -104,7 +109,9 @@ var Listener = (function(_super) {
     message.next = function() {
       var _ref;
 
-      return (_ref = _this.remoteMethods[subject]) !== null ? _ref[i++](message, message.data) : void 0;
+      return (_ref = _this.remoteMethods[subject]) !== null
+        ? _ref[i++](message, message.data)
+        : void 0;
     };
 
     return message;
@@ -118,11 +125,13 @@ var Listener = (function(_super) {
   Listener.prototype.on = function() {
     var methods;
     var subject;
-    (subject = arguments[0]), (methods = arguments.length >= 2 ? [].slice.call(arguments, 1) : []);
+    (subject = arguments[0]),
+      (methods = arguments.length >= 2 ? [].slice.call(arguments, 1) : []);
     return (this.remoteMethods[subject] = methods);
   };
 
   return Listener;
-})(_networkBase.default);
+})(_networkBase['default']);
 
-module.exports = Listener;
+var _default = Listener;
+exports['default'] = _default;

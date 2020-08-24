@@ -13,7 +13,6 @@ FrameworkDatabase {
     "includes": [Function],
     "push": [Function],
     "set": [Function],
-    "startsWith": [Function],
     "subtract": [Function],
     "tableName": "exampleTable",
   },

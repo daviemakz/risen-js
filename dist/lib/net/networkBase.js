@@ -1,5 +1,9 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = void 0;
 var networkBase;
 
 networkBase = (function() {
@@ -51,4 +55,5 @@ networkBase = (function() {
   return networkBase;
 })();
 
-module.exports = networkBase;
+var _default = networkBase;
+exports['default'] = _default;

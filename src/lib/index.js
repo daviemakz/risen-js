@@ -1,7 +1,6 @@
 'use strict';
 
 // Load NPM Modules
-import getFreePort from 'find-free-port';
 import makeDirectory from 'mkdirp';
 import guid from 'uuid/v4';
 import { createWriteStream } from 'fs';
@@ -10,6 +9,17 @@ import { dirname } from 'path';
 
 // Load Templates
 import ResponseBodyObject from './template/response';
+
+// Load network components
+import { createSpeakerReconnector } from './net';
+
+// Load utils
+import {
+  findAFreePort,
+  handleOnData,
+  randomScheduling,
+  handleReplyToSocket
+} from './util';
 
 // Load libs
 import ServiceCommon from './common';
@@ -26,144 +36,137 @@ class ServiceCore extends ServiceCommon {
     // Assign instance name
     process.env.name = coreName;
     // Bind methods
-    return (
-      [
-        'addServerToTracking',
-        'removeServerFromTracking',
-        'initService',
-        'initConnectionToService',
-        'processComError',
-        'microServerCommunication',
-        'checkConnection',
-        'processComRequest',
-        'sentReplyToSocket',
-        'destinationUnknown',
-        'functionUnknown',
-        'initiateMicroServerConnection',
-        'databaseOperation'
-      ].forEach(func => (this[func] = this[func].bind(this))) || this
-    );
+    [
+      'addServerToTracking',
+      'removeServerFromTracking',
+      'initService',
+      'initConnectionToService',
+      'processComError',
+      'microServerCommunication',
+      'checkConnection',
+      'processComRequest',
+      'destinationUnknown',
+      'functionUnknown',
+      'initiateMicroServerConnection',
+      'databaseOperation'
+    ].forEach(func => {
+      this[func] = this[func].bind(this);
+    });
+    // Return instance
+    return this;
   }
 
-  // FUNCTION: Process a database operation
+  // Process a database operation
   databaseOperation(table, method, args, callback) {
     return setImmediate(() => {
       try {
-        return this.db.hasOwnProperty(table)
+        return Object.prototype.hasOwnProperty.call(this.db, table)
           ? callback(true, this.db[table][method](...args), null)
-          : callback(false, void 0, new Error(`The table ${table} does not exist!`));
+          : callback(
+              false,
+              void 0,
+              new Error(`The table ${table} does not exist!`)
+            );
       } catch (e) {
         return callback(false, void 0, e);
       }
     });
   }
 
-  // FUNCTION: Get the index of the instance via port & name
+  // Get the index of the instance via port & name
   getProcessIndex(name, port) {
     return this.serviceData[name].port.indexOf(port);
   }
 
-  // FUNCTION: Add new server to tracking object. This contains all the information for microservices
+  // Add new server to tracking object. This contains all the information for microservices
   addServerToTracking(name, port, processId) {
     // Assign port to used list
-    !this.inUsePorts.includes(port) && this.inUsePorts.push(port);
+    if (!this.inUsePorts.includes(port)) {
+      this.inUsePorts.push(port);
+    }
     // Clean out exited port if its there
-    process.env.exitedProcessPorts = (typeof process.env.exitedProcessPorts === 'string'
+    process.env.exitedProcessPorts = (typeof process.env.exitedProcessPorts ===
+    'string'
       ? process.env.exitedProcessPorts.split(',')
       : process.env.exitedProcessPorts
     )
       .map(port => parseInt(port, 10))
       .filter(exitedPort => typeof port === 'number' && exitedPort !== port);
+
     // Check that the server doesnt already exist
-    if (this.serviceData.hasOwnProperty(name)) {
-      return (
-        (this.serviceData[name] = Object.assign({}, this.serviceData[name], {
-          socket: this.serviceData[name].socket.concat(void 0),
-          port: this.serviceData[name].port.concat(port),
-          processId: this.serviceData[name].processId.concat(processId),
-          process: this.serviceData[name].process.concat(void 0),
-          connectionCount: this.serviceData[name].connectionCount.concat(0)
-        })) && true
-      );
+    if (Object.prototype.hasOwnProperty.call(this.serviceData, name)) {
+      this.serviceData[name] = {
+        ...this.serviceData[name],
+        socketList: this.serviceData[name].socketList.concat(void 0),
+        port: this.serviceData[name].port.concat(port),
+        processId: this.serviceData[name].processId.concat(processId),
+        process: this.serviceData[name].process.concat(void 0),
+        connectionCount: this.serviceData[name].connectionCount.concat(0)
+      };
+      return true;
     }
+
     // Add the server to the tracking
-    return (
-      (this.serviceData[name] = {
-        processId: [processId],
-        socket: [void 0],
-        status: false,
-        error: false,
-        port: [port],
-        connectionCount: [0],
-        process: [void 0]
-      }) && true
-    );
+    this.serviceData[name] = {
+      processId: [processId],
+      socketList: [void 0],
+      status: false,
+      error: false,
+      port: [port],
+      connectionCount: [0],
+      process: [void 0]
+    };
+
+    // Return
+    return true;
   }
 
-  // FUNCTION: Removes the service from the tracking object
+  // Removes the service from the tracking object
   removeServerFromTracking(name, port) {
     // Get index by name and port
     const socketIndex = this.serviceData[name].port.indexOf(port);
     // Remove port from used port list
     this.inUsePorts = this.inUsePorts.filter(usedPort => usedPort !== port);
+
     // Remove tracking information for service
     if (socketIndex > -1) {
       // Remove service tracking information
       this.serviceData[name].processId.splice(socketIndex, 1);
-      this.serviceData[name].socket.splice(socketIndex, 1);
+      this.serviceData[name].socketList.splice(socketIndex, 1);
       this.serviceData[name].port.splice(socketIndex, 1);
       this.serviceData[name].process.splice(socketIndex, 1);
       this.serviceData[name].connectionCount.splice(socketIndex, 1);
     }
+
     // Return
     return void 0;
   }
 
-  // FUNCTION: Initiate a connection to a microservice
+  // Initiate a connection to a microservice
   initService(name, callback) {
     // Define port
     let port = void 0;
-    let processId = guid();
-    // Get a free port
-    const findAFreePort = () => {
-      return new Promise(resolve =>
-        getFreePort(this.settings.portRangeStart, this.settings.portRangeFinish, (err, freePort) => resolve(freePort))
-      );
-    };
-    // Process text
-    const processStdio = (name, type, data) => {
-      return (
-        `[Child process: ${type}] Micro service - ${name}: ${
-          typeof data === 'object' ? JSON.stringify(data, null, 2) : data
-        }` || ''
-      ).trim();
-    };
-    // Handle stdio
-    const handleOnData = (name, type, data) => {
-      // Build text
-      const logOutput = processStdio(`${name}/port:${port}/id:${processId}`, type, data);
-      // Write to log
-      this.writeToLogFile(logOutput);
-      // Show in parent console
-      this.log(logOutput, 'log');
-    };
+    const processId = guid();
+
     // Build micro service wrapper
     const microServiceWrapper = () => {
       return new Promise((resolve, reject) => {
-        const ensurePortFree = async () => {
+        const initialiseOnFreePort = async () => {
           try {
             // Find a free port and assign above scope
-            port = await findAFreePort();
+            port = await findAFreePort(this);
             // Check if the port has been marked as inuse
             if (this.inUsePorts.includes(port)) {
-              return setTimeout(ensurePortFree, 50);
+              return setTimeout(initialiseOnFreePort, 50);
             }
             // Check that the retrieving a port was successful
             this.addServerToTracking(name, port, processId);
             // Reset error status
             this.serviceData[name].error = false;
             // Assign process to instance
-            this.serviceData[name].process[this.getProcessIndex(name, port)] = exec(
+            this.serviceData[name].process[
+              this.getProcessIndex(name, port)
+            ] = exec(
               `${process.execPath} ${__dirname}/server/index.js`,
               {
                 maxBuffer: 1024 * this.settings.maxBuffer,
@@ -188,7 +191,11 @@ class ServiceCore extends ServiceCommon {
                   this.serviceData[name].error = true;
                 }
                 // Show log
-                handleOnData(name, 'event', `Micro service - ${name}: Process has exited!`);
+                handleOnData(this, port, processId)(
+                  name,
+                  'event',
+                  `Micro service - ${name}: Process has exited!`
+                );
               }
             );
             // Resolve
@@ -198,33 +205,51 @@ class ServiceCore extends ServiceCommon {
           }
         };
         // Return
-        return ensurePortFree();
+        return initialiseOnFreePort();
       });
     };
-    // Service exit handler assigner
-    const assignEventHandlers = () => {
-      return new Promise(resolve => {
-        // Assign to standard streams
-        ['stdout', 'stderr'].forEach(event =>
-          this.serviceData[name].process[this.getProcessIndex(name, port)][event].on('data', data =>
-            handleOnData(name, event, data)
-          )
-        );
-        // onExit
-        ['exit'].forEach(event =>
-          this.serviceData[name].process[this.getProcessIndex(name, port)].on(event, restartService)
-        );
-        // Resolve
-        resolve();
-      });
-    };
+
     // Service starter wrapper
     const startService = async callback => {
       try {
         // Initialise service
         await microServiceWrapper();
+
         // Assign process event handler
-        await assignEventHandlers();
+        await new Promise(resolve => {
+          // Assign to standard streams
+          ['stdout', 'stderr'].forEach(event =>
+            this.serviceData[name].process[this.getProcessIndex(name, port)][
+              event
+            ].on('data', data =>
+              handleOnData(this, port, processId)(name, event, data)
+            )
+          );
+
+          // onExit
+          ['exit'].forEach(event =>
+            this.serviceData[name].process[this.getProcessIndex(name, port)].on(
+              event,
+              () => {
+                // Restart service
+                setTimeout(() => {
+                  if (
+                    !process.env.exitedProcessPorts
+                      .split(',')
+                      .map(port => parseInt(port, 10))
+                      .includes(port)
+                  ) {
+                    startService(callback);
+                  }
+                }, this.settings.restartTimeout);
+              }
+            )
+          );
+
+          // Resolve
+          resolve();
+        });
+
         // Start checking for connection
         await new Promise(resolve => {
           this.initConnectionToService(name, port, (...args) => {
@@ -236,24 +261,15 @@ class ServiceCore extends ServiceCommon {
         throw new Error(e);
       }
     };
-    // Service restarter wrapper
-    const restartService = () => {
-      return setTimeout(() => {
-        !process.env.exitedProcessPorts
-          .split(',')
-          .map(port => parseInt(port, 10))
-          .includes(port) && startService(callback);
-      }, this.settings.restartTimeout);
-    };
+
     // Start service initially
     startService(callback);
   }
 
-  // FUNCTION: Write output to log file
+  // Write output to log file
   writeToLogFile(contents) {
-    return (
-      this.settings.logPath &&
-      makeDirectory(dirname(this.settings.logPath), err => {
+    if (this.settings.logPath) {
+      return makeDirectory(dirname(this.settings.logPath), err => {
         // Throw error if failed to write to log file
         if (err) {
           this.log(`Unable to write to log file. MORE INFO: ${err}`, 'warn');
@@ -266,72 +282,79 @@ class ServiceCore extends ServiceCommon {
           });
         }
         // Write the file
-        return this.logFileStream.write(contents + '\n');
-      })
-    );
+        return this.logFileStream.write(`${contents}\n`);
+      });
+    }
+    return void 0;
   }
 
-  // FUNCTION: Connect To Server & Return Object (API gateway only!)
+  // Connect To Server & Return Object (API gateway only!)
   initiateMicroServerConnection(port, callback) {
     // Get Variables
-    let _connectionAttempts = 0;
-    // Invoke Network Interface
-    const _portSpeaker = this.invokeSpeakerPersistent(port);
+    let connectionAttempts = 0;
+    const { microServiceConnectionTimeout } = this.settings;
+    // Invoke the port emitter
+    const portEmitter = createSpeakerReconnector(port);
     // Check Socket Is Ready & Execute
     const startMicroServiceConnection = () => {
       // Check If Socket Initialized Then Continue...
-      if (Object.values(_portSpeaker.sockets).length === 0) {
+      if (Object.values(portEmitter.sockets).length === 0) {
         // Wait & Retry (including timeout)
-        if (_connectionAttempts <= this.settings.microServiceConnectionTimeout) {
+        if (connectionAttempts <= microServiceConnectionTimeout) {
           // Try Again...
           return setTimeout(() => {
             startMicroServiceConnection();
-            return _connectionAttempts++;
+            connectionAttempts += 1;
           }, 10);
         }
         // Return Error Object
-        _portSpeaker.error = 'Socket initialization timeout...';
+        portEmitter.error = 'Socket initialization timeout...';
         // Notification
         return this.log(`Socket initialization timeout. PORT: ${port}`, 'log');
       }
       // Send Data To Destination
-      this.log(`Service core successfully initialized socket on port: ${port}`, 'log');
+      this.log(
+        `Service core successfully initialized socket on port: ${port}`,
+        'log'
+      );
       // Return Object Speaker
-      return callback(_portSpeaker);
+      return callback(portEmitter);
     };
     // Check Connection & Start
     return startMicroServiceConnection();
   }
 
-  // FUNCTION: Initiate a connection to a microservice
+  // Initiate a connection to a microservice
   initConnectionToService(name, port, callback) {
     // Initiate micro service connection
     return this.initiateMicroServerConnection(port, socket => {
       // Show status
-      if (socket.hasOwnProperty('error')) {
+      if (Object.prototype.hasOwnProperty.call(socket, 'error')) {
         this.log(`Unable to connect to service - ${name}. Retrying...`, 'log');
         // Set status
         this.serviceData[name].status = false;
         // Retry
-        return setTimeout(() => this.initConnectionToService(name, port, callback), this.settings.connectionTimeout);
+        return setTimeout(
+          () => this.initConnectionToService(name, port, callback),
+          this.settings.connectionTimeout
+        );
       }
       this.log('Connected to service, ready for client connections!');
       // Set status
       this.serviceData[name].status = true;
       // Store Socket Object
-      this.serviceData[name].socket[this.getProcessIndex(name, port)] = socket;
+      this.serviceData[name].socketList[
+        this.getProcessIndex(name, port)
+      ] = socket;
       // Callback
       return callback(true, socket);
     });
   }
 
   // FUNCTION : Handles Error(s) In Communication/Messages
-  processComError(data, message) {
-    // Get Parameters
-    const _data = data;
-    const _foreignSocket = message;
+  processComError(data, clientSocket) {
     // Check Empty Data
-    if (!_data) {
+    if (!data) {
       // Create Response Object
       const responseObject = new ResponseBodyObject();
       // Build Response Object [status - transport]
@@ -349,53 +372,74 @@ class ServiceCore extends ServiceCommon {
         entity: 'Service core',
         action: 'Request error handling',
         errorType: 'ERROR',
-        originalData: _data
+        originalData: data
       };
       // Notification
       this.log(`No data received. MORE INFO: ${responseObject}`, 'log');
       // Send Response
-      return _foreignSocket.reply(responseObject);
+      return clientSocket.reply(responseObject);
     }
     // Return
     return void 0;
   }
 
-  // FUNCTION: Communicate With MicroServer
-  microServerCommunication(recData, foreignSocket, localSocket, conId) {
+  // Communicate With MicroServer
+  microServerCommunication(recData, clientSocket, microServiceInfo, conId) {
     // Check Socket Readiness...
-    if (localSocket.status === 0) {
+    if (microServiceInfo.status === 0) {
       return 'connectionNotReady';
     }
+
     // Get socket information
-    const [socket, index] = this.getMicroServiceSocket(recData.destination, localSocket.socket);
+    const [socket, index] = this.getMicroServiceSocket(
+      recData.destination,
+      microServiceInfo.socketList
+    );
+
     // Add to connection count for socket
-    ++this.serviceData[recData.destination].connectionCount[index];
+    this.serviceData[recData.destination].connectionCount[index] += 1;
+
     // Send to socket
     return socket.request('SERVICE_REQUEST', recData, res => {
       // Send Micro Service Response To Source
-      foreignSocket.reply(res);
+      clientSocket.reply(res);
       // Close Socket If Keep Alive Not Set
-      recData.keepAlive === false && foreignSocket.conn.destroy();
+      if (recData.keepAlive === false) {
+        clientSocket.conn.destroy();
+      }
       // Show message in console
-      recData.keepAlive === false
-        ? this.log(`[${conId}] Service core has closed the connection!`, 'log')
-        : this.log(
-            `[${conId}] Service core has not closed this connection, this socket can be reused or manually closed via socket.conn.destroy()`,
-            'log'
-          );
+      if (recData.keepAlive === false) {
+        this.log(`[${conId}] Service core has closed the connection!`, 'log');
+      } else {
+        this.log(
+          `[${conId}] Service core has not closed this connection, this socket can be reused or manually closed via socket.conn.destroy()`,
+          'log'
+        );
+      }
       // Return
       return 'connectionReady';
     });
   }
 
   // Check connection
-  checkConnection(recData, foreignSock, localSock, conId, _connectionAttempts) {
+  checkConnection(
+    recData,
+    clientSocket,
+    microServiceInfo,
+    conId,
+    connectionAttempts
+  ) {
     // Perform action
-    const _connectionInstance = this.microServerCommunication(recData, foreignSock, localSock, conId);
-    let _connectionAttemptsLocal = _connectionAttempts;
+    const microServerConnection = this.microServerCommunication(
+      recData,
+      clientSocket,
+      microServiceInfo,
+      conId
+    );
+    let intConnAttempts = connectionAttempts;
     // Check Connection, Execute Or Timeout...
-    if (_connectionInstance === 'connectionNotReady') {
-      if (_connectionAttemptsLocal > this.settings.microServiceConnectionAttempts) {
+    if (microServerConnection === 'connectionNotReady') {
+      if (intConnAttempts > this.settings.microServiceConnectionAttempts) {
         // Notification
         this.log('Service connection initiation attempts, maximum reached');
         // Create Response Object
@@ -418,31 +462,33 @@ class ServiceCore extends ServiceCommon {
           originalData: recData
         };
         // Send Response Back To Source
-        foreignSock.reply(responseObject);
+        clientSocket.reply(responseObject);
         // Close Socket
-        return foreignSock.conn.destroy();
+        return clientSocket.conn.destroy();
       }
       // Increment Connection Attempts
-      _connectionAttemptsLocal++;
+      intConnAttempts += 1;
       // Wait & Try Again...
       return setTimeout(
-        () => this.checkConnection(recData, foreignSock, localSock, conId, _connectionAttemptsLocal),
+        () =>
+          this.checkConnection(
+            recData,
+            clientSocket,
+            microServiceInfo,
+            conId,
+            intConnAttempts
+          ),
         10
       );
     }
     // Console log
-    return this.log(`[${conId}] Local socket connection handed over successfully!`);
+    return this.log(
+      `[${conId}] Local socket connection handed over successfully!`
+    );
   }
 
-  // FUNCTION: Get socket depending on queue type
+  // Get socket depending on queue type
   getMicroServiceSocket(name, socketList) {
-    // Random scheduling default..
-    const randomScheduling = () => {
-      // Queuing: random
-      const socketIndex = Math.floor(Math.random() * socketList.length);
-      // Return
-      return [socketList[socketIndex], socketIndex];
-    };
     // Get socket for service
     switch (true) {
       case typeof this.serviceOptions[name].loadBalancing === 'function': {
@@ -461,24 +507,21 @@ class ServiceCore extends ServiceCommon {
         return randomScheduling();
       }
       default: {
-        this.log(`Load balancing strategy for ${name} is incorrect. Defaulting to "random" strategy...`, 'warn');
+        this.log(
+          `Load balancing strategy for ${name} is incorrect. Defaulting to "random" strategy...`,
+          'warn'
+        );
         return randomScheduling();
       }
     }
   }
 
-  // FUNCTION: Send request to localSocket
-  sentReplyToSocket(data, socket, keepAlive = false) {
-    // Reply
-    socket.reply(data);
-    // Close Socket
-    return keepAlive && socket.conn.destroy();
-  }
-
   // Function unknown
   functionUnknown(data) {
     // Notification
-    this.log(`Request received & destination verified but function unknown. MORE INFO: ${data.destination}`);
+    this.log(
+      `Request received & destination verified but function unknown. MORE INFO: ${data.destination}`
+    );
     // Create Response Object
     const responseObject = new ResponseBodyObject();
     // Build Response Object [status - transport]
@@ -505,7 +548,9 @@ class ServiceCore extends ServiceCommon {
   // Destination unknown
   destinationUnknown(data) {
     // Notification
-    this.log(`Request received but destination unknown. MORE INFO: ${data.destination}`);
+    this.log(
+      `Request received but destination unknown. MORE INFO: ${data.destination}`
+    );
     // Create Response Object
     const responseObject = new ResponseBodyObject();
     // Build Response Object [status - transport]
@@ -530,35 +575,51 @@ class ServiceCore extends ServiceCommon {
   }
 
   // FUNCTION : Process Communication Request
-  processComRequest(data, message, id) {
+  processComRequest(data, clientSocket, connectionId) {
     // Service Connection Attempt Count...
-    const _connectionAttempts = 0;
-    // Get Parameters
-    const _data = data;
-    const _connectionId = id;
-    const _foreignSocket = message;
+    const connectionAttempts = 0;
     // Process Request [Redirection]
     switch (true) {
-      case _data.destination === process.env.name: {
+      case data.destination === process.env.name: {
         // Return
         return setImmediate(() =>
-          this.coreOperations.hasOwnProperty(_data.data.funcName)
-            ? this.coreOperations[_data.data.funcName](_foreignSocket, _data.data)
-            : this.sentReplyToSocket(this.functionUnknown(_data), _foreignSocket, false)
+          Object.prototype.hasOwnProperty.call(
+            this.coreOperations,
+            data.data.funcName
+          )
+            ? this.coreOperations[data.data.funcName](clientSocket, data.data)
+            : handleReplyToSocket(
+                this.functionUnknown(data),
+                clientSocket,
+                false
+              )
         );
       }
-      case this.serviceData.hasOwnProperty(_data.destination): {
-        // Get server data
-        const _localSocket = this.serviceData[_data.destination];
+      case Object.prototype.hasOwnProperty.call(
+        this.serviceData,
+        data.destination
+      ): {
+        // Get micro server data
+        const microServiceInfo = this.serviceData[data.destination];
         // Check Connection & Send Data
-        return this.checkConnection(_data, _foreignSocket, _localSocket, _connectionId, _connectionAttempts);
+        return this.checkConnection(
+          data,
+          clientSocket,
+          microServiceInfo,
+          connectionId,
+          connectionAttempts
+        );
       }
       default: {
-        return this.sentReplyToSocket(this.destinationUnknown(_data), _foreignSocket, false);
+        return handleReplyToSocket(
+          this.destinationUnknown(data),
+          clientSocket,
+          false
+        );
       }
     }
   }
 }
 
 // EXPORTS
-module.exports = ServiceCore;
+export default ServiceCore;

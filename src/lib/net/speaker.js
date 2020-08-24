@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable */
+
 // Load NPM modules
 import net from 'net';
 
@@ -10,7 +12,7 @@ import networkBase from './networkBase';
 const ERR_REQ_REFUSED = -1;
 const MAX_WAITERS = 9999999;
 
-// FUNCTION: Extend object
+// Extend object
 const extendsObj = function(child, parent) {
   for (const key in parent) {
     if ({}.hasOwnProperty.call(parent, key)) {
@@ -26,7 +28,7 @@ const extendsObj = function(child, parent) {
   return child;
 };
 
-// FUNCTION: Speaker
+// Speaker
 const Speaker = (function(_super) {
   extendsObj(Speaker, _super);
   function Speaker(addresses) {
@@ -57,14 +59,11 @@ const Speaker = (function(_super) {
     socket.setEncoding('utf8');
     socket.setNoDelay(true);
     socket.setMaxListeners(Infinity);
-    socket.connect(
-      port,
-      host,
-      () => {
-        process.env.verbose === 'true' && console.log(`Successfully connected on port: ${port}`);
-        return _this.sockets.push(socket);
-      }
-    );
+    socket.connect(port, host, () => {
+      process.env.verbose === 'true' &&
+        console.log(`Successfully connected on port: ${port}`);
+      return _this.sockets.push(socket);
+    });
     socket.on('data', data => {
       let message;
       let messageText;
@@ -159,4 +158,4 @@ const Speaker = (function(_super) {
 })(networkBase);
 
 // EXPORTS
-module.exports = Speaker;
+export default Speaker;

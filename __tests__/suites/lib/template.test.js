@@ -1,8 +1,8 @@
 'use strict';
 
 // Import system components
-import CommandTemplate from './../../../dist/lib/template/command.js';
-import ResponseTemplate from './../../../dist/lib/template/response.js';
+import CommandTemplate from '../../../dist/lib/template/command';
+import ResponseTemplate from '../../../dist/lib/template/response';
 
 describe('dist/lib/validate', () => {
   describe('CommandTemplate()', () => {

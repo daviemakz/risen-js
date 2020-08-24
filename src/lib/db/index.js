@@ -6,9 +6,10 @@ import Database from 'quick.db';
 // Define class
 class FrameworkDatabase {
   constructor(options) {
+    /* eslint-disable-next-line */
     this.db = new Database.table(options.databaseName);
     return this;
   }
 }
 
-module.exports = FrameworkDatabase;
+export default FrameworkDatabase;

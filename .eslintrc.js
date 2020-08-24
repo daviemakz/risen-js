@@ -1,21 +1,14 @@
 module.exports = {
   rules: {
-    'no-void': 'off',
     strict: 'off',
-    'no-shadow': 'off',
-    'no-restricted-imports': ['error', { patterns: ['../*'] }]
+    'capitalized-comments': ['error'],
+    'import/no-dynamic-require': 'off',
+    'global-require': 'off',
+    'no-void': 'off',
+    'no-shadow': 'off'
   },
   extends: [
-    'airbnb',
-    'prettier',
-    'prettier/@typescript-eslint',
-    'prettier/babel',
-    'plugin:import/errors',
-    'plugin:import/warnings',
-    'plugin:import/typescript',
-    'plugin:json/recommended',
-    'prettier/standard',
-    'airbnb',
+    'airbnb-base',
     'eslint:recommended',
     'plugin:import/errors',
     'plugin:import/typescript',
@@ -31,20 +24,24 @@ module.exports = {
     global: 'readonly',
     self: 'readonly',
     window: 'readonly',
-    Office: 'readonly',
     flushPromises: 'readonly',
     render: 'readonly'
   },
   settings: {
     'import/resolver': {
       node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx', 'json', '.js', '.jsx', '.ts', '.tsx', 'json'],
-        moduleDirectory: ['node_modules', './', '.', 'node_modules', './', '.']
+        extensions: ['.js', '.ts', 'json', '.js', '.ts', 'json'],
+        moduleDirectory: ['node_modules', './', '.']
       }
     }
   },
-  overrides: [{ files: ['*.test.js', '*.test.jsx'], rules: { 'no-restricted-imports': 'off' } }],
-  plugins: ['html', 'markdown', 'html', 'markdown', '@typescript-eslint', 'office-addins'],
+  overrides: [
+    {
+      files: ['*.test.js', '*.test.jsx'],
+      rules: { 'no-restricted-imports': 'off' }
+    }
+  ],
+  plugins: ['markdown', '@typescript-eslint'],
   parser: '@typescript-eslint/parser',
   parserOptions: { ecmaVersion: 10, sourceType: 'module', ecmaFeatures: {} },
   env: { commonjs: true, es6: true, jest: true, node: true }

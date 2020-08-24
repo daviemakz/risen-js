@@ -41,7 +41,7 @@ This package was created to handle a lot of the complexity involved in deploying
 - The framework should restart failed services automatically and allow changing of the number of instances during runtime
 - The framework should handle all communication, ports and routing and allow extensive hardening and configuration
 
-_Supports Node 8.x +_
+_Supports Node 10.x +_
 
 # Installation
 
@@ -787,11 +787,23 @@ Command body for removing **3** instances to a service:
 
 Note that if you only have **2** instances and request to remove **5** the service core will stop all remaining instances, effectively shutting down this service. The interesting this is you can always start them back up at any point during runtime.
 
-# Error Codes
+# Codes
 
 Below are the status codes which service core will append to your response object before sending it back to its origin:
 
-## Transport
+## Success Codes
+
+### Transport
+
+- 1000 - Transport completed successfully.
+
+### Command
+
+- 100 - Command completed successfully.
+
+## Error Codes
+
+### Transport
 
 - 2001 - No data received.
 - 2002 - Service connection initiation attempts, maximum reached.
@@ -801,7 +813,7 @@ Below are the status codes which service core will append to your response objec
 - 2006 - Child service process exited unexpectedly.
 - 2007 - Child service process exited unexpectedly.
 
-## Command
+### Command
 
 - 200 - Command not executed, transport failure or no data received.
 - 201 - Command not executed, internal redirection failure.
@@ -820,25 +832,33 @@ Run the following commands to test the module:
 
 ### To Do:
 
-0. Improve project configuration
+- Improve project configuration. [DONE]
 
-1. Reuse HTTP connection from express server
+- Clean up code to align more closely with latest ECMA10+. [DONE]
 
-1. Update relevant NPM modules & clean up unused packages
+- Add a development mode to the package which allows everything to be tested
 
-1. Single file configuration with on execution bundling into self contained code
+- Add methods to response object to allow self setting of data. (Getter & Setters)
 
-1. Customisable babel transpilation from configuration
+- Add cleaner method other than `sendRequest()` modelled around express
 
-1. Allow connection to services via HTTPS
+- Reuse HTTP connection from express server.
 
-1. Allow service connections outside of localhost: server:port
+- Update relevant NPM modules & clean up unused packages.
 
-1. Reformat service messages and document schema
+- Single file configuration with on execution bundling into self contained code.
 
-1. Migrate the repository to typescript migration
+- Customisable babel transpilation from configuration.
 
-1. Create GitHub docs website to formalise documentation
+- Allow connection to services via HTTPS.
+
+- Allow service connections outside of localhost: server:port.
+
+- Reformat service messages and document schema.
+
+- Increase code coverage to 90+.
+
+- Create GitHub docs website to formalise documentation.
 
 ## Contributing
 

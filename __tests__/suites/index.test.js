@@ -1,8 +1,5 @@
 'use strict';
 
-// Just for our self signed certificate
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
 // Import NPM modules
 import request from 'request';
 import fs from 'fs';
@@ -16,7 +13,10 @@ import {
   CommandBodyObject,
   ResponseBodyObject,
   Risen
-} from './../../dist';
+} from '../../dist';
+
+// Just for our self signed certificate
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 // Hide console
 console.log = () => void 0;
@@ -205,7 +205,7 @@ const testServerOperationsPath = './__tests__/source/services/testService';
 const echoServerOperationsPath = './__tests__/source/services/echoService';
 
 // Test suite
-describe('src/index', () => {
+describe('dist/index', () => {
   // Set timeout
   jest.setTimeout(30000);
   // Clear files
@@ -214,37 +214,94 @@ describe('src/index', () => {
       fs.unlink(file, () => void 0);
     });
   });
+
   // Begin testing
   describe('const defaultInstanceOptions', () => {
     test('snapshot is expected', () => {
-      expect(defaultInstanceOptions).toMatchSnapshot();
+      expect(defaultInstanceOptions).toEqual({
+        mode: 'server',
+        http: false,
+        databaseNames: ['_defaultTable'],
+        verbose: true,
+        maxBuffer: 50,
+        restartTimeout: 50,
+        connectionTimeout: 1000,
+        microServiceConnectionTimeout: 10000,
+        microServiceConnectionAttempts: 1000,
+        apiGatewayPort: 8080,
+        portRangeStart: 1024,
+        portRangeFinish: 65535,
+        coreOperations: {},
+        runOnStart: []
+      });
     });
   });
+
   describe('const defaultServiceOptions', () => {
     test('snapshot is expected', () => {
-      expect(defaultServiceOptions).toMatchSnapshot();
+      expect(defaultServiceOptions).toEqual({
+        loadBalancing: 'roundRobin',
+        runOnStart: [],
+        instances: 1
+      });
     });
   });
+
   describe('buildSecureOptions()', () => {
     test('snapshot is expected', () => {
-      expect(buildSecureOptions(sslOptions)).toMatchSnapshot();
+      expect(buildSecureOptions(sslOptions)).toEqual({
+        key: fs.readFileSync('./__tests__/source/ssl/key.pem', 'utf8'),
+        cert: fs.readFileSync('./__tests__/source/ssl/server.crt', 'utf8')
+      });
     });
   });
+
   describe('buildHttpOptions()', () => {
     test('snapshot is expected', () => {
-      expect(buildHttpOptions(httpOptions)).toMatchSnapshot();
+      expect(JSON.parse(JSON.stringify(buildHttpOptions(httpOptions)))).toEqual({
+        port: 12000,
+        ssl: {
+          key: fs.readFileSync('./__tests__/source/ssl/key.pem', 'utf8'),
+          cert: fs.readFileSync('./__tests__/source/ssl/server.crt', 'utf8')
+        },
+        harden: true,
+        middlewares: [],
+        static: ['public'],
+        routes: [
+          {
+            method: 'GET',
+            uri: '/service',
+            preMiddleware: [],
+            postMiddleware: []
+          },
+          { method: 'GET', uri: '/' }
+        ]
+      });
     });
   });
+
   describe('ResponseBodyObject()', () => {
     test('snapshot is expected', () => {
-      expect(ResponseBodyObject()).toMatchSnapshot();
+      expect(ResponseBodyObject()).toEqual({
+        status: {
+          transport: {
+            code: 1000,
+            message: 'Transport completed successfully',
+            responseSource: ''
+          },
+          command: { code: 100, message: 'Command completed successfully' }
+        },
+        resultBody: { resData: {}, errData: {} }
+      });
     });
   });
+
   describe('CommandBodyObject()', () => {
     test('snapshot is expected', () => {
-      expect(CommandBodyObject()).toMatchSnapshot();
+      expect(CommandBodyObject()).toEqual({ funcName: '', body: {} });
     });
   });
+
   describe('class Risen()', () => {
     // Initialise instance
     const MSFrameworkInstance = new Risen(frameworkOptions);
@@ -266,7 +323,7 @@ describe('src/index', () => {
       MSFrameworkInstance.startServer();
       // Test service to service redirection
       test('service to service redirection works', async () => {
-        let requestResult = await new Promise((resolve, reject) => {
+        const requestResult = await new Promise((resolve, reject) => {
           setTimeout(
             () =>
               request('https://localhost:12000/checkRedirection', requestOptions, (err, res, body) =>
@@ -278,7 +335,7 @@ describe('src/index', () => {
         expect(requestResult).toMatchSnapshot();
       });
       test('internal database service works', async () => {
-        let requestResult = await new Promise((resolve, reject) => {
+        const requestResult = await new Promise((resolve, reject) => {
           setTimeout(
             () =>
               request('https://localhost:12000/checkDb', requestOptions, (err, res, body) =>
@@ -290,7 +347,7 @@ describe('src/index', () => {
         expect(requestResult).toMatchSnapshot();
       });
       test('file logging works', async () => {
-        let fileLogData = await new Promise((resolve, reject) => {
+        const fileLogData = await new Promise((resolve, reject) => {
           setTimeout(() => {
             fs.readFile(fileLog, 'utf8', (err, contents) => {
               err === null ? resolve(contents) : reject(err);
@@ -300,7 +357,7 @@ describe('src/index', () => {
         expect(fileLogData).toBeDefined();
       });
       test('sql lite file works', async () => {
-        let sqLiteData = await new Promise((resolve, reject) => {
+        const sqLiteData = await new Promise((resolve, reject) => {
           setTimeout(() => {
             fs.readFile(sqlLite, 'utf8', (err, contents) => {
               err === null ? resolve(contents) : reject(err);

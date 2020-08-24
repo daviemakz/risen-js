@@ -1,9 +1,11 @@
 'use strict';
 
+/* eslint-disable */
+
 // Declare variables
 let networkBase;
 
-// FUNCTION: Messenger base
+// Messenger base
 networkBase = (function() {
   function networkBase() {
     this.savedBuffer = '';
@@ -42,4 +44,4 @@ networkBase = (function() {
 })();
 
 // EXPORTS
-module.exports = networkBase;
+export default networkBase;

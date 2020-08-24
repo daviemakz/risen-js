@@ -1,7 +1,7 @@
 'use strict';
 
 // Import system components
-import Db from './../../../dist/lib/db';
+import Db from '../../../dist/lib/db';
 
 // Test suite
 describe('dist/lib/db', () => {

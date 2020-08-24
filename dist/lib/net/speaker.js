@@ -1,5 +1,10 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = void 0;
+
 var _net = _interopRequireDefault(require('net'));
 
 var _networkBase = _interopRequireDefault(require('./networkBase'));
@@ -62,19 +67,16 @@ var Speaker = (function(_super) {
     self = this;
     host = this.getHostByAddress(address);
     port = this.getPortByAddress(address);
-    socket = new _net.default.Socket();
+    socket = new _net['default'].Socket();
     socket.uniqueSocketId = this.generateUniqueId();
     socket.setEncoding('utf8');
     socket.setNoDelay(true);
     socket.setMaxListeners(Infinity);
-    socket.connect(
-      port,
-      host,
-      function() {
-        process.env.verbose === 'true' && console.log('Successfully connected on port: '.concat(port));
-        return _this.sockets.push(socket);
-      }
-    );
+    socket.connect(port, host, function() {
+      process.env.verbose === 'true' &&
+        console.log('Successfully connected on port: '.concat(port));
+      return _this.sockets.push(socket);
+    });
     socket.on('data', function(data) {
       var message;
       var messageText;
@@ -200,6 +202,7 @@ var Speaker = (function(_super) {
   };
 
   return Speaker;
-})(_networkBase.default);
+})(_networkBase['default']);
 
-module.exports = Speaker;
+var _default = Speaker;
+exports['default'] = _default;

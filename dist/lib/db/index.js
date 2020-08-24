@@ -1,5 +1,10 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = void 0;
+
 var _quick = _interopRequireDefault(require('quick.db'));
 
 function _interopRequireDefault(obj) {
@@ -15,8 +20,9 @@ function _classCallCheck(instance, Constructor) {
 var FrameworkDatabase = function FrameworkDatabase(options) {
   _classCallCheck(this, FrameworkDatabase);
 
-  this.db = new _quick.default.table(options.databaseName);
+  this.db = new _quick['default'].table(options.databaseName);
   return this;
 };
 
-module.exports = FrameworkDatabase;
+var _default = FrameworkDatabase;
+exports['default'] = _default;

@@ -1,6 +1,11 @@
 'use strict';
 
-module.exports = function() {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = void 0;
+
+var _default = function _default() {
   return {
     status: {
       transport: {
@@ -19,3 +24,5 @@ module.exports = function() {
     }
   };
 };
+
+exports['default'] = _default;

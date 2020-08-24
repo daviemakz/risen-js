@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable */
+
 // Load NPM modules
 import net from 'net';
 
@@ -10,7 +12,7 @@ import networkBase from './networkBase';
 const ERR_REQ_REFUSED = -1;
 const MAX_WAITERS = 9999999;
 
-// FUNCTION: Extend object
+// Extend object
 const extendsObj = function(child, parent) {
   for (const key in parent) {
     if ({}.hasOwnProperty.call(parent, key)) {
@@ -26,7 +28,7 @@ const extendsObj = function(child, parent) {
   return child;
 };
 
-// FUNCTION: SpeakerReconnector
+// SpeakerReconnector
 const SpeakerReconnector = (function(_super) {
   extendsObj(SpeakerReconnector, _super);
   function SpeakerReconnector(addresses) {
@@ -57,14 +59,11 @@ const SpeakerReconnector = (function(_super) {
     socket.setEncoding('utf8');
     socket.setNoDelay(true);
     socket.setMaxListeners(Infinity);
-    socket.connect(
-      port,
-      host,
-      () => {
-        process.env.verbose === 'true' && console.log(`Successfully connected on port: ${port}`);
-        return _this.sockets.push(socket);
-      }
-    );
+    socket.connect(port, host, () => {
+      process.env.verbose === 'true' &&
+        console.log(`Successfully connected on port: ${port}`);
+      return _this.sockets.push(socket);
+    });
     socket.on('data', data => {
       let message;
       let messageText;
@@ -95,7 +94,8 @@ const SpeakerReconnector = (function(_super) {
           .map(port => parseInt(port, 10))
           .includes(port)
       ) {
-        process.env.verbose === 'true' && console.log(`Attempting to connect to port: ${port}`);
+        process.env.verbose === 'true' &&
+          console.log(`Attempting to connect to port: ${port}`);
         let index;
         let sock;
         let _i;
@@ -108,7 +108,7 @@ const SpeakerReconnector = (function(_super) {
           if (sock.uniqueSocketId === socket.uniqueSocketId) {
             break;
           }
-          index = index + 1;
+          index += 1;
         }
         _this.sockets.splice(index, 1);
         socket.destroy();
@@ -188,4 +188,4 @@ const SpeakerReconnector = (function(_super) {
 })(networkBase);
 
 // EXPORTS
-module.exports = SpeakerReconnector;
+export default SpeakerReconnector;

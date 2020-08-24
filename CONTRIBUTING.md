@@ -1,6 +1,6 @@
-# Contributing to 'Micro Service Framework'
+# Contributing to 'Risen.JS Micro Service Framework'
 
-The following is a set of guidelines for contributing to 'Micro Service Framework'. Please spend several minutes in reading these guidelines before you create an issue or pull request.
+The following is a set of guidelines for contributing to 'Risen.JS Micro Service Framework'. Please spend several minutes in reading these guidelines before you create an issue or pull request.
 
 Anyway, these are just guidelines, not rules, use your best judgment and feel free to propose changes to this document in a pull request.
 
@@ -24,7 +24,7 @@ It would be helpful to provide a demo which can re-produce the bug 100%. Please 
 
 ## Tips about Feature Request
 
-If you believe that 'Micro Service Framework' should provide some features, but it does not. You could create an issue to discuss.
+If you believe that 'Risen.JS Micro Service Framework' should provide some features, but it does not. You could create an issue to discuss.
 
 ## Tips about Pull Request
 

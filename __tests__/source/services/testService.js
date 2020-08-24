@@ -1,14 +1,16 @@
 'use strict';
 
 // Load NPM modules
-const { ResponseBodyObject, CommandBodyObject } = require('./../../../dist/index.js');
+const {
+  ResponseBodyObject,
+  CommandBodyObject
+} = require('../../../dist/index.js');
 
 // EXPORTS
 module.exports = {
-  getInfoFromSuperService: function(socket) {
+  getInfoFromSuperService(socket) {
     const resObject = new ResponseBodyObject();
     const cmdObject = new CommandBodyObject();
-    const _socket = socket;
     resObject.status.transport.responseSource = process.env.name;
     return this.sendRequest(
       Object.assign(cmdObject, {
@@ -21,7 +23,7 @@ module.exports = {
       void 0,
       responseData => {
         resObject.resultBody.resData = responseData;
-        return _socket.reply(resObject);
+        return socket.reply(resObject);
       }
     );
   }

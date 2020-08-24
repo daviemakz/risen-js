@@ -1,5 +1,10 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = void 0;
+
 var _net = require('./net');
 
 var _response = _interopRequireDefault(require('./template/response'));
@@ -38,40 +43,33 @@ var ServiceCommon = (function() {
 
     _classCallCheck(this, ServiceCommon);
 
-    return (
-      ['log', 'invokeListener', 'invokeSpeaker', 'sendRequest', 'destroyConnection', 'executeInitialFunctions'].forEach(
-        function(func) {
-          return (_this[func] = _this[func].bind(_this));
-        }
-      ) || this
-    );
+    [
+      'log',
+      'sendRequest',
+      'destroyConnection',
+      'executeInitialFunctions'
+    ].forEach(function(func) {
+      _this[func] = _this[func].bind(_this);
+    });
+    return this;
   }
 
   _createClass(ServiceCommon, [
     {
-      key: 'invokeListener',
-      value: function invokeListener(port) {
-        return (0, _net.createListener)(port);
-      }
-    },
-    {
-      key: 'invokeSpeaker',
-      value: function invokeSpeaker(port) {
-        return (0, _net.createSpeaker)(port);
-      }
-    },
-    {
-      key: 'invokeSpeakerPersistent',
-      value: function invokeSpeakerPersistent(port) {
-        return (0, _net.createSpeakerReconnector)(port);
-      }
-    },
-    {
       key: 'log',
       value: function log(message, type) {
-        var override = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-        typeof this.writeToLogFile === 'function' && this.writeToLogFile(message);
-        return (this.settings.verbose || override) && logTypes.includes(type) && console[type](message);
+        var override =
+          arguments.length > 2 && arguments[2] !== undefined
+            ? arguments[2]
+            : false;
+
+        if (typeof this.writeToLogFile === 'function') {
+          this.writeToLogFile(message);
+        }
+
+        if ((this.settings.verbose || override) && logTypes.includes(type)) {
+          console[type](message);
+        }
       }
     },
     {
@@ -79,7 +77,10 @@ var ServiceCommon = (function() {
       value: function executeInitialFunctions(opsProp) {
         var _this2 = this;
 
-        var container = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'options';
+        var container =
+          arguments.length > 1 && arguments[1] !== undefined
+            ? arguments[1]
+            : 'options';
         return new Promise(function(resolve, reject) {
           try {
             _this2[container].runOnStart
@@ -88,14 +89,29 @@ var ServiceCommon = (function() {
                   return true;
                 }
 
-                _this2.log('This not a valid function: '.concat(func || 'undefined or empty string'), 'warn');
+                _this2.log(
+                  'This not a valid function: '.concat(
+                    func || 'undefined or empty string'
+                  ),
+                  'warn'
+                );
 
                 return false;
               })
               .forEach(function(func) {
-                return _this2[opsProp].hasOwnProperty(func)
+                return Object.prototype.hasOwnProperty.call(
+                  _this2[opsProp],
+                  func
+                )
                   ? _this2[opsProp][func]()
-                  : reject(Error('The function '.concat(func, ' has not been defined in this service!')));
+                  : reject(
+                      Error(
+                        'The function '.concat(
+                          func,
+                          ' has not been defined in this service!'
+                        )
+                      )
+                    );
               });
 
             return resolve();
@@ -107,7 +123,7 @@ var ServiceCommon = (function() {
     },
     {
       key: 'sendRequest',
-      value: function sendRequest(data, dest, kalive) {
+      value: function sendRequest(data, destination, keepAlive) {
         var _this3 = this;
 
         var options =
@@ -117,37 +133,43 @@ var ServiceCommon = (function() {
                 port: this.settings.apiGatewayPort,
                 connectionId: this.conId
               };
-        var socket = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : void 0;
-        var callb = arguments.length > 5 ? arguments[5] : undefined;
-        var _connectionAttempts = 0;
-        var _data = data;
-        var _destination = dest;
-        var _keepAlive = kalive;
-        var _callback = callb;
-
-        var _portSpeaker = socket || this.invokeSpeaker(options.port);
-
-        var _resBody = {
-          data: _data,
-          destination: _destination,
-          callback: _callback,
-          keepAlive: _keepAlive
+        var socket =
+          arguments.length > 4 && arguments[4] !== undefined
+            ? arguments[4]
+            : void 0;
+        var callback = arguments.length > 5 ? arguments[5] : undefined;
+        var connectionAttempts = 0;
+        var portEmitter = socket || (0, _net.createSpeaker)(options.port);
+        var resBody = {
+          data: data,
+          destination: destination,
+          callback: callback,
+          keepAlive: keepAlive
         };
 
         var sendToSocket = function sendToSocket() {
-          if (Object.values(_portSpeaker.sockets).length === 0) {
-            if (_connectionAttempts <= _this3.settings.connectionTimeout) {
-              _this3.log('Service core socket has not yet initialized...', 'log');
+          if (Object.values(portEmitter.sockets).length === 0) {
+            if (connectionAttempts <= _this3.settings.connectionTimeout) {
+              _this3.log(
+                'Service core socket has not yet initialized...',
+                'log'
+              );
 
               return setTimeout(function() {
                 sendToSocket();
-                return _connectionAttempts++;
+                connectionAttempts += 1;
+                return void 0;
               }, 1);
             }
 
-            _this3.log('Unable to connect to service core. MORE INFO: '.concat(_resBody.destination), 'log');
+            _this3.log(
+              'Unable to connect to service core. MORE INFO: '.concat(
+                resBody.destination
+              ),
+              'log'
+            );
 
-            var responseObject = new _response.default();
+            var responseObject = new _response['default']();
             responseObject.status.transport = {
               code: 2003,
               message: 'Unable to connect to service core'
@@ -160,13 +182,13 @@ var ServiceCommon = (function() {
               entity: 'Client request',
               action: 'Connect to service core',
               errorType: 'ERROR',
-              originalData: _resBody
+              originalData: resBody
             };
 
             _this3.log('Socket initialization timeout...', 'log');
 
-            if (typeof _resBody.callback === 'function') {
-              return _resBody.callback(responseObject, _resBody, _portSpeaker);
+            if (typeof resBody.callback === 'function') {
+              return resBody.callback(responseObject, resBody, portEmitter);
             }
 
             return void 0;
@@ -174,15 +196,24 @@ var ServiceCommon = (function() {
 
           _this3.log('Socket initialized. sending data...', 'log');
 
-          return _portSpeaker.request('COM_REQUEST', _resBody, function(_requestData) {
-            if (_requestData.hasOwnProperty('error')) {
-              _this3.log('Unable to connect to service. MORE INFO: '.concat(_resBody.destination), 'log');
+          return portEmitter.request('COM_REQUEST', resBody, function(
+            requestData
+          ) {
+            if (Object.prototype.hasOwnProperty.call(requestData, 'error')) {
+              _this3.log(
+                'Unable to connect to service. MORE INFO: '.concat(
+                  resBody.destination
+                ),
+                'log'
+              );
 
-              var _responseObject = new _response.default();
+              var _responseObject = new _response['default']();
 
               _responseObject.status.transport = {
                 code: 2004,
-                message: 'Unable to connect to service: '.concat(_resBody.destination)
+                message: 'Unable to connect to service: '.concat(
+                  resBody.destination
+                )
               };
               _responseObject.status.command = {
                 code: 200,
@@ -190,44 +221,59 @@ var ServiceCommon = (function() {
               };
               _responseObject.resultBody.errData = {
                 entity: 'Client request',
-                action: 'Connect to service: '.concat(_resBody.destination),
+                action: 'Connect to service: '.concat(resBody.destination),
                 errorType: 'ERROR',
-                originalData: _resBody
+                originalData: resBody
               };
 
-              _this3.log('Unable to transmit data to: '.concat(_resBody.destination), 'log');
+              _this3.log(
+                'Unable to transmit data to: '.concat(resBody.destination),
+                'log'
+              );
 
-              if (typeof _resBody.callback === 'function') {
-                _resBody.callback(_responseObject, _resBody, _portSpeaker);
+              if (typeof resBody.callback === 'function') {
+                resBody.callback(_responseObject, resBody, portEmitter);
               }
             } else {
               var serviceExists =
-                _this3.serviceInfo.hasOwnProperty(_resBody.destination) ||
-                (process.env.service ? false : _resBody.destination === 'serviceCore');
-              serviceExists
-                ? _this3.log(
-                    '['
-                      .concat(options.connectionId, '] ')
-                      .concat(
-                        process.env.service ? 'Micro service' : 'Service core',
-                        ' has processed request for service: '
-                      )
-                      .concat(_resBody.destination),
-                    'log'
-                  )
-                : _this3.log(
-                    '['
-                      .concat(options.connectionId, '] ')
-                      .concat(
-                        process.env.service ? 'Micro service' : 'Service core',
-                        'Service core was unable to find the service: '
-                      )
-                      .concat(_resBody.destination),
-                    'log'
-                  );
+                Object.prototype.hasOwnProperty.call(
+                  _this3.serviceInfo,
+                  resBody.destination
+                ) ||
+                (process.env.service
+                  ? false
+                  : resBody.destination === 'serviceCore');
 
-              if (typeof _resBody.callback === 'function') {
-                _resBody.callback(_requestData, _resBody, serviceExists ? _portSpeaker : void 0);
+              if (serviceExists) {
+                _this3.log(
+                  '['
+                    .concat(options.connectionId, '] ')
+                    .concat(
+                      process.env.service ? 'Micro service' : 'Service core',
+                      ' has processed request for service: '
+                    )
+                    .concat(resBody.destination),
+                  'log'
+                );
+              } else {
+                _this3.log(
+                  '['
+                    .concat(options.connectionId, '] ')
+                    .concat(
+                      process.env.service ? 'Micro service' : 'Service core',
+                      'Service core was unable to find the service: '
+                    )
+                    .concat(resBody.destination),
+                  'log'
+                );
+              }
+
+              if (typeof resBody.callback === 'function') {
+                resBody.callback(
+                  requestData,
+                  resBody,
+                  serviceExists ? portEmitter : void 0
+                );
               }
             }
           });
@@ -239,12 +285,18 @@ var ServiceCommon = (function() {
     {
       key: 'destroyConnection',
       value: function destroyConnection(socket, id) {
-        if (socket.hasOwnProperty('conn')) {
+        if (Object.prototype.hasOwnProperty.call(socket, 'conn')) {
           socket.conn.destroy();
-          return this.log('['.concat(id, '] Connection successfully closed'), 'log');
+          return this.log(
+            '['.concat(id, '] Connection successfully closed'),
+            'log'
+          );
         }
 
-        return this.log('['.concat(id, '] Connection object untouched. invalid object...'), 'log');
+        return this.log(
+          '['.concat(id, '] Connection object untouched. invalid object...'),
+          'log'
+        );
       }
     }
   ]);
@@ -252,4 +304,5 @@ var ServiceCommon = (function() {
   return ServiceCommon;
 })();
 
-module.exports = ServiceCommon;
+var _default = ServiceCommon;
+exports['default'] = _default;

@@ -836,11 +836,13 @@ Run the following commands to test the module:
 
 - Clean up code to align more closely with latest ECMA10+. [DONE]
 
-- Add a development mode to the package which allows everything to be tested
+- Add a development mode to the package which allows everything to be tested.
 
-- Add methods to response object to allow self setting of data. (Getter & Setters)
+- Add example described in the `README.md`.
 
-- Add cleaner method other than `sendRequest()` modelled around express
+- Add methods to response object to allow self setting of data. (Getter & Setters).
+
+- Add cleaner method other than `sendRequest()` modelled around express.
 
 - Reuse HTTP connection from express server.
 

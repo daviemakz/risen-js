@@ -16,7 +16,7 @@ const rcConfig = {
 };
 
 // Export
-module.exports = api => {
+module.exports = (api) => {
   api.cache(true);
   return {
     env: {

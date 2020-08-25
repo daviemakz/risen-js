@@ -86,7 +86,7 @@ function ownKeys(object, enumerableOnly) {
   if (Object.getOwnPropertySymbols) {
     var symbols = Object.getOwnPropertySymbols(object);
     if (enumerableOnly)
-      symbols = symbols.filter(function(sym) {
+      symbols = symbols.filter(function (sym) {
         return Object.getOwnPropertyDescriptor(object, sym).enumerable;
       });
     keys.push.apply(keys, symbols);
@@ -98,13 +98,13 @@ function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i] != null ? arguments[i] : {};
     if (i % 2) {
-      ownKeys(Object(source), true).forEach(function(key) {
+      ownKeys(Object(source), true).forEach(function (key) {
         _defineProperty(target, key, source[key]);
       });
     } else if (Object.getOwnPropertyDescriptors) {
       Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
     } else {
-      ownKeys(Object(source)).forEach(function(key) {
+      ownKeys(Object(source)).forEach(function (key) {
         Object.defineProperty(
           target,
           key,
@@ -168,13 +168,13 @@ var buildSecureOptions = function buildSecureOptions(ssl) {
             ssl
           )
         )
-          .filter(function(_ref) {
+          .filter(function (_ref) {
             var _ref2 = _slicedToArray(_ref, 2),
               filePath = _ref2[1];
 
             return filePath;
           })
-          .map(function(_ref3) {
+          .map(function (_ref3) {
             var _ref4 = _slicedToArray(_ref3, 2),
               optionKey = _ref4[0],
               filePath = _ref4[1];
@@ -185,7 +185,7 @@ var buildSecureOptions = function buildSecureOptions(ssl) {
               (0, _fs.readFileSync)((0, _path.resolve)(filePath)).toString()
             );
           })
-          .reduce(function(acc, x) {
+          .reduce(function (acc, x) {
             return Object.assign(acc, x);
           }, {})
       : ssl;
@@ -207,7 +207,7 @@ var buildHttpOptions = function buildHttpOptions(options) {
       : true,
     beforeStart: Object.prototype.hasOwnProperty.call(options, 'beforeStart')
       ? options.beforeStart
-      : function(express) {
+      : function (express) {
           return express;
         },
     middlewares: Object.prototype.hasOwnProperty.call(options, 'middlewares')

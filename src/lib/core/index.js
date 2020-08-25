@@ -50,10 +50,12 @@ export function stopService(name, instances) {
       ? process.env.exitedProcessPorts.split(',')
       : process.env.exitedProcessPorts
     )
-      .map(port => parseInt(port, 10))
-      .filter(exitedPort => typeof exitedPort === 'number');
+      .map((port) => parseInt(port, 10))
+      .filter((exitedPort) => typeof exitedPort === 'number');
     // Process indexes
-    const processIndexes = ports.map(port => this.getProcessIndex(name, port));
+    const processIndexes = ports.map((port) =>
+      this.getProcessIndex(name, port)
+    );
     // Process exiter
     try {
       processIndexes.forEach(
@@ -68,7 +70,7 @@ export function stopService(name, instances) {
             this.serviceData[name].socket[index].request(
               'SERVICE_KILL',
               void 0,
-              res => {
+              (res) => {
                 this.log(
                   `Service core has recieved acknowledgement of kill command from: ${name}/port:${ports[elIndex]}`,
                   'log'

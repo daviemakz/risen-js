@@ -13,7 +13,7 @@ const ERR_REQ_REFUSED = -1;
 const MAX_WAITERS = 9999999;
 
 // Extend object
-const extendsObj = function(child, parent) {
+const extendsObj = function (child, parent) {
   for (const key in parent) {
     if ({}.hasOwnProperty.call(parent, key)) {
       child[key] = parent[key];
@@ -29,7 +29,7 @@ const extendsObj = function(child, parent) {
 };
 
 // SpeakerReconnector
-const SpeakerReconnector = (function(_super) {
+const SpeakerReconnector = (function (_super) {
   extendsObj(SpeakerReconnector, _super);
   function SpeakerReconnector(addresses) {
     let address;
@@ -45,7 +45,7 @@ const SpeakerReconnector = (function(_super) {
       this.connect(address);
     }
   }
-  SpeakerReconnector.prototype.connect = function(address) {
+  SpeakerReconnector.prototype.connect = function (address) {
     let host;
     let port;
     let self;
@@ -64,7 +64,7 @@ const SpeakerReconnector = (function(_super) {
         console.log(`Successfully connected on port: ${port}`);
       return _this.sockets.push(socket);
     });
-    socket.on('data', data => {
+    socket.on('data', (data) => {
       let message;
       let messageText;
       let _i;
@@ -91,7 +91,7 @@ const SpeakerReconnector = (function(_super) {
           ? process.env.exitedProcessPorts.split(',')
           : process.env.exitedProcessPorts
         )
-          .map(port => parseInt(port, 10))
+          .map((port) => parseInt(port, 10))
           .includes(port)
       ) {
         process.env.verbose === 'true' &&
@@ -116,13 +116,13 @@ const SpeakerReconnector = (function(_super) {
       }
     });
   };
-  SpeakerReconnector.prototype.request = function(subject, data, callback) {
+  SpeakerReconnector.prototype.request = function (subject, data, callback) {
     if (callback === null) {
       callback = null;
     }
     return this.send(subject, data, callback);
   };
-  SpeakerReconnector.prototype.send = function(subject, data, callback) {
+  SpeakerReconnector.prototype.send = function (subject, data, callback) {
     let messageId;
     let payload;
     if (callback === null) {
@@ -150,7 +150,7 @@ const SpeakerReconnector = (function(_super) {
     });
     return this.sockets[this.socketIterator++].write(payload);
   };
-  SpeakerReconnector.prototype.shout = function(subject, data) {
+  SpeakerReconnector.prototype.shout = function (subject, data) {
     let payload;
     let socket;
     let _i;
@@ -169,7 +169,7 @@ const SpeakerReconnector = (function(_super) {
     }
     return _results;
   };
-  SpeakerReconnector.prototype.generateUniqueId = function() {
+  SpeakerReconnector.prototype.generateUniqueId = function () {
     let id;
     let newId;
     id = `id-${this.uniqueId}`;

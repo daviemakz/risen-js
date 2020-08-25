@@ -7,9 +7,9 @@ import './lib/runtime';
 // Load NPM modules
 import isPortFree from 'is-port-free';
 import https from 'https';
-import guid from 'uuid/v4';
 import http from 'http';
 import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
 import { resolve } from 'path';
 import { existsSync } from 'fs';
 import { shuffle } from 'lodash';
@@ -65,19 +65,19 @@ export class Risen extends ServiceCore {
       ...options,
       http:
         Array.isArray(options.http) && options.http.length
-          ? options.http.map(httpSettings => buildHttpOptions(httpSettings))
+          ? options.http.map((httpSettings) => buildHttpOptions(httpSettings))
           : false
     };
 
     // HTTP(s) and ports
-    ['httpsServer', 'httpServer', 'inUsePorts'].forEach(prop => {
+    ['httpsServer', 'httpServer', 'inUsePorts'].forEach((prop) => {
       this[prop] = [];
     });
 
     // Initialise database
     this.db =
       this.settings.databaseNames
-        .map(table => ({
+        .map((table) => ({
           [table]: new LocalDatabase({
             databaseName: table
           }).db
@@ -96,7 +96,7 @@ export class Risen extends ServiceCore {
       'serviceOptions',
       'serviceData',
       'eventHandlers'
-    ].forEach(prop => {
+    ].forEach((prop) => {
       this[prop] = {};
     });
 
@@ -107,14 +107,14 @@ export class Risen extends ServiceCore {
       'initGateway',
       'bindGateway',
       'startHttpServer'
-    ].forEach(func => {
+    ].forEach((func) => {
       this[func] = this[func].bind(this);
     });
 
     // Assign external event listners
     this.eventHandlers = Object.assign(
       {},
-      ...['onConRequest', 'onConClose'].map(func =>
+      ...['onConRequest', 'onConClose'].map((func) =>
         typeof options[func] === 'function'
           ? { [func]: options[func].bind(this) }
           : {}
@@ -163,7 +163,7 @@ export class Risen extends ServiceCore {
 
   // Assign core functions
   assignCoreFunctions() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // Assign operations
       Object.entries({
         ...serviceCoreOperations,
@@ -243,7 +243,7 @@ export class Risen extends ServiceCore {
             this.log('Service core started!', 'log', true) || resolve(true)
           );
         })
-        .catch(e => {
+        .catch((e) => {
           this.log(
             `Gateway port not free or unknown error has occurred. INFO: ${JSON.stringify(
               e,
@@ -267,7 +267,7 @@ export class Risen extends ServiceCore {
 
   // Bind api gateway event listners
   bindGateway() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // Socket Communication Request
       this.externalInterfaces.apiGateway.on('COM_REQUEST', (message, data) => {
         // Confirm Connection
@@ -297,7 +297,7 @@ export class Risen extends ServiceCore {
       });
 
       // Socket Communication Close
-      this.externalInterfaces.apiGateway.on('COM_CLOSE', message => {
+      this.externalInterfaces.apiGateway.on('COM_CLOSE', (message) => {
         // Connection Close Requested
         this.log(`[${this.conId}] Service core connection close requested`);
         // Execute handlers
@@ -330,7 +330,7 @@ export class Risen extends ServiceCore {
     return Array.isArray(this.settings.http)
       ? Promise.all(
           this.settings.http.map(
-            httpSettings =>
+            (httpSettings) =>
               new Promise((resolve, reject) => {
                 try {
                   // Check if the HTTP server should be started or not
@@ -340,7 +340,7 @@ export class Risen extends ServiceCore {
                     // Allow access to the express instance
                     httpSettings.beforeStart(expressApp);
                     // Assign static path resources if defined
-                    httpSettings.static.forEach(path =>
+                    httpSettings.static.forEach((path) =>
                       expressApp.use(express.static(path))
                     );
                     // Harden http server if hardening is defined
@@ -348,12 +348,12 @@ export class Risen extends ServiceCore {
                       hardenServer(expressApp);
                     }
                     // Apply middlewares to express
-                    httpSettings.middlewares.forEach(middleware =>
+                    httpSettings.middlewares.forEach((middleware) =>
                       expressApp.use(middleware)
                     );
                     // Assign routes
                     httpSettings.routes
-                      .filter(route => {
+                      .filter((route) => {
                         if (
                           ['put', 'post', 'get', 'delete', 'patch'].includes(
                             route.method.toLowerCase()
@@ -371,22 +371,21 @@ export class Risen extends ServiceCore {
                         );
                         return false;
                       })
-                      .forEach(route =>
+                      .forEach((route) =>
                         expressApp[route.method.toLowerCase()](
                           route.uri,
                           ...(route.preMiddleware || []),
                           (req, res, next) => {
                             // Scope request
                             const resultSend = res.send;
-                            const requestId = guid();
+                            const requestId = uuidv4();
                             // Error handling functions and request identification
-                            const handleException = ((
-                              res,
-                              requestIdScoped
-                            ) => err => {
+                            const handleException = ((res, requestIdScoped) => (
+                              err
+                            ) => {
                               if (requestIdScoped === requestId) {
                                 // Remove error listerners
-                                eventList.forEach(event =>
+                                eventList.forEach((event) =>
                                   process.removeListener(event, handleException)
                                 );
                                 // Send to next pre middleware
@@ -394,7 +393,7 @@ export class Risen extends ServiceCore {
                               }
                             })(res, requestId);
                             // Add process listeners
-                            eventList.forEach(event =>
+                            eventList.forEach((event) =>
                               process.on(event, handleException)
                             );
                             // Set timeout
@@ -402,7 +401,7 @@ export class Risen extends ServiceCore {
                               // Modify send to remove error handler for this request once its done
                               res.send = (...args) => {
                                 // Remove error listerners
-                                eventList.forEach(event =>
+                                eventList.forEach((event) =>
                                   process.removeListener(event, handleException)
                                 );
                                 // If an empty response assume process has crashed
@@ -460,7 +459,7 @@ export class Risen extends ServiceCore {
               })
           )
         )
-      : new Promise(resolve => {
+      : new Promise((resolve) => {
           this.log('No HTTP(s) servers defined. Starting services only...');
           return resolve();
         });
@@ -492,9 +491,9 @@ export class Risen extends ServiceCore {
               return acc.concat(...processList);
             }, [])
           ).map(
-            name =>
+            (name) =>
               new Promise((resolveLocal, rejectLocal) =>
-                this.initService(name, result =>
+                this.initService(name, (result) =>
                   result === true
                     ? resolveLocal(true)
                     : rejectLocal(
@@ -511,7 +510,7 @@ export class Risen extends ServiceCore {
           )
         )
           .then(() => resolve())
-          .catch(e => reject(e));
+          .catch((e) => reject(e));
       }
       return reject(Error('No microservices defined!'));
     });

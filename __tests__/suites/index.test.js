@@ -29,7 +29,7 @@ const sslOptions = {
 };
 
 // Define file locations
-const fileLog = './server.log';
+const fileLog = './log/server.log';
 const sqlLite = './json.sqlite';
 
 // Define request options
@@ -73,9 +73,15 @@ const checkRedirection = {
     testServiceCommandBody.funcName = 'getInfoFromSuperService';
     testServiceCommandBody.body = null;
     // Send initial request to micro service
-    sendRequest(testServiceCommandBody, 'testService', false, void 0, void 0, response => {
-      // Send back to response
-      const getPage = message => `
+    sendRequest(
+      testServiceCommandBody,
+      'testService',
+      false,
+      void 0,
+      void 0,
+      (response) => {
+        // Send back to response
+        const getPage = (message) => `
         <html>
            <head>
               <title>Test Service Response</title>
@@ -85,11 +91,12 @@ const checkRedirection = {
            </body>
         </html>
         `;
-      // Build HTML
-      const pageOutput = getPage(response.resultBody.resData);
-      // Return
-      res.send(pageOutput);
-    });
+        // Build HTML
+        const pageOutput = getPage(response.resultBody.resData);
+        // Return
+        res.send(pageOutput);
+      }
+    );
   }
 };
 
@@ -117,13 +124,25 @@ const checkDb = {
       table: '_defaultDatabase'
     };
     // Send initial request to write to database
-    sendRequest(writeToDb, 'serviceCore', true, void 0, void 0, (resData, origData, socket) => {
-      // Send request to services
-      sendRequest(readFromDb, 'serviceCore', false, void 0, socket, response => {
-        // Get message from service
-        const messageFromDb = response.resultBody.resData.result;
-        // Send back to response
-        const getPage = title => `
+    sendRequest(
+      writeToDb,
+      'serviceCore',
+      true,
+      void 0,
+      void 0,
+      (resData, origData, socket) => {
+        // Send request to services
+        sendRequest(
+          readFromDb,
+          'serviceCore',
+          false,
+          void 0,
+          socket,
+          (response) => {
+            // Get message from service
+            const messageFromDb = response.resultBody.resData.result;
+            // Send back to response
+            const getPage = (title) => `
             <html>
                <head>
                   <title>Database Verification</title>
@@ -133,12 +152,14 @@ const checkDb = {
                </body>
             </html>
             `;
-        // Build HTML
-        const pageOutput = getPage(messageFromDb);
-        // Return
-        res.send(pageOutput);
-      });
-    });
+            // Build HTML
+            const pageOutput = getPage(messageFromDb);
+            // Return
+            res.send(pageOutput);
+          }
+        );
+      }
+    );
   }
 };
 
@@ -158,11 +179,17 @@ const endProcess = {
       table: '_defaultDatabase'
     };
     // Send initial request to write to database
-    sendRequest(endProcess, 'serviceCore', false, void 0, void 0, response => {
-      // Get message from service
-      const messageFromDb = response.resultBody.resData.message;
-      // Send back to response
-      const getPage = message => `
+    sendRequest(
+      endProcess,
+      'serviceCore',
+      false,
+      void 0,
+      void 0,
+      (response) => {
+        // Get message from service
+        const messageFromDb = response.resultBody.resData.message;
+        // Send back to response
+        const getPage = (message) => `
         <html>
            <head>
               <title>Shutting Down Server</title>
@@ -172,11 +199,12 @@ const endProcess = {
            </body>
         </html>
         `;
-      // Build HTML
-      const pageOutput = getPage(messageFromDb);
-      // Return
-      res.send(pageOutput);
-    });
+        // Build HTML
+        const pageOutput = getPage(messageFromDb);
+        // Return
+        res.send(pageOutput);
+      }
+    );
   }
 };
 
@@ -190,7 +218,7 @@ const frameworkOptions = {
       port: 12000,
       ssl: sslOptions,
       harden: true,
-      beforeStart: express => express,
+      beforeStart: (express) => express,
       middlewares: [],
       static: ['public'],
       routes: [checkRedirection, checkDb, endProcess]
@@ -210,7 +238,7 @@ describe('dist/index', () => {
   jest.setTimeout(30000);
   // Clear files
   beforeAll(() => {
-    [fileLog].forEach(file => {
+    [fileLog].forEach((file) => {
       fs.unlink(file, () => void 0);
     });
   });
@@ -258,25 +286,27 @@ describe('dist/index', () => {
 
   describe('buildHttpOptions()', () => {
     test('snapshot is expected', () => {
-      expect(JSON.parse(JSON.stringify(buildHttpOptions(httpOptions)))).toEqual({
-        port: 12000,
-        ssl: {
-          key: fs.readFileSync('./__tests__/source/ssl/key.pem', 'utf8'),
-          cert: fs.readFileSync('./__tests__/source/ssl/server.crt', 'utf8')
-        },
-        harden: true,
-        middlewares: [],
-        static: ['public'],
-        routes: [
-          {
-            method: 'GET',
-            uri: '/service',
-            preMiddleware: [],
-            postMiddleware: []
+      expect(JSON.parse(JSON.stringify(buildHttpOptions(httpOptions)))).toEqual(
+        {
+          port: 12000,
+          ssl: {
+            key: fs.readFileSync('./__tests__/source/ssl/key.pem', 'utf8'),
+            cert: fs.readFileSync('./__tests__/source/ssl/server.crt', 'utf8')
           },
-          { method: 'GET', uri: '/' }
-        ]
-      });
+          harden: true,
+          middlewares: [],
+          static: ['public'],
+          routes: [
+            {
+              method: 'GET',
+              uri: '/service',
+              preMiddleware: [],
+              postMiddleware: []
+            },
+            { method: 'GET', uri: '/' }
+          ]
+        }
+      );
     });
   });
 
@@ -326,8 +356,10 @@ describe('dist/index', () => {
         const requestResult = await new Promise((resolve, reject) => {
           setTimeout(
             () =>
-              request('https://localhost:12000/checkRedirection', requestOptions, (err, res, body) =>
-                err === null ? resolve(body) : reject(err)
+              request(
+                'https://localhost:12000/checkRedirection',
+                requestOptions,
+                (err, res, body) => (err === null ? resolve(body) : reject(err))
               ),
             2000
           );
@@ -338,8 +370,10 @@ describe('dist/index', () => {
         const requestResult = await new Promise((resolve, reject) => {
           setTimeout(
             () =>
-              request('https://localhost:12000/checkDb', requestOptions, (err, res, body) =>
-                err === null ? resolve(body) : reject(err)
+              request(
+                'https://localhost:12000/checkDb',
+                requestOptions,
+                (err, res, body) => (err === null ? resolve(body) : reject(err))
               ),
             2000
           );
@@ -368,8 +402,10 @@ describe('dist/index', () => {
       });
 
       afterAll(() => {
-        return new Promise(resolve => {
-          request('https://localhost:12000/endProcess', requestOptions, () => resolve());
+        return new Promise((resolve) => {
+          request('https://localhost:12000/endProcess', requestOptions, () =>
+            resolve()
+          );
         });
       });
     });

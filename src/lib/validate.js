@@ -1,6 +1,6 @@
 'use strict';
 
-export const validateRouteOptions = route => {
+export const validateRouteOptions = (route) => {
   switch (true) {
     case !['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(
       (route.method || '').toUpperCase()
@@ -31,8 +31,8 @@ export const validateRouteOptions = route => {
   }
 };
 
-export const validateHttpOptions = httpOptions =>
-  httpOptions.every(http => {
+export const validateHttpOptions = (httpOptions) =>
+  httpOptions.every((http) => {
     switch (true) {
       case Object.prototype.hasOwnProperty.call(!http, 'port') ||
         typeof http.port !== 'number': {
@@ -62,7 +62,7 @@ export const validateHttpOptions = httpOptions =>
       }
       case (Object.prototype.hasOwnProperty.call(http, 'routes') &&
         !Array.isArray(http.routes)) ||
-        !http.routes.every(route => validateRouteOptions(route)): {
+        !http.routes.every((route) => validateRouteOptions(route)): {
         throw new Error(
           'The http option "routes" must be an array with valid configuration!'
         );
@@ -73,7 +73,7 @@ export const validateHttpOptions = httpOptions =>
     }
   });
 
-export const validateCoreOperations = options =>
+export const validateCoreOperations = (options) =>
   options instanceof Object
     ? Object.entries(options).every(
         ([functionName, functionOp]) =>
@@ -81,7 +81,7 @@ export const validateCoreOperations = options =>
       )
     : false;
 
-export const validateOptions = options => {
+export const validateOptions = (options) => {
   switch (true) {
     case Object.prototype.hasOwnProperty.call(options, 'mode') &&
       !['server', 'client'].includes(options.mode): {
@@ -167,7 +167,7 @@ export const validateOptions = options => {
       !Array.isArray(options.runOnStart)) ||
       (Array.isArray(options.runOnStart) &&
         options.runOnStart.length &&
-        options.runOnStart.every(op => typeof op !== 'string')): {
+        options.runOnStart.every((op) => typeof op !== 'string')): {
       throw new Error(
         'The "runOnStart" option is not valid, it must be a array of strings corresponding to defined operations'
       );
@@ -184,12 +184,12 @@ export const validateOptions = options => {
   }
 };
 
-export const validateServiceOptions = serviceOption => {
+export const validateServiceOptions = (serviceOption) => {
   switch (true) {
     case (Object.prototype.hasOwnProperty.call(serviceOption, 'runOnStart') &&
       !Array.isArray(serviceOption.runOnStart)) ||
       (Array.isArray(serviceOption.runOnStart) &&
-        serviceOption.runOnStart.some(op => typeof op !== 'string')): {
+        serviceOption.runOnStart.some((op) => typeof op !== 'string')): {
       throw new Error(
         'The service options "runOnStart" option is not valid, it must be a valid array'
       );

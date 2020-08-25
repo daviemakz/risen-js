@@ -19,7 +19,7 @@ class ServiceCommon {
       'sendRequest',
       'destroyConnection',
       'executeInitialFunctions'
-    ].forEach(func => {
+    ].forEach((func) => {
       this[func] = this[func].bind(this);
     });
     return this;
@@ -42,18 +42,19 @@ class ServiceCommon {
     return new Promise((resolve, reject) => {
       try {
         this[container].runOnStart
-          .filter(func => {
+          .filter((func) => {
             if (typeof func === 'function') {
               return true;
             }
             this.log(
-              `This not a valid function: ${func ||
-                'undefined or empty string'}`,
+              `This not a valid function: ${
+                func || 'undefined or empty string'
+              }`,
               'warn'
             );
             return false;
           })
-          .forEach(func =>
+          .forEach((func) =>
             Object.prototype.hasOwnProperty.call(this[opsProp], func)
               ? this[opsProp][func]()
               : reject(
@@ -140,7 +141,7 @@ class ServiceCommon {
       this.log('Socket initialized. sending data...', 'log');
 
       // Com request
-      return portEmitter.request('COM_REQUEST', resBody, requestData => {
+      return portEmitter.request('COM_REQUEST', resBody, (requestData) => {
         // Response Validation
         if (Object.prototype.hasOwnProperty.call(requestData, 'error')) {
           // Notification

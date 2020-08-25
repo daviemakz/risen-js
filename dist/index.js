@@ -51,11 +51,11 @@ var _isPortFree = _interopRequireDefault(require('is-port-free'));
 
 var _https = _interopRequireDefault(require('https'));
 
-var _v = _interopRequireDefault(require('uuid/v4'));
-
 var _http = _interopRequireDefault(require('http'));
 
 var _express = _interopRequireDefault(require('express'));
+
+var _uuid = require('uuid');
 
 var _path = require('path');
 
@@ -168,10 +168,10 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
 }
 
 function _asyncToGenerator(fn) {
-  return function() {
+  return function () {
     var self = this,
       args = arguments;
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       var gen = fn.apply(self, args);
       function _next(value) {
         asyncGeneratorStep(gen, resolve, reject, _next, _throw, 'next', value);
@@ -231,7 +231,7 @@ function ownKeys(object, enumerableOnly) {
   if (Object.getOwnPropertySymbols) {
     var symbols = Object.getOwnPropertySymbols(object);
     if (enumerableOnly)
-      symbols = symbols.filter(function(sym) {
+      symbols = symbols.filter(function (sym) {
         return Object.getOwnPropertyDescriptor(object, sym).enumerable;
       });
     keys.push.apply(keys, symbols);
@@ -243,13 +243,13 @@ function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i] != null ? arguments[i] : {};
     if (i % 2) {
-      ownKeys(Object(source), true).forEach(function(key) {
+      ownKeys(Object(source), true).forEach(function (key) {
         _defineProperty(target, key, source[key]);
       });
     } else if (Object.getOwnPropertyDescriptors) {
       Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
     } else {
-      ownKeys(Object(source)).forEach(function(key) {
+      ownKeys(Object(source)).forEach(function (key) {
         Object.defineProperty(
           target,
           key,
@@ -353,7 +353,7 @@ function _isNativeReflectConstruct() {
   if (Reflect.construct.sham) return false;
   if (typeof Proxy === 'function') return true;
   try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function() {}));
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
     return true;
   } catch (e) {
     return false;
@@ -369,7 +369,7 @@ function _getPrototypeOf(o) {
   return _getPrototypeOf(o);
 }
 
-var Risen = (function(_ServiceCore) {
+var Risen = (function (_ServiceCore) {
   _inherits(Risen, _ServiceCore);
 
   var _super = _createSuper(Risen);
@@ -396,18 +396,18 @@ var Risen = (function(_ServiceCore) {
       {
         http:
           Array.isArray(options.http) && options.http.length
-            ? options.http.map(function(httpSettings) {
+            ? options.http.map(function (httpSettings) {
                 return (0, _options.buildHttpOptions)(httpSettings);
               })
             : false
       }
     );
-    ['httpsServer', 'httpServer', 'inUsePorts'].forEach(function(prop) {
+    ['httpsServer', 'httpServer', 'inUsePorts'].forEach(function (prop) {
       _this[prop] = [];
     });
     _this.db =
       _this.settings.databaseNames
-        .map(function(table) {
+        .map(function (table) {
           return _defineProperty(
             {},
             table,
@@ -416,7 +416,7 @@ var Risen = (function(_ServiceCore) {
             }).db
           );
         })
-        .reduce(function(acc, x) {
+        .reduce(function (acc, x) {
           return Object.assign(acc, x);
         }, {}) || {};
     process.env.settings = _this.settings;
@@ -428,7 +428,7 @@ var Risen = (function(_ServiceCore) {
       'serviceOptions',
       'serviceData',
       'eventHandlers'
-    ].forEach(function(prop) {
+    ].forEach(function (prop) {
       _this[prop] = {};
     });
     [
@@ -437,14 +437,14 @@ var Risen = (function(_ServiceCore) {
       'initGateway',
       'bindGateway',
       'startHttpServer'
-    ].forEach(function(func) {
+    ].forEach(function (func) {
       _this[func] = _this[func].bind(_assertThisInitialized(_this));
     });
     _this.eventHandlers = Object.assign.apply(
       Object,
       [{}].concat(
         _toConsumableArray(
-          ['onConRequest', 'onConClose'].map(function(func) {
+          ['onConRequest', 'onConClose'].map(function (func) {
             return typeof options[func] === 'function'
               ? _defineProperty(
                   {},
@@ -563,13 +563,13 @@ var Risen = (function(_ServiceCore) {
       value: function assignCoreFunctions() {
         var _this3 = this;
 
-        return new Promise(function(resolve) {
+        return new Promise(function (resolve) {
           Object.entries(
             _objectSpread(
               _objectSpread({}, _core['default']),
               _this3.settings.coreOperations
             )
-          ).forEach(function(_ref4) {
+          ).forEach(function (_ref4) {
             var _ref5 = _slicedToArray(_ref4, 2),
               name = _ref5[0],
               func = _ref5[1];
@@ -651,9 +651,9 @@ var Risen = (function(_ServiceCore) {
           'log',
           true
         );
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
           return (0, _isPortFree['default'])(_this4.settings.apiGatewayPort)
-            .then(function() {
+            .then(function () {
               _this4.log('Starting service core...', 'log', true);
 
               _this4.externalInterfaces.apiGateway = (0, _net.createListener)(
@@ -675,7 +675,7 @@ var Risen = (function(_ServiceCore) {
                 resolve(true)
               );
             })
-            ['catch'](function(e) {
+            ['catch'](function (e) {
               _this4.log(
                 'Gateway port not free or unknown error has occurred. INFO: '.concat(
                   JSON.stringify(e, null, 2)
@@ -699,8 +699,8 @@ var Risen = (function(_ServiceCore) {
       value: function bindGateway() {
         var _this5 = this;
 
-        return new Promise(function(resolve) {
-          _this5.externalInterfaces.apiGateway.on('COM_REQUEST', function(
+        return new Promise(function (resolve) {
+          _this5.externalInterfaces.apiGateway.on('COM_REQUEST', function (
             message,
             data
           ) {
@@ -737,7 +737,7 @@ var Risen = (function(_ServiceCore) {
             _this5.conId += 1;
           });
 
-          _this5.externalInterfaces.apiGateway.on('COM_CLOSE', function(
+          _this5.externalInterfaces.apiGateway.on('COM_CLOSE', function (
             message
           ) {
             _this5.log(
@@ -768,7 +768,7 @@ var Risen = (function(_ServiceCore) {
             _this5.conId += 1;
           });
 
-          _this5.externalInterfaces.apiGateway.on('KILL', function() {
+          _this5.externalInterfaces.apiGateway.on('KILL', function () {
             process.exit();
           });
 
@@ -783,13 +783,13 @@ var Risen = (function(_ServiceCore) {
 
         return Array.isArray(this.settings.http)
           ? Promise.all(
-              this.settings.http.map(function(httpSettings) {
-                return new Promise(function(resolve, reject) {
+              this.settings.http.map(function (httpSettings) {
+                return new Promise(function (resolve, reject) {
                   try {
                     if (httpSettings) {
                       var expressApp = (0, _express['default'])();
                       httpSettings.beforeStart(expressApp);
-                      httpSettings['static'].forEach(function(path) {
+                      httpSettings['static'].forEach(function (path) {
                         return expressApp.use(
                           _express['default']['static'](path)
                         );
@@ -799,11 +799,11 @@ var Risen = (function(_ServiceCore) {
                         (0, _options.hardenServer)(expressApp);
                       }
 
-                      httpSettings.middlewares.forEach(function(middleware) {
+                      httpSettings.middlewares.forEach(function (middleware) {
                         return expressApp.use(middleware);
                       });
                       httpSettings.routes
-                        .filter(function(route) {
+                        .filter(function (route) {
                           if (
                             ['put', 'post', 'get', 'delete', 'patch'].includes(
                               route.method.toLowerCase()
@@ -821,23 +821,23 @@ var Risen = (function(_ServiceCore) {
 
                           return false;
                         })
-                        .forEach(function(route) {
+                        .forEach(function (route) {
                           return expressApp[route.method.toLowerCase()].apply(
                             expressApp,
                             [route.uri].concat(
                               _toConsumableArray(route.preMiddleware || []),
                               [
-                                function(req, res, next) {
+                                function (req, res, next) {
                                   var resultSend = res.send;
-                                  var requestId = (0, _v['default'])();
+                                  var requestId = (0, _uuid.v4)();
 
-                                  var handleException = (function(
+                                  var handleException = (function (
                                     res,
                                     requestIdScoped
                                   ) {
-                                    return function(err) {
+                                    return function (err) {
                                       if (requestIdScoped === requestId) {
-                                        _options.eventList.forEach(function(
+                                        _options.eventList.forEach(function (
                                           event
                                         ) {
                                           return process.removeListener(
@@ -851,13 +851,13 @@ var Risen = (function(_ServiceCore) {
                                     };
                                   })(res, requestId);
 
-                                  _options.eventList.forEach(function(event) {
+                                  _options.eventList.forEach(function (event) {
                                     return process.on(event, handleException);
                                   });
 
-                                  setImmediate(function() {
-                                    res.send = function() {
-                                      _options.eventList.forEach(function(
+                                  setImmediate(function () {
+                                    res.send = function () {
+                                      _options.eventList.forEach(function (
                                         event
                                       ) {
                                         return process.removeListener(
@@ -937,7 +937,7 @@ var Risen = (function(_ServiceCore) {
                 });
               })
             )
-          : new Promise(function(resolve) {
+          : new Promise(function (resolve) {
               _this6.log(
                 'No HTTP(s) servers defined. Starting services only...'
               );
@@ -960,11 +960,11 @@ var Risen = (function(_ServiceCore) {
             ? arguments[1]
             : void 0;
         var servicesInfo = serviceInfo || this.serviceInfo;
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
           if (Object.keys(servicesInfo)) {
             return Promise.all(
               (0, _lodash.shuffle)(
-                Object.keys(servicesInfo).reduce(function(acc, serviceName) {
+                Object.keys(servicesInfo).reduce(function (acc, serviceName) {
                   var instances =
                     customInstances ||
                     _this7.serviceOptions[serviceName].instances;
@@ -977,9 +977,9 @@ var Risen = (function(_ServiceCore) {
 
                   return acc.concat.apply(acc, processList);
                 }, [])
-              ).map(function(name) {
-                return new Promise(function(resolveLocal, rejectLocal) {
-                  return _this7.initService(name, function(result) {
+              ).map(function (name) {
+                return new Promise(function (resolveLocal, rejectLocal) {
+                  return _this7.initService(name, function (result) {
                     return result === true
                       ? resolveLocal(true)
                       : rejectLocal(
@@ -993,10 +993,10 @@ var Risen = (function(_ServiceCore) {
                 });
               })
             )
-              .then(function() {
+              .then(function () {
                 return resolve();
               })
-              ['catch'](function(e) {
+              ['catch'](function (e) {
                 return reject(e);
               });
           }

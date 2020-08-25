@@ -1,8 +1,8 @@
 'use strict';
 
 // Load NPM Modules
-import makeDirectory from 'mkdirp';
-import guid from 'uuid/v4';
+import mkdirp from 'mkdirp';
+import { v4 as uuidv4 } from 'uuid';
 import { createWriteStream } from 'fs';
 import { exec } from 'child_process';
 import { dirname } from 'path';
@@ -49,7 +49,7 @@ class ServiceCore extends ServiceCommon {
       'functionUnknown',
       'initiateMicroServerConnection',
       'databaseOperation'
-    ].forEach(func => {
+    ].forEach((func) => {
       this[func] = this[func].bind(this);
     });
     // Return instance
@@ -90,8 +90,8 @@ class ServiceCore extends ServiceCommon {
       ? process.env.exitedProcessPorts.split(',')
       : process.env.exitedProcessPorts
     )
-      .map(port => parseInt(port, 10))
-      .filter(exitedPort => typeof port === 'number' && exitedPort !== port);
+      .map((port) => parseInt(port, 10))
+      .filter((exitedPort) => typeof port === 'number' && exitedPort !== port);
 
     // Check that the server doesnt already exist
     if (Object.prototype.hasOwnProperty.call(this.serviceData, name)) {
@@ -126,7 +126,7 @@ class ServiceCore extends ServiceCommon {
     // Get index by name and port
     const socketIndex = this.serviceData[name].port.indexOf(port);
     // Remove port from used port list
-    this.inUsePorts = this.inUsePorts.filter(usedPort => usedPort !== port);
+    this.inUsePorts = this.inUsePorts.filter((usedPort) => usedPort !== port);
 
     // Remove tracking information for service
     if (socketIndex > -1) {
@@ -146,7 +146,7 @@ class ServiceCore extends ServiceCommon {
   initService(name, callback) {
     // Define port
     let port = void 0;
-    const processId = guid();
+    const processId = uuidv4();
 
     // Build micro service wrapper
     const microServiceWrapper = () => {
@@ -210,24 +210,24 @@ class ServiceCore extends ServiceCommon {
     };
 
     // Service starter wrapper
-    const startService = async callback => {
+    const startService = async (callback) => {
       try {
         // Initialise service
         await microServiceWrapper();
 
         // Assign process event handler
-        await new Promise(resolve => {
+        await new Promise((resolve) => {
           // Assign to standard streams
-          ['stdout', 'stderr'].forEach(event =>
+          ['stdout', 'stderr'].forEach((event) =>
             this.serviceData[name].process[this.getProcessIndex(name, port)][
               event
-            ].on('data', data =>
+            ].on('data', (data) =>
               handleOnData(this, port, processId)(name, event, data)
             )
           );
 
           // onExit
-          ['exit'].forEach(event =>
+          ['exit'].forEach((event) =>
             this.serviceData[name].process[this.getProcessIndex(name, port)].on(
               event,
               () => {
@@ -236,7 +236,7 @@ class ServiceCore extends ServiceCommon {
                   if (
                     !process.env.exitedProcessPorts
                       .split(',')
-                      .map(port => parseInt(port, 10))
+                      .map((port) => parseInt(port, 10))
                       .includes(port)
                   ) {
                     startService(callback);
@@ -251,7 +251,7 @@ class ServiceCore extends ServiceCommon {
         });
 
         // Start checking for connection
-        await new Promise(resolve => {
+        await new Promise((resolve) => {
           this.initConnectionToService(name, port, (...args) => {
             callback(...args);
             resolve();
@@ -269,21 +269,26 @@ class ServiceCore extends ServiceCommon {
   // Write output to log file
   writeToLogFile(contents) {
     if (this.settings.logPath) {
-      return makeDirectory(dirname(this.settings.logPath), err => {
-        // Throw error if failed to write to log file
-        if (err) {
-          this.log(`Unable to write to log file. MORE INFO: ${err}`, 'warn');
-          return void 0;
-        }
-        // Check that a writable stream is open and create one if not
-        if (!this.logFileStream) {
-          this.logFileStream = createWriteStream(this.settings.logPath, {
-            flags: 'a'
-          });
-        }
-        // Write the file
-        return this.logFileStream.write(`${contents}\n`);
-      });
+      return mkdirp(dirname(this.settings.logPath))
+        .then(() => {
+          // Check that a writable stream is open and create one if not
+          if (!this.logFileStream) {
+            this.logFileStream = createWriteStream(this.settings.logPath, {
+              flags: 'a'
+            });
+          }
+          // Write the file
+          return this.logFileStream.write(`${contents}\n`);
+        })
+        .catch((error) => {
+          // Throw error if failed to write to log file
+          if (error) {
+            this.log(
+              `Unable to write to log file. MORE INFO: ${error}`,
+              'warn'
+            );
+          }
+        });
     }
     return void 0;
   }
@@ -327,7 +332,7 @@ class ServiceCore extends ServiceCommon {
   // Initiate a connection to a microservice
   initConnectionToService(name, port, callback) {
     // Initiate micro service connection
-    return this.initiateMicroServerConnection(port, socket => {
+    return this.initiateMicroServerConnection(port, (socket) => {
       // Show status
       if (Object.prototype.hasOwnProperty.call(socket, 'error')) {
         this.log(`Unable to connect to service - ${name}. Retrying...`, 'log');
@@ -400,7 +405,7 @@ class ServiceCore extends ServiceCommon {
     this.serviceData[recData.destination].connectionCount[index] += 1;
 
     // Send to socket
-    return socket.request('SERVICE_REQUEST', recData, res => {
+    return socket.request('SERVICE_REQUEST', recData, (res) => {
       // Send Micro Service Response To Source
       clientSocket.reply(res);
       // Close Socket If Keep Alive Not Set

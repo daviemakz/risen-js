@@ -7,7 +7,7 @@ exports['default'] = void 0;
 
 var _mkdirp = _interopRequireDefault(require('mkdirp'));
 
-var _v = _interopRequireDefault(require('uuid/v4'));
+var _uuid = require('uuid');
 
 var _fs = require('fs');
 
@@ -110,10 +110,10 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
 }
 
 function _asyncToGenerator(fn) {
-  return function() {
+  return function () {
     var self = this,
       args = arguments;
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       var gen = fn.apply(self, args);
       function _next(value) {
         asyncGeneratorStep(gen, resolve, reject, _next, _throw, 'next', value);
@@ -131,7 +131,7 @@ function ownKeys(object, enumerableOnly) {
   if (Object.getOwnPropertySymbols) {
     var symbols = Object.getOwnPropertySymbols(object);
     if (enumerableOnly)
-      symbols = symbols.filter(function(sym) {
+      symbols = symbols.filter(function (sym) {
         return Object.getOwnPropertyDescriptor(object, sym).enumerable;
       });
     keys.push.apply(keys, symbols);
@@ -143,13 +143,13 @@ function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i] != null ? arguments[i] : {};
     if (i % 2) {
-      ownKeys(Object(source), true).forEach(function(key) {
+      ownKeys(Object(source), true).forEach(function (key) {
         _defineProperty(target, key, source[key]);
       });
     } else if (Object.getOwnPropertyDescriptors) {
       Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
     } else {
-      ownKeys(Object(source)).forEach(function(key) {
+      ownKeys(Object(source)).forEach(function (key) {
         Object.defineProperty(
           target,
           key,
@@ -295,7 +295,7 @@ function _isNativeReflectConstruct() {
   if (Reflect.construct.sham) return false;
   if (typeof Proxy === 'function') return true;
   try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function() {}));
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
     return true;
   } catch (e) {
     return false;
@@ -313,7 +313,7 @@ function _getPrototypeOf(o) {
 
 var coreName = 'serviceCore';
 
-var ServiceCore = (function(_ServiceCommon) {
+var ServiceCore = (function (_ServiceCommon) {
   _inherits(ServiceCore, _ServiceCommon);
 
   var _super = _createSuper(ServiceCore);
@@ -338,7 +338,7 @@ var ServiceCore = (function(_ServiceCommon) {
       'functionUnknown',
       'initiateMicroServerConnection',
       'databaseOperation'
-    ].forEach(function(func) {
+    ].forEach(function (func) {
       _this[func] = _this[func].bind(_assertThisInitialized(_this));
     });
     return _possibleConstructorReturn(_this, _assertThisInitialized(_this));
@@ -350,7 +350,7 @@ var ServiceCore = (function(_ServiceCommon) {
       value: function databaseOperation(table, method, args, callback) {
         var _this2 = this;
 
-        return setImmediate(function() {
+        return setImmediate(function () {
           try {
             var _this2$db$table;
 
@@ -392,10 +392,10 @@ var ServiceCore = (function(_ServiceCommon) {
           ? process.env.exitedProcessPorts.split(',')
           : process.env.exitedProcessPorts
         )
-          .map(function(port) {
+          .map(function (port) {
             return parseInt(port, 10);
           })
-          .filter(function(exitedPort) {
+          .filter(function (exitedPort) {
             return typeof port === 'number' && exitedPort !== port;
           });
 
@@ -430,7 +430,7 @@ var ServiceCore = (function(_ServiceCommon) {
       key: 'removeServerFromTracking',
       value: function removeServerFromTracking(name, port) {
         var socketIndex = this.serviceData[name].port.indexOf(port);
-        this.inUsePorts = this.inUsePorts.filter(function(usedPort) {
+        this.inUsePorts = this.inUsePorts.filter(function (usedPort) {
           return usedPort !== port;
         });
 
@@ -451,11 +451,11 @@ var ServiceCore = (function(_ServiceCommon) {
         var _this3 = this;
 
         var port = void 0;
-        var processId = (0, _v['default'])();
+        var processId = (0, _uuid.v4)();
 
         var microServiceWrapper = function microServiceWrapper() {
-          return new Promise(function(resolve, reject) {
-            var initialiseOnFreePort = (function() {
+          return new Promise(function (resolve, reject) {
+            var initialiseOnFreePort = (function () {
               var _ref = _asyncToGenerator(
                 regeneratorRuntime.mark(function _callee() {
                   return regeneratorRuntime.wrap(
@@ -509,7 +509,7 @@ var ServiceCore = (function(_ServiceCommon) {
                                   )
                                 }
                               },
-                              function(error, stdout, stderr) {
+                              function (error, stdout, stderr) {
                                 _this3.removeServerFromTracking(name, port);
 
                                 if (error || stderr) {
@@ -565,7 +565,7 @@ var ServiceCore = (function(_ServiceCommon) {
           });
         };
 
-        var startService = (function() {
+        var startService = (function () {
           var _ref2 = _asyncToGenerator(
             regeneratorRuntime.mark(function _callee2(callback) {
               return regeneratorRuntime.wrap(
@@ -579,11 +579,11 @@ var ServiceCore = (function(_ServiceCommon) {
 
                       case 3:
                         _context2.next = 5;
-                        return new Promise(function(resolve) {
-                          ['stdout', 'stderr'].forEach(function(event) {
+                        return new Promise(function (resolve) {
+                          ['stdout', 'stderr'].forEach(function (event) {
                             return _this3.serviceData[name].process[
                               _this3.getProcessIndex(name, port)
-                            ][event].on('data', function(data) {
+                            ][event].on('data', function (data) {
                               return (0, _util.handleOnData)(
                                 _this3,
                                 port,
@@ -591,15 +591,15 @@ var ServiceCore = (function(_ServiceCommon) {
                               )(name, event, data);
                             });
                           });
-                          ['exit'].forEach(function(event) {
+                          ['exit'].forEach(function (event) {
                             return _this3.serviceData[name].process[
                               _this3.getProcessIndex(name, port)
-                            ].on(event, function() {
-                              setTimeout(function() {
+                            ].on(event, function () {
+                              setTimeout(function () {
                                 if (
                                   !process.env.exitedProcessPorts
                                     .split(',')
-                                    .map(function(port) {
+                                    .map(function (port) {
                                       return parseInt(port, 10);
                                     })
                                     .includes(port)
@@ -614,11 +614,11 @@ var ServiceCore = (function(_ServiceCommon) {
 
                       case 5:
                         _context2.next = 7;
-                        return new Promise(function(resolve) {
+                        return new Promise(function (resolve) {
                           _this3.initConnectionToService(
                             name,
                             port,
-                            function() {
+                            function () {
                               callback.apply(void 0, arguments);
                               resolve();
                             }
@@ -662,17 +662,9 @@ var ServiceCore = (function(_ServiceCommon) {
 
         if (this.settings.logPath) {
           return (0, _mkdirp['default'])(
-            (0, _path.dirname)(this.settings.logPath),
-            function(err) {
-              if (err) {
-                _this4.log(
-                  'Unable to write to log file. MORE INFO: '.concat(err),
-                  'warn'
-                );
-
-                return void 0;
-              }
-
+            (0, _path.dirname)(this.settings.logPath)
+          )
+            .then(function () {
               if (!_this4.logFileStream) {
                 _this4.logFileStream = (0, _fs.createWriteStream)(
                   _this4.settings.logPath,
@@ -683,8 +675,15 @@ var ServiceCore = (function(_ServiceCommon) {
               }
 
               return _this4.logFileStream.write(''.concat(contents, '\n'));
-            }
-          );
+            })
+            ['catch'](function (error) {
+              if (error) {
+                _this4.log(
+                  'Unable to write to log file. MORE INFO: '.concat(error),
+                  'warn'
+                );
+              }
+            });
         }
 
         return void 0;
@@ -703,7 +702,7 @@ var ServiceCore = (function(_ServiceCommon) {
         var startMicroServiceConnection = function startMicroServiceConnection() {
           if (Object.values(portEmitter.sockets).length === 0) {
             if (connectionAttempts <= microServiceConnectionTimeout) {
-              return setTimeout(function() {
+              return setTimeout(function () {
                 startMicroServiceConnection();
                 connectionAttempts += 1;
               }, 10);
@@ -734,7 +733,7 @@ var ServiceCore = (function(_ServiceCommon) {
       value: function initConnectionToService(name, port, callback) {
         var _this6 = this;
 
-        return this.initiateMicroServerConnection(port, function(socket) {
+        return this.initiateMicroServerConnection(port, function (socket) {
           if (Object.prototype.hasOwnProperty.call(socket, 'error')) {
             _this6.log(
               'Unable to connect to service - '.concat(name, '. Retrying...'),
@@ -742,7 +741,7 @@ var ServiceCore = (function(_ServiceCommon) {
             );
 
             _this6.serviceData[name].status = false;
-            return setTimeout(function() {
+            return setTimeout(function () {
               return _this6.initConnectionToService(name, port, callback);
             }, _this6.settings.connectionTimeout);
           }
@@ -810,7 +809,7 @@ var ServiceCore = (function(_ServiceCommon) {
           index = _this$getMicroService2[1];
 
         this.serviceData[recData.destination].connectionCount[index] += 1;
-        return socket.request('SERVICE_REQUEST', recData, function(res) {
+        return socket.request('SERVICE_REQUEST', recData, function (res) {
           clientSocket.reply(res);
 
           if (recData.keepAlive === false) {
@@ -878,7 +877,7 @@ var ServiceCore = (function(_ServiceCommon) {
           }
 
           intConnAttempts += 1;
-          return setTimeout(function() {
+          return setTimeout(function () {
             return _this8.checkConnection(
               recData,
               clientSocket,
@@ -994,7 +993,7 @@ var ServiceCore = (function(_ServiceCommon) {
 
         switch (true) {
           case data.destination === process.env.name: {
-            return setImmediate(function() {
+            return setImmediate(function () {
               return Object.prototype.hasOwnProperty.call(
                 _this9.coreOperations,
                 data.data.funcName

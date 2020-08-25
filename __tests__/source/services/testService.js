@@ -21,7 +21,7 @@ module.exports = {
       false,
       void 0,
       void 0,
-      responseData => {
+      (responseData) => {
         resObject.resultBody.resData = responseData;
         return socket.reply(resObject);
       }

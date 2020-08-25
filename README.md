@@ -860,6 +860,8 @@ Run the following commands to test the module:
 
 - Create GitHub docs website to formalise documentation.
 
+- Update `README.md` with a more slimmed down version.
+
 ## Contributing
 
 All contributions are very welcome, please read my [CONTRIBUTING.md](https://github.com/daviemakz/risen-js/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/daviemakz/risen-js/pulls) or as [GitHub issues](https://github.com/daviemakz/risen-js/issues). If you'd like to improve code, please feel free!

@@ -62,7 +62,7 @@ class MicroServer extends ServiceCommon {
       'assignOperations',
       'bindService',
       'initServer'
-    ].forEach(func => {
+    ].forEach((func) => {
       this[func] = this[func].bind(this);
     });
 
@@ -89,7 +89,7 @@ class MicroServer extends ServiceCommon {
 
   // Assign process functions
   assignOperations() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // Operation scope
       const operationScope = {
         sendRequest: this.sendRequest,
@@ -112,9 +112,9 @@ class MicroServer extends ServiceCommon {
 
   // Assign process listners
   assignProcessListers() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // onExit
-      process.on('exit', code => {
+      process.on('exit', (code) => {
         // Invoke Template(s)
         const responseObject = new ResponseBodyObject();
         // Build Response Object [status - transport]
@@ -135,7 +135,7 @@ class MicroServer extends ServiceCommon {
           originalData: null
         };
         // Close Each Instance Of Connection
-        Object.values(this.connectionIndex).forEach(socket => {
+        Object.values(this.connectionIndex).forEach((socket) => {
           // Reply To message
           socket.reply(responseObject);
           // Close Socket
@@ -171,7 +171,7 @@ class MicroServer extends ServiceCommon {
           // Return
           return resolve(true);
         })
-        .catch(e => {
+        .catch((e) => {
           this.log(e, 'error');
           this.log(
             `Service port "${parseInt(
@@ -203,7 +203,7 @@ class MicroServer extends ServiceCommon {
 
   // Bind listners to server
   bindService() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // Socket Communication Request
       this.interface.on('SERVICE_REQUEST', (socket, data) => {
         // Confirm Connection
@@ -226,7 +226,7 @@ class MicroServer extends ServiceCommon {
       });
 
       // Socket Communication Request
-      this.interface.on('SERVICE_KILL', socket => {
+      this.interface.on('SERVICE_KILL', (socket) => {
         // Invoke Template(s)
         const responseObject = new ResponseBodyObject();
         // Confirm Connection

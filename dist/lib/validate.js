@@ -129,7 +129,7 @@ var validateRouteOptions = function validateRouteOptions(route) {
 exports.validateRouteOptions = validateRouteOptions;
 
 var validateHttpOptions = function validateHttpOptions(httpOptions) {
-  return httpOptions.every(function(http) {
+  return httpOptions.every(function (http) {
     switch (true) {
       case Object.prototype.hasOwnProperty.call(!http, 'port') ||
         typeof http.port !== 'number': {
@@ -165,7 +165,7 @@ var validateHttpOptions = function validateHttpOptions(httpOptions) {
 
       case (Object.prototype.hasOwnProperty.call(http, 'routes') &&
         !Array.isArray(http.routes)) ||
-        !http.routes.every(function(route) {
+        !http.routes.every(function (route) {
           return validateRouteOptions(route);
         }): {
         throw new Error(
@@ -184,7 +184,7 @@ exports.validateHttpOptions = validateHttpOptions;
 
 var validateCoreOperations = function validateCoreOperations(options) {
   return options instanceof Object
-    ? Object.entries(options).every(function(_ref) {
+    ? Object.entries(options).every(function (_ref) {
         var _ref2 = _slicedToArray(_ref, 2),
           functionName = _ref2[0],
           functionOp = _ref2[1];
@@ -297,7 +297,7 @@ var validateOptions = function validateOptions(options) {
       !Array.isArray(options.runOnStart)) ||
       (Array.isArray(options.runOnStart) &&
         options.runOnStart.length &&
-        options.runOnStart.every(function(op) {
+        options.runOnStart.every(function (op) {
           return typeof op !== 'string';
         })): {
       throw new Error(
@@ -325,7 +325,7 @@ var validateServiceOptions = function validateServiceOptions(serviceOption) {
     case (Object.prototype.hasOwnProperty.call(serviceOption, 'runOnStart') &&
       !Array.isArray(serviceOption.runOnStart)) ||
       (Array.isArray(serviceOption.runOnStart) &&
-        serviceOption.runOnStart.some(function(op) {
+        serviceOption.runOnStart.some(function (op) {
           return typeof op !== 'string';
         })): {
       throw new Error(

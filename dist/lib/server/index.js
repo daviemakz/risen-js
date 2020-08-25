@@ -135,10 +135,10 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
 }
 
 function _asyncToGenerator(fn) {
-  return function() {
+  return function () {
     var self = this,
       args = arguments;
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       var gen = fn.apply(self, args);
       function _next(value) {
         asyncGeneratorStep(gen, resolve, reject, _next, _throw, 'next', value);
@@ -229,7 +229,7 @@ function _isNativeReflectConstruct() {
   if (Reflect.construct.sham) return false;
   if (typeof Proxy === 'function') return true;
   try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function() {}));
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
     return true;
   } catch (e) {
     return false;
@@ -262,13 +262,13 @@ var standardFunctions = [
 
 var processManagement = function processManagement() {
   if (!(0, _isRunning['default'])(process.env.parentPid)) {
-    setTimeout(function() {
+    setTimeout(function () {
       return process.exit();
     }, 1000);
   }
 };
 
-var MicroServer = (function(_ServiceCommon) {
+var MicroServer = (function (_ServiceCommon) {
   _inherits(MicroServer, _ServiceCommon);
 
   var _super = _createSuper(MicroServer);
@@ -293,7 +293,7 @@ var MicroServer = (function(_ServiceCommon) {
       'assignOperations',
       'bindService',
       'initServer'
-    ].forEach(function(func) {
+    ].forEach(function (func) {
       _this[func] = _this[func].bind(_assertThisInitialized(_this));
     });
     setInterval(processManagement, 1000);
@@ -355,14 +355,14 @@ var MicroServer = (function(_ServiceCommon) {
       value: function assignOperations() {
         var _this2 = this;
 
-        return new Promise(function(resolve) {
+        return new Promise(function (resolve) {
           var operationScope = {
             sendRequest: _this2.sendRequest,
             destroyConnection: _this2.destroyConnection,
             operations: _this2.operations,
             localStorage: {}
           };
-          Object.entries(require(process.env.operations)).forEach(function(
+          Object.entries(require(process.env.operations)).forEach(function (
             _ref2
           ) {
             var _ref3 = _slicedToArray(_ref2, 2),
@@ -371,7 +371,7 @@ var MicroServer = (function(_ServiceCommon) {
 
             _this2.operations[name] = op.bind(operationScope);
           });
-          standardFunctions.forEach(function(_ref4) {
+          standardFunctions.forEach(function (_ref4) {
             var name = _ref4.name,
               func = _ref4.func;
             _this2.operations[name] = func.bind(operationScope);
@@ -385,8 +385,8 @@ var MicroServer = (function(_ServiceCommon) {
       value: function assignProcessListers() {
         var _this3 = this;
 
-        return new Promise(function(resolve) {
-          process.on('exit', function(code) {
+        return new Promise(function (resolve) {
+          process.on('exit', function (code) {
             var responseObject = new _response['default']();
             responseObject.status.transport = {
               code: 2006,
@@ -406,7 +406,7 @@ var MicroServer = (function(_ServiceCommon) {
               errorType: 'ERROR',
               originalData: null
             };
-            Object.values(_this3.connectionIndex).forEach(function(socket) {
+            Object.values(_this3.connectionIndex).forEach(function (socket) {
               socket.reply(responseObject);
               socket.conn.destroy();
             });
@@ -420,9 +420,9 @@ var MicroServer = (function(_ServiceCommon) {
       value: function initServer() {
         var _this4 = this;
 
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
           return (0, _isPortFree['default'])(parseInt(process.env.port, 10))
-            .then(function() {
+            .then(function () {
               _this4.log(
                 'Starting service on port: '.concat(
                   parseInt(process.env.port, 10)
@@ -444,7 +444,7 @@ var MicroServer = (function(_ServiceCommon) {
 
               return resolve(true);
             })
-            ['catch'](function(e) {
+            ['catch'](function (e) {
               _this4.log(e, 'error');
 
               _this4.log(
@@ -476,8 +476,8 @@ var MicroServer = (function(_ServiceCommon) {
       value: function bindService() {
         var _this5 = this;
 
-        return new Promise(function(resolve) {
-          _this5['interface'].on('SERVICE_REQUEST', function(socket, data) {
+        return new Promise(function (resolve) {
+          _this5['interface'].on('SERVICE_REQUEST', function (socket, data) {
             _this5.log(
               '['.concat(
                 _this5.conId,
@@ -504,7 +504,7 @@ var MicroServer = (function(_ServiceCommon) {
             return void 0;
           });
 
-          _this5['interface'].on('SERVICE_KILL', function(socket) {
+          _this5['interface'].on('SERVICE_KILL', function (socket) {
             var responseObject = new _response['default']();
 
             _this5.log(

@@ -13,7 +13,7 @@ const ERR_REQ_REFUSED = -1;
 const MAX_WAITERS = 9999999;
 
 // Extend object
-const extendsObj = function(child, parent) {
+const extendsObj = function (child, parent) {
   for (const key in parent) {
     if ({}.hasOwnProperty.call(parent, key)) {
       child[key] = parent[key];
@@ -29,7 +29,7 @@ const extendsObj = function(child, parent) {
 };
 
 // Speaker
-const Speaker = (function(_super) {
+const Speaker = (function (_super) {
   extendsObj(Speaker, _super);
   function Speaker(addresses) {
     let address;
@@ -45,7 +45,7 @@ const Speaker = (function(_super) {
       this.connect(address);
     }
   }
-  Speaker.prototype.connect = function(address) {
+  Speaker.prototype.connect = function (address) {
     let host;
     let port;
     let self;
@@ -64,7 +64,7 @@ const Speaker = (function(_super) {
         console.log(`Successfully connected on port: ${port}`);
       return _this.sockets.push(socket);
     });
-    socket.on('data', data => {
+    socket.on('data', (data) => {
       let message;
       let messageText;
       let _i;
@@ -86,13 +86,13 @@ const Speaker = (function(_super) {
     });
     return void 0;
   };
-  Speaker.prototype.request = function(subject, data, callback) {
+  Speaker.prototype.request = function (subject, data, callback) {
     if (callback === null) {
       callback = null;
     }
     return this.send(subject, data, callback);
   };
-  Speaker.prototype.send = function(subject, data, callback) {
+  Speaker.prototype.send = function (subject, data, callback) {
     let messageId;
     let payload;
     if (callback === null) {
@@ -120,7 +120,7 @@ const Speaker = (function(_super) {
     });
     return this.sockets[this.socketIterator++].write(payload);
   };
-  Speaker.prototype.shout = function(subject, data) {
+  Speaker.prototype.shout = function (subject, data) {
     let payload;
     let socket;
     let _i;
@@ -139,7 +139,7 @@ const Speaker = (function(_super) {
     }
     return _results;
   };
-  Speaker.prototype.generateUniqueId = function() {
+  Speaker.prototype.generateUniqueId = function () {
     let id;
     let newId;
     id = `id-${this.uniqueId}`;

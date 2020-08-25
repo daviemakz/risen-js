@@ -30,7 +30,7 @@ var extendsObj = function extendsObj(child, parent) {
   return child;
 };
 
-var Listener = (function(_super) {
+var Listener = (function (_super) {
   extendsObj(Listener, _super);
 
   function Listener(address) {
@@ -43,16 +43,16 @@ var Listener = (function(_super) {
     this.port = this.getPortByAddress(address);
     this.startServer();
 
-    this.errorFn = function() {
+    this.errorFn = function () {
       return _this.startServer();
     };
   }
 
-  Listener.prototype.startServer = function() {
+  Listener.prototype.startServer = function () {
     var _this = this;
 
-    var tcpServer = _net['default'].createServer(function(connection) {
-      return connection.on('data', function(data) {
+    var tcpServer = _net['default'].createServer(function (connection) {
+      return connection.on('data', function (data) {
         var message;
         var messageText;
 
@@ -82,22 +82,22 @@ var Listener = (function(_super) {
 
     tcpServer.listen(this.port, this.host);
     tcpServer.setMaxListeners(Infinity);
-    return tcpServer.on('error', function(exception) {
+    return tcpServer.on('error', function (exception) {
       return _this.errorFn(exception);
     });
   };
 
-  Listener.prototype.onError = function(errorFn) {
+  Listener.prototype.onError = function (errorFn) {
     this.errorFn = errorFn;
   };
 
-  Listener.prototype.prepare = function(message) {
+  Listener.prototype.prepare = function (message) {
     var _this = this;
 
     var subject = message.subject;
     var i = 0;
 
-    message.reply = function(json) {
+    message.reply = function (json) {
       return message.conn.write(
         _this.prepareJsonToSend({
           id: message.id,
@@ -106,7 +106,7 @@ var Listener = (function(_super) {
       );
     };
 
-    message.next = function() {
+    message.next = function () {
       var _ref;
 
       return (_ref = _this.remoteMethods[subject]) !== null
@@ -117,12 +117,12 @@ var Listener = (function(_super) {
     return message;
   };
 
-  Listener.prototype.dispatch = function(message) {
+  Listener.prototype.dispatch = function (message) {
     var subject = message.subject;
     return message.next();
   };
 
-  Listener.prototype.on = function() {
+  Listener.prototype.on = function () {
     var methods;
     var subject;
     (subject = arguments[0]),

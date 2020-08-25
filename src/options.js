@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import helmet from 'helmet';
 
-export const hardenServer = expressApp => {
+export const hardenServer = (expressApp) => {
   /*
     This hardening follows the guidance in this file:
     https://expressjs.com/en/advanced/best-practice-security.html
@@ -13,7 +13,7 @@ export const hardenServer = expressApp => {
   return expressApp.use(helmet());
 };
 
-export const buildSecureOptions = ssl => {
+export const buildSecureOptions = (ssl) => {
   try {
     return typeof ssl === 'object'
       ? Object.entries({
@@ -33,7 +33,7 @@ export const buildSecureOptions = ssl => {
   }
 };
 
-export const buildHttpOptions = options => ({
+export const buildHttpOptions = (options) => ({
   port: Object.prototype.hasOwnProperty.call(options, 'port')
     ? options.port
     : 8888,
@@ -43,7 +43,7 @@ export const buildHttpOptions = options => ({
     : true,
   beforeStart: Object.prototype.hasOwnProperty.call(options, 'beforeStart')
     ? options.beforeStart
-    : express => express,
+    : (express) => express,
   middlewares: Object.prototype.hasOwnProperty.call(options, 'middlewares')
     ? options.middlewares
     : [],

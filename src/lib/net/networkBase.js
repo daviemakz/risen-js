@@ -6,11 +6,11 @@
 let networkBase;
 
 // Messenger base
-networkBase = (function() {
+networkBase = (function () {
   function networkBase() {
     this.savedBuffer = '';
   }
-  networkBase.prototype.getHostByAddress = address => {
+  networkBase.prototype.getHostByAddress = (address) => {
     if (typeof address === 'number') {
       return null;
     }
@@ -19,7 +19,7 @@ networkBase = (function() {
     }
     return void 0;
   };
-  networkBase.prototype.getPortByAddress = address => {
+  networkBase.prototype.getPortByAddress = (address) => {
     if (typeof address === 'number') {
       return address;
     }
@@ -28,9 +28,10 @@ networkBase = (function() {
     }
     return void 0;
   };
-  networkBase.prototype.prepareJsonToSend = json => `${JSON.stringify(json)}\0`;
+  networkBase.prototype.prepareJsonToSend = (json) =>
+    `${JSON.stringify(json)}\0`;
 
-  networkBase.prototype.tokenizeData = function(data) {
+  networkBase.prototype.tokenizeData = function (data) {
     let tokens;
     this.savedBuffer += data;
     tokens = this.savedBuffer.split('\0');

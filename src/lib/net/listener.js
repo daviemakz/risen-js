@@ -9,7 +9,7 @@ import net from 'net';
 import networkBase from './networkBase';
 
 // Extend object
-const extendsObj = function(child, parent) {
+const extendsObj = function (child, parent) {
   for (const key in parent) {
     if ({}.hasOwnProperty.call(parent, key)) {
       child[key] = parent[key];
@@ -25,7 +25,7 @@ const extendsObj = function(child, parent) {
 };
 
 // Listener
-const Listener = (function(_super) {
+const Listener = (function (_super) {
   extendsObj(Listener, _super);
   function Listener(address) {
     const _this = this;
@@ -34,14 +34,14 @@ const Listener = (function(_super) {
     this.host = this.getHostByAddress(address);
     this.port = this.getPortByAddress(address);
     this.startServer();
-    this.errorFn = function() {
+    this.errorFn = function () {
       return _this.startServer();
     };
   }
-  Listener.prototype.startServer = function() {
+  Listener.prototype.startServer = function () {
     const _this = this;
-    const tcpServer = net.createServer(connection =>
-      connection.on('data', data => {
+    const tcpServer = net.createServer((connection) =>
+      connection.on('data', (data) => {
         let message;
         let messageText;
         let _i;
@@ -62,16 +62,16 @@ const Listener = (function(_super) {
     );
     tcpServer.listen(this.port, this.host);
     tcpServer.setMaxListeners(Infinity);
-    return tcpServer.on('error', exception => _this.errorFn(exception));
+    return tcpServer.on('error', (exception) => _this.errorFn(exception));
   };
-  Listener.prototype.onError = function(errorFn) {
+  Listener.prototype.onError = function (errorFn) {
     this.errorFn = errorFn;
   };
-  Listener.prototype.prepare = function(message) {
+  Listener.prototype.prepare = function (message) {
     const _this = this;
     const { subject } = message;
     let i = 0;
-    message.reply = function(json) {
+    message.reply = function (json) {
       return message.conn.write(
         _this.prepareJsonToSend({
           id: message.id,
@@ -79,7 +79,7 @@ const Listener = (function(_super) {
         })
       );
     };
-    message.next = function() {
+    message.next = function () {
       let _ref;
       return (_ref = _this.remoteMethods[subject]) !== null
         ? _ref[i++](message, message.data)
@@ -87,11 +87,11 @@ const Listener = (function(_super) {
     };
     return message;
   };
-  Listener.prototype.dispatch = function(message) {
+  Listener.prototype.dispatch = function (message) {
     const { subject } = message;
     return message.next();
   };
-  Listener.prototype.on = function() {
+  Listener.prototype.on = function () {
     let methods;
     let subject;
     (subject = arguments[0]),

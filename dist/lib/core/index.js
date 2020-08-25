@@ -50,10 +50,10 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
 }
 
 function _asyncToGenerator(fn) {
-  return function() {
+  return function () {
     var self = this,
       args = arguments;
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       var gen = fn.apply(self, args);
       function _next(value) {
         asyncGeneratorStep(gen, resolve, reject, _next, _throw, 'next', value);
@@ -109,7 +109,7 @@ function _arrayLikeToArray(arr, len) {
 }
 
 function uniqueArray(arrArg) {
-  return arrArg.filter(function(elem, pos, arr) {
+  return arrArg.filter(function (elem, pos, arr) {
     return arr.indexOf(elem) === pos;
   });
 }
@@ -117,7 +117,7 @@ function uniqueArray(arrArg) {
 function getRandomElements(arr, count) {
   var arrClone = _toConsumableArray(arr);
 
-  return _toConsumableArray(Array(count)).map(function() {
+  return _toConsumableArray(Array(count)).map(function () {
     return arrClone.splice(Math.floor(Math.random() * arrClone.length), 1)[0];
   });
 }
@@ -129,7 +129,7 @@ function startService(serviceInfo, instances) {
 function stopService(name, instances) {
   var _this = this;
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var requestedInstances = Math.abs(instances);
     var actualInstances = _this.serviceData[name].port.length;
     var instancesToTerminate =
@@ -152,19 +152,19 @@ function stopService(name, instances) {
       ? process.env.exitedProcessPorts.split(',')
       : process.env.exitedProcessPorts
     )
-      .map(function(port) {
+      .map(function (port) {
         return parseInt(port, 10);
       })
-      .filter(function(exitedPort) {
+      .filter(function (exitedPort) {
         return typeof exitedPort === 'number';
       });
-    var processIndexes = ports.map(function(port) {
+    var processIndexes = ports.map(function (port) {
       return _this.getProcessIndex(name, port);
     });
 
     try {
       processIndexes.forEach(
-        (function() {
+        (function () {
           var _ref = _asyncToGenerator(
             regeneratorRuntime.mark(function _callee(index, elIndex) {
               return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -173,7 +173,7 @@ function stopService(name, instances) {
                     case 0:
                       return _context.abrupt(
                         'return',
-                        new Promise(function(resolve, reject) {
+                        new Promise(function (resolve, reject) {
                           _this.log(
                             'Service core will send kill command to the service: '
                               .concat(name, '/port:')
@@ -184,7 +184,7 @@ function stopService(name, instances) {
                           _this.serviceData[name].socket[index].request(
                             'SERVICE_KILL',
                             void 0,
-                            function(res) {
+                            function (res) {
                               _this.log(
                                 'Service core has recieved acknowledgement of kill command from: '
                                   .concat(name, '/port:')
@@ -211,7 +211,7 @@ function stopService(name, instances) {
             })
           );
 
-          return function(_x, _x2) {
+          return function (_x, _x2) {
             return _ref.apply(this, arguments);
           };
         })()
@@ -236,7 +236,7 @@ function end(socket) {
     details: {}
   });
   socket.reply(resObject);
-  return setTimeout(function() {
+  return setTimeout(function () {
     return process.exit();
   }, 1000);
 }
@@ -246,12 +246,12 @@ function storage(socket, data) {
 
   var resObject = new _response['default']();
   resObject.status.transport.responseSource = process.env.name;
-  return setImmediate(function() {
+  return setImmediate(function () {
     return _this2.databaseOperation(
       data.body.table,
       data.body.method,
       data.body.args,
-      function(status, result, error) {
+      function (status, result, error) {
         if (status) {
           resObject.resultBody.resData = {
             status: true,

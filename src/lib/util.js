@@ -2,8 +2,8 @@
 
 import getFreePort from 'find-free-port';
 
-export const findAFreePort = self => {
-  return new Promise(resolve =>
+export const findAFreePort = (self) => {
+  return new Promise((resolve) =>
     getFreePort(
       self.settings.portRangeStart,
       self.settings.portRangeFinish,
@@ -40,7 +40,7 @@ export const handleOnData = (self, port, processId) => (name, type, data) => {
   self.log(logOutput, 'log');
 };
 
-export const randomScheduling = socketList => {
+export const randomScheduling = (socketList) => {
   // Queuing: random
   const socketIndex = Math.floor(Math.random() * socketList.length);
   // Return

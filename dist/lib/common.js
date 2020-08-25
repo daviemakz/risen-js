@@ -37,7 +37,7 @@ function _createClass(Constructor, protoProps, staticProps) {
 
 var logTypes = ['log', 'error', 'warn'];
 
-var ServiceCommon = (function() {
+var ServiceCommon = (function () {
   function ServiceCommon() {
     var _this = this;
 
@@ -48,7 +48,7 @@ var ServiceCommon = (function() {
       'sendRequest',
       'destroyConnection',
       'executeInitialFunctions'
-    ].forEach(function(func) {
+    ].forEach(function (func) {
       _this[func] = _this[func].bind(_this);
     });
     return this;
@@ -81,10 +81,10 @@ var ServiceCommon = (function() {
           arguments.length > 1 && arguments[1] !== undefined
             ? arguments[1]
             : 'options';
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
           try {
             _this2[container].runOnStart
-              .filter(function(func) {
+              .filter(function (func) {
                 if (typeof func === 'function') {
                   return true;
                 }
@@ -98,7 +98,7 @@ var ServiceCommon = (function() {
 
                 return false;
               })
-              .forEach(function(func) {
+              .forEach(function (func) {
                 return Object.prototype.hasOwnProperty.call(
                   _this2[opsProp],
                   func
@@ -155,7 +155,7 @@ var ServiceCommon = (function() {
                 'log'
               );
 
-              return setTimeout(function() {
+              return setTimeout(function () {
                 sendToSocket();
                 connectionAttempts += 1;
                 return void 0;
@@ -196,7 +196,7 @@ var ServiceCommon = (function() {
 
           _this3.log('Socket initialized. sending data...', 'log');
 
-          return portEmitter.request('COM_REQUEST', resBody, function(
+          return portEmitter.request('COM_REQUEST', resBody, function (
             requestData
           ) {
             if (Object.prototype.hasOwnProperty.call(requestData, 'error')) {

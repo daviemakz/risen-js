@@ -31,11 +31,11 @@ function _typeof(obj) {
 }
 
 var findAFreePort = function findAFreePort(self) {
-  return new Promise(function(resolve) {
+  return new Promise(function (resolve) {
     return (0,
     _findFreePort[
       'default'
-    ])(self.settings.portRangeStart, self.settings.portRangeFinish, function(err, freePort) {
+    ])(self.settings.portRangeStart, self.settings.portRangeFinish, function (err, freePort) {
       return resolve(freePort);
     });
   });
@@ -66,12 +66,9 @@ var handleReplyToSocket = function handleReplyToSocket(data, socket) {
 exports.handleReplyToSocket = handleReplyToSocket;
 
 var handleOnData = function handleOnData(self, port, processId) {
-  return function(name, type, data) {
+  return function (name, type, data) {
     var logOutput = processStdio(
-      ''
-        .concat(name, '/port:')
-        .concat(port, '/id:')
-        .concat(processId),
+      ''.concat(name, '/port:').concat(port, '/id:').concat(processId),
       type,
       data
     );

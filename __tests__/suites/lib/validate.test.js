@@ -93,7 +93,7 @@ describe('dist/lib/validate', () => {
           static: ['public'],
           routes: []
         }
-      ].map(http => omit({ ...http, ...overwriteProps }, omitList));
+      ].map((http) => omit({ ...http, ...overwriteProps }, omitList));
     test('throw new error: port is not a number', () => {
       expect(() => {
         validateHttpOptions(getOptions([], { port: '10000' }));

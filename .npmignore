@@ -1,0 +1,17 @@
+__resources__
+__tests__
+dev
+src
+tmp
+.github
+.DS_Store
+.eslintignore
+.eslintrc.js
+.gitignore
+.npmignore
+.prettierignore
+.prettierrc
+.travis.yml
+jest.config.js
+json.sqlite
+webpack.config.js

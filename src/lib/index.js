@@ -167,7 +167,7 @@ class ServiceCore extends ServiceCommon {
             this.serviceData[name].process[
               this.getProcessIndex(name, port)
             ] = exec(
-              `${process.execPath} ${__dirname}/server/index.js`,
+              `${process.execPath} ${__dirname}/server/entry.js`,
               {
                 maxBuffer: 1024 * this.settings.maxBuffer,
                 env: {
@@ -297,7 +297,7 @@ class ServiceCore extends ServiceCommon {
   initiateMicroServerConnection(port, callback) {
     // Get Variables
     let connectionAttempts = 0;
-    const { microServiceConnectionTimeout } = this.settings;
+    const { msConnectionTimeout } = this.settings;
     // Invoke the port emitter
     const portEmitter = createSpeakerReconnector(port);
     // Check Socket Is Ready & Execute
@@ -305,7 +305,7 @@ class ServiceCore extends ServiceCommon {
       // Check If Socket Initialized Then Continue...
       if (Object.values(portEmitter.sockets).length === 0) {
         // Wait & Retry (including timeout)
-        if (connectionAttempts <= microServiceConnectionTimeout) {
+        if (connectionAttempts <= msConnectionTimeout) {
           // Try Again...
           return setTimeout(() => {
             startMicroServiceConnection();
@@ -344,7 +344,9 @@ class ServiceCore extends ServiceCommon {
           this.settings.connectionTimeout
         );
       }
-      this.log('Connected to service, ready for client connections!');
+      this.log(
+        `Service core has successfully connected to micro service: ${port}`
+      );
       // Set status
       this.serviceData[name].status = true;
       // Store Socket Object
@@ -444,7 +446,7 @@ class ServiceCore extends ServiceCommon {
     let intConnAttempts = connectionAttempts;
     // Check Connection, Execute Or Timeout...
     if (microServerConnection === 'connectionNotReady') {
-      if (intConnAttempts > this.settings.microServiceConnectionAttempts) {
+      if (intConnAttempts > this.settings.msConnectionRetryLimit) {
         // Notification
         this.log('Service connection initiation attempts, maximum reached');
         // Create Response Object

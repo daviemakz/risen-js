@@ -1,4 +1,8 @@
 __tests__
 coverage
 dist
+tmp
 yarn.lock
+.DS_Store
+*.pem
+*.crt

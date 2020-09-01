@@ -10,10 +10,10 @@ import {
   validateCoreOperations,
   validateOptions,
   validateServiceOptions
-} from '../../../dist/lib/validate';
+} from '../../src/lib/validate';
 
 // Test suite
-describe('dist/lib/validate', () => {
+describe('src/lib/validate', () => {
   describe('validateRouteOptions()', () => {
     const getOptions = (omitList, overwriteProps) =>
       omit(
@@ -251,25 +251,25 @@ describe('dist/lib/validate', () => {
         )
       );
     });
-    test('throw new error: microServiceConnectionTimeout is incorrect', () => {
+    test('throw new error: msConnectionTimeout is incorrect', () => {
       expect(() => {
         validateOptions(
-          getOptions([], { microServiceConnectionTimeout: 'modeNotValid' })
+          getOptions([], { msConnectionTimeout: 'modeNotValid' })
         );
       }).toThrow(
         new Error(
-          'The "microServiceConnectionTimeout" option is not valid, it must be a number'
+          'The "msConnectionTimeout" option is not valid, it must be a number'
         )
       );
     });
-    test('throw new error: microServiceConnectionAttempts is incorrect', () => {
+    test('throw new error: msConnectionRetryLimit is incorrect', () => {
       expect(() => {
         validateOptions(
-          getOptions([], { microServiceConnectionAttempts: 'modeNotValid' })
+          getOptions([], { msConnectionRetryLimit: 'modeNotValid' })
         );
       }).toThrow(
         new Error(
-          'The "microServiceConnectionAttempts" option is not valid, it must be a number'
+          'The "msConnectionRetryLimit" option is not valid, it must be a number'
         )
       );
     });

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`dist/lib/validate CommandTemplate() to match snapshot 1`] = `
+exports[`src/lib/validate CommandTemplate() to match snapshot 1`] = `
 Object {
   "body": Object {},
   "destination": undefined,
@@ -8,7 +8,7 @@ Object {
 }
 `;
 
-exports[`dist/lib/validate ResponseTemplate() to match snapshot 1`] = `
+exports[`src/lib/validate ResponseTemplate() to match snapshot 1`] = `
 Object {
   "resultBody": Object {
     "errData": Object {},

@@ -1,10 +1,10 @@
 'use strict';
 
 // Import system components
-import Core, { uniqueArray, getRandomElements } from '../../../dist/lib/core';
+import Core, { uniqueArray, getRandomElements } from '../../src/lib/core';
 
 // Test suite
-describe('dist/lib/db', () => {
+describe('src/lib/db', () => {
   describe('uniqueArray()', () => {
     test('to match snapshot', () => {
       expect(uniqueArray([1, 1, 1, 2, 3, 4, 5])).toMatchSnapshot();

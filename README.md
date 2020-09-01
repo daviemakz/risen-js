@@ -413,8 +413,8 @@ When the service core is starting instances of services it will automatically lo
   logPath: void 0,
   restartTimeout: 50,
   connectionTimeout: 1000,
-  microServiceConnectionTimeout: 10000,
-  microServiceConnectionAttempts: 1000,
+  msConnectionTimeout: 10000,
+  msConnectionRetryLimit: 1000,
   apiGatewayPort: 8080,
   portRangeStart: 1024,
   portRangeFinish: 65535,
@@ -433,8 +433,8 @@ When the service core is starting instances of services it will automatically lo
 `logPath [string]` - If you want to log to a file what you would see in the console. If you want more information set `{ verbose: true }`.  
 `restartTimeout [number]` - How long to wait before restarting a service instance (in ms).  
 `connectionTimeout [number]` - How long to wait while attempting to acquire a connection to the service core before trying again (in ms).  
-`microServiceConnectionTimeout [number]` - How the service core should wait while it attempting to connect to a service instance before timing out and returning an error to the source.  
-`microServiceConnectionAttempts [number]` - How many times the service core should try to acquire a connection to a service instance if the connection is rejected before returning an error to the source.  
+`msConnectionTimeout [number]` - How the service core should wait while it attempting to connect to a service instance before timing out and returning an error to the source.  
+`msConnectionRetryLimit [number]` - How many times the service core should try to acquire a connection to a service instance if the connection is rejected before returning an error to the source.  
 `apiGatewayPort [number]` - The main port where the service core listens to new connections. _NOTE: To bind below ports 1024 you need to have privileged access._  
 `portRangeStart [number]` - What port the service core should begin while trying to find a free port for a service instance.  
 `portRangeFinish [number]` - What port the service core should end its search if it cannot find a free port. At this point the service core will throw an error.  
@@ -836,9 +836,9 @@ Run the following commands to test the module:
 
 - Clean up code to align more closely with latest ECMA10+. [DONE]
 
-- Add a development mode to the package which allows everything to be tested.
+- Add a development mode to the package which allows everything to be tested while developing. [DONE]
 
-- Add example described in the `README.md`.
+- Add full spectrum tests to support development environment & replace integration test with this.
 
 - Add methods to response object to allow self setting of data. (Getter & Setters).
 
@@ -846,9 +846,11 @@ Run the following commands to test the module:
 
 - Reuse HTTP connection from express server.
 
-- Update relevant NPM modules & clean up unused packages.
+- Add pre-made example described in the `README.md`.
 
-- Single file configuration with on execution bundling into self contained code.
+- Update relevant NPM modules & clean up unused packages. [DONE]
+
+- Single file configuration with on execution bundling into self contained code. [NOT DONE]
 
 - Customisable babel transpilation from configuration.
 
@@ -858,11 +860,17 @@ Run the following commands to test the module:
 
 - Reformat service messages and document schema.
 
+- Implement CLI version of launching script.
+
 - Increase code coverage to 90+.
+
+- Add a logo to the project.
 
 - Create GitHub docs website to formalise documentation.
 
 - Update `README.md` with a more slimmed down version.
+
+- Add 'development section' to `README.md`.
 
 ## Contributing
 

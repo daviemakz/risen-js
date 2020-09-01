@@ -254,21 +254,19 @@ var validateOptions = function validateOptions(options) {
       );
     }
 
-    case Object.prototype.hasOwnProperty.call(
-      options,
-      'microServiceConnectionTimeout'
-    ) && typeof options.microServiceConnectionTimeout !== 'number': {
+    case Object.prototype.hasOwnProperty.call(options, 'msConnectionTimeout') &&
+      typeof options.msConnectionTimeout !== 'number': {
       throw new Error(
-        'The "microServiceConnectionTimeout" option is not valid, it must be a number'
+        'The "msConnectionTimeout" option is not valid, it must be a number'
       );
     }
 
     case Object.prototype.hasOwnProperty.call(
       options,
-      'microServiceConnectionAttempts'
-    ) && typeof options.microServiceConnectionAttempts !== 'number': {
+      'msConnectionRetryLimit'
+    ) && typeof options.msConnectionRetryLimit !== 'number': {
       throw new Error(
-        'The "microServiceConnectionAttempts" option is not valid, it must be a number'
+        'The "msConnectionRetryLimit" option is not valid, it must be a number'
       );
     }
 

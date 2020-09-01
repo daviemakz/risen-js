@@ -1,10 +1,10 @@
 'use strict';
 
 // Import system components
-import CommandTemplate from '../../../dist/lib/template/command';
-import ResponseTemplate from '../../../dist/lib/template/response';
+import CommandTemplate from '../../src/lib/template/command';
+import ResponseTemplate from '../../src/lib/template/response';
 
-describe('dist/lib/validate', () => {
+describe('src/lib/validate', () => {
   describe('CommandTemplate()', () => {
     test('to match snapshot', () => {
       expect(CommandTemplate()).toMatchSnapshot();

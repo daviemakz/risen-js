@@ -173,6 +173,7 @@ class MicroServer extends ServiceCommon {
         })
         .catch((e) => {
           this.log(e, 'error');
+
           this.log(
             `Service port "${parseInt(
               process.env.port,
@@ -184,6 +185,7 @@ class MicroServer extends ServiceCommon {
             )}`,
             'error'
           );
+
           // Reject
           return reject(
             Error(

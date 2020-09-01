@@ -1,19 +1,7 @@
 'use strict';
 
-// Assign variables
-const presets = ['@babel/preset-env'];
-const plugins = [
-  '@babel/plugin-transform-regenerator',
-  '@babel/plugin-syntax-throw-expressions',
-  '@babel/plugin-transform-modules-commonjs'
-];
-
-// Babel configuration
-const rcConfig = {
-  comments: false,
-  presets,
-  plugins
-};
+// Import base configs
+const { rcConfig } = require('./babel.config.base');
 
 // Export
 module.exports = (api) => {

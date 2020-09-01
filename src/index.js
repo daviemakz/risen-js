@@ -9,9 +9,10 @@ import isPortFree from 'is-port-free';
 import https from 'https';
 import http from 'http';
 import express from 'express';
+import { existsSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { resolve } from 'path';
-import { existsSync } from 'fs';
+
 import { shuffle } from 'lodash';
 
 // Load package.json
@@ -126,7 +127,7 @@ export class Risen extends ServiceCore {
   }
 
   // Start the server
-  startServer() {
+  startServer(callback = () => void 0) {
     if (!this.microServiceStarted) {
       return (async () => {
         try {
@@ -135,13 +136,25 @@ export class Risen extends ServiceCore {
           // Check mode
           if (['client', 'server'].includes(this.settings.mode)) {
             if (this.settings.mode === 'server') {
-              await this.assignCoreFunctions();
-              await this.initGateway();
-              await this.bindGateway();
-              await this.startServices();
-              await this.startHttpServer();
-              await this.executeInitialFunctions('coreOperations', 'settings');
-              return void 0;
+              try {
+                await this.assignCoreFunctions();
+                await this.initGateway();
+                await this.bindGateway();
+                await this.startServices();
+                await this.startHttpServer();
+                await this.executeInitialFunctions(
+                  'coreOperations',
+                  'settings'
+                );
+                callback();
+                return void 0;
+              } catch (e) {
+                this.log(
+                  `A fatal error has occurred when starting the framework. Process cannot continue, exiting...`,
+                  'error'
+                );
+                process.exit(1);
+              }
             }
             this.log(`Micro Service Framework: ${version}`, 'log');
             this.log('Running in client mode...', 'log');
@@ -177,7 +190,15 @@ export class Risen extends ServiceCore {
   }
 
   // Add micro service to the instance
-  defineService(name, operations, options) {
+  defineService(name, servicePath, options) {
+    // Check that we are running in server mode
+    if (this.settings.mode !== 'server') {
+      return this.log(
+        `Cannot define service because framework is not running in 'server' mode. Mode: ${this.settings.mode}`,
+        'error'
+      );
+    }
+
     // Validate options
     if (!validateServiceOptions(options || defaultServiceOptions)) {
       return this.log(
@@ -185,22 +206,26 @@ export class Risen extends ServiceCore {
         'log'
       );
     }
-    // Variables
-    const resolvedPath = `${resolve(operations)}.js`;
+
+    // Resolve the absolute file path and build service data object
+    const resolvedPath = `${resolve(servicePath)}.js`;
+    const serviceData = { operations: require(resolvedPath), resolvedPath };
+
     // Check that the server doesnt already exist
     switch (true) {
       case typeof name === 'undefined': {
         throw new Error(`The name of the microservice is not defined! ${name}`);
       }
-      case typeof operations === 'undefined' || !existsSync(resolvedPath): {
+      case typeof serviceData.operations === 'undefined' ||
+        !existsSync(serviceData.resolvedPath): {
         throw new Error(
-          `The operations path of the microservice is not defined or cannot be found! PATH: ${resolvedPath}`
+          `The operations path of the microservice is not defined or cannot be found! PATH: ${serviceData.resolvedPath}`
         );
       }
-      case typeof require(resolvedPath) !== 'object' ||
-        !Object.keys(require(resolvedPath)).length: {
+      case typeof serviceData.operations !== 'object' ||
+        !Object.keys(serviceData.operations).length: {
         throw new Error(
-          `No operations found. Expecting an exported object with atleast one key! PATH: ${resolvedPath}`
+          `No operations found. Expecting an exported object with atleast one key! PATH: ${serviceData.resolvedPath}`
         );
       }
 
@@ -209,7 +234,10 @@ export class Risen extends ServiceCore {
       }
       default: {
         // Set options
-        this.serviceOptions[name] = { ...defaultServiceOptions, ...options };
+        this.serviceOptions[name] = {
+          ...defaultServiceOptions,
+          ...options
+        };
         // Set information
         this.serviceInfo[name] = resolvedPath;
         // Return
@@ -269,35 +297,38 @@ export class Risen extends ServiceCore {
   bindGateway() {
     return new Promise((resolve) => {
       // Socket Communication Request
-      this.externalInterfaces.apiGateway.on('COM_REQUEST', (message, data) => {
-        // Confirm Connection
-        this.log(
-          `[${this.conId}] Service core connection request recieved`,
-          'log'
-        );
-        // Execute handlers
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this.eventHandlers,
-            'onConRequest'
-          )
-        ) {
-          this.eventHandlers.onConRequest(data);
+      this.externalInterfaces.apiGateway.on(
+        'COM_REQUEST',
+        (clientSocket, data) => {
+          // Confirm Connection
+          this.log(
+            `[${this.conId}] Service core connection request recieved`,
+            'log'
+          );
+          // Execute handlers
+          if (
+            Object.prototype.hasOwnProperty.call(
+              this.eventHandlers,
+              'onConRequest'
+            )
+          ) {
+            this.eventHandlers.onConRequest(data);
+          }
+          // Process Communication Request
+          if (data) {
+            this.processComRequest(data, clientSocket, this.conId);
+          } else {
+            this.processComError(data, clientSocket, this.conId);
+          }
+          // Process Connection
+          this.log(`[${this.conId}] Service core connection request processed`);
+          // Increment
+          this.conId += 1;
         }
-        // Process Communication Request
-        if (data) {
-          this.processComRequest(data, message, this.conId);
-        } else {
-          this.processComError(data, message, this.conId);
-        }
-        // Process Connection
-        this.log(`[${this.conId}] Service core connection request processed`);
-        // Increment
-        this.conId += 1;
-      });
+      );
 
       // Socket Communication Close
-      this.externalInterfaces.apiGateway.on('COM_CLOSE', (message) => {
+      this.externalInterfaces.apiGateway.on('COM_CLOSE', (clientSocket) => {
         // Connection Close Requested
         this.log(`[${this.conId}] Service core connection close requested`);
         // Execute handlers
@@ -307,7 +338,7 @@ export class Risen extends ServiceCore {
           this.eventHandlers.onConClose();
         }
         // Destroy Socket (Close Connection)
-        message.conn.destroy();
+        clientSocket.conn.destroy();
         // Connection Closed
         this.log(`[${this.conId}] Service core connection successfully closed`);
         // Increment

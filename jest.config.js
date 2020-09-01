@@ -22,9 +22,9 @@ module.exports = {
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
-    'dist/**/*.{js,ts}',
-    '!**/dist/lib/server/**',
-    '!**/dist/lib/runtime.js'
+    'src/**/*.{js,ts}',
+    '!**/src/lib/server/**',
+    '!**/src/lib/runtime.js'
   ],
 
   // The directory where Jest should output its coverage files
@@ -126,7 +126,7 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ['**/__tests__/suites/**/*.test.[jt]s?(x)'],
+  testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
@@ -151,7 +151,7 @@ module.exports = {
   // A map from regular expressions to paths to transformers
   transform: {
     '.+\\.(js|ts|jsx|tsx)$': '<rootDir>/node_modules/babel-jest'
-  }
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
@@ -162,7 +162,7 @@ module.exports = {
   // unmockedModulePathPatterns: undefined,
 
   // Indicates whether each individual test should be reported during the run
-  // verbose: null,
+  verbose: true
 
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
   // watchPathIgnorePatterns: [],

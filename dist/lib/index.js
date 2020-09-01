@@ -489,7 +489,7 @@ var ServiceCore = (function (_ServiceCommon) {
                             ] = (0, _child_process.exec)(
                               ''
                                 .concat(process.execPath, ' ')
-                                .concat(__dirname, '/server/index.js'),
+                                .concat(__dirname, '/server/entry.js'),
                               {
                                 maxBuffer: 1024 * _this3.settings.maxBuffer,
                                 env: {
@@ -695,13 +695,12 @@ var ServiceCore = (function (_ServiceCommon) {
         var _this5 = this;
 
         var connectionAttempts = 0;
-        var microServiceConnectionTimeout = this.settings
-          .microServiceConnectionTimeout;
+        var msConnectionTimeout = this.settings.msConnectionTimeout;
         var portEmitter = (0, _net.createSpeakerReconnector)(port);
 
         var startMicroServiceConnection = function startMicroServiceConnection() {
           if (Object.values(portEmitter.sockets).length === 0) {
-            if (connectionAttempts <= microServiceConnectionTimeout) {
+            if (connectionAttempts <= msConnectionTimeout) {
               return setTimeout(function () {
                 startMicroServiceConnection();
                 connectionAttempts += 1;
@@ -746,7 +745,11 @@ var ServiceCore = (function (_ServiceCommon) {
             }, _this6.settings.connectionTimeout);
           }
 
-          _this6.log('Connected to service, ready for client connections!');
+          _this6.log(
+            'Service core has successfully connected to micro service: '.concat(
+              port
+            )
+          );
 
           _this6.serviceData[name].status = true;
           _this6.serviceData[name].socketList[
@@ -855,7 +858,7 @@ var ServiceCore = (function (_ServiceCommon) {
         var intConnAttempts = connectionAttempts;
 
         if (microServerConnection === 'connectionNotReady') {
-          if (intConnAttempts > this.settings.microServiceConnectionAttempts) {
+          if (intConnAttempts > this.settings.msConnectionRetryLimit) {
             this.log('Service connection initiation attempts, maximum reached');
             var responseObject = new _response['default']();
             responseObject.status.transport = {

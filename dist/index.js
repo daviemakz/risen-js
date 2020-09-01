@@ -55,11 +55,11 @@ var _http = _interopRequireDefault(require('http'));
 
 var _express = _interopRequireDefault(require('express'));
 
+var _fs = require('fs');
+
 var _uuid = require('uuid');
 
 var _path = require('path');
-
-var _fs = require('fs');
 
 var _lodash = require('lodash');
 
@@ -466,6 +466,13 @@ var Risen = (function (_ServiceCore) {
       value: function startServer() {
         var _this2 = this;
 
+        var callback =
+          arguments.length > 0 && arguments[0] !== undefined
+            ? arguments[0]
+            : function () {
+                return void 0;
+              };
+
         if (!this.microServiceStarted) {
           return _asyncToGenerator(
             regeneratorRuntime.mark(function _callee() {
@@ -480,45 +487,58 @@ var Risen = (function (_ServiceCore) {
                         if (
                           !['client', 'server'].includes(_this2.settings.mode)
                         ) {
-                          _context.next = 20;
+                          _context.next = 28;
                           break;
                         }
 
                         if (!(_this2.settings.mode === 'server')) {
-                          _context.next = 17;
+                          _context.next = 25;
                           break;
                         }
 
-                        _context.next = 6;
+                        _context.prev = 4;
+                        _context.next = 7;
                         return _this2.assignCoreFunctions();
 
-                      case 6:
-                        _context.next = 8;
+                      case 7:
+                        _context.next = 9;
                         return _this2.initGateway();
 
-                      case 8:
-                        _context.next = 10;
+                      case 9:
+                        _context.next = 11;
                         return _this2.bindGateway();
 
-                      case 10:
-                        _context.next = 12;
+                      case 11:
+                        _context.next = 13;
                         return _this2.startServices();
 
-                      case 12:
-                        _context.next = 14;
+                      case 13:
+                        _context.next = 15;
                         return _this2.startHttpServer();
 
-                      case 14:
-                        _context.next = 16;
+                      case 15:
+                        _context.next = 17;
                         return _this2.executeInitialFunctions(
                           'coreOperations',
                           'settings'
                         );
 
-                      case 16:
+                      case 17:
+                        callback();
                         return _context.abrupt('return', void 0);
 
-                      case 17:
+                      case 21:
+                        _context.prev = 21;
+                        _context.t0 = _context['catch'](4);
+
+                        _this2.log(
+                          'A fatal error has occurred when starting the framework. Process cannot continue, exiting...',
+                          'error'
+                        );
+
+                        process.exit(1);
+
+                      case 25:
                         _this2.log(
                           'Micro Service Framework: '.concat(_package.version),
                           'log'
@@ -528,17 +548,17 @@ var Risen = (function (_ServiceCore) {
 
                         return _context.abrupt('return', void 0);
 
-                      case 20:
+                      case 28:
                         throw new Error(
                           "Unsupported mode detected. Valid options are 'server' or 'client'"
                         );
 
-                      case 23:
-                        _context.prev = 23;
-                        _context.t0 = _context['catch'](0);
-                        throw new Error(_context.t0);
+                      case 31:
+                        _context.prev = 31;
+                        _context.t1 = _context['catch'](0);
+                        throw new Error(_context.t1);
 
-                      case 26:
+                      case 34:
                       case 'end':
                         return _context.stop();
                     }
@@ -546,7 +566,10 @@ var Risen = (function (_ServiceCore) {
                 },
                 _callee,
                 null,
-                [[0, 23]]
+                [
+                  [0, 31],
+                  [4, 21]
+                ]
               );
             })
           )();
@@ -582,7 +605,16 @@ var Risen = (function (_ServiceCore) {
     },
     {
       key: 'defineService',
-      value: function defineService(name, operations, options) {
+      value: function defineService(name, servicePath, options) {
+        if (this.settings.mode !== 'server') {
+          return this.log(
+            "Cannot define service because framework is not running in 'server' mode. Mode: ".concat(
+              this.settings.mode
+            ),
+            'error'
+          );
+        }
+
         if (
           !(0, _validate.validateServiceOptions)(
             options || _options.defaultServiceOptions
@@ -597,7 +629,11 @@ var Risen = (function (_ServiceCore) {
           );
         }
 
-        var resolvedPath = ''.concat((0, _path.resolve)(operations), '.js');
+        var resolvedPath = ''.concat((0, _path.resolve)(servicePath), '.js');
+        var serviceData = {
+          operations: require(resolvedPath),
+          resolvedPath: resolvedPath
+        };
 
         switch (true) {
           case typeof name === 'undefined': {
@@ -606,20 +642,20 @@ var Risen = (function (_ServiceCore) {
             );
           }
 
-          case typeof operations === 'undefined' ||
-            !(0, _fs.existsSync)(resolvedPath): {
+          case typeof serviceData.operations === 'undefined' ||
+            !(0, _fs.existsSync)(serviceData.resolvedPath): {
             throw new Error(
               'The operations path of the microservice is not defined or cannot be found! PATH: '.concat(
-                resolvedPath
+                serviceData.resolvedPath
               )
             );
           }
 
-          case _typeof(require(resolvedPath)) !== 'object' ||
-            !Object.keys(require(resolvedPath)).length: {
+          case _typeof(serviceData.operations) !== 'object' ||
+            !Object.keys(serviceData.operations).length: {
             throw new Error(
               'No operations found. Expecting an exported object with atleast one key! PATH: '.concat(
-                resolvedPath
+                serviceData.resolvedPath
               )
             );
           }
@@ -701,7 +737,7 @@ var Risen = (function (_ServiceCore) {
 
         return new Promise(function (resolve) {
           _this5.externalInterfaces.apiGateway.on('COM_REQUEST', function (
-            message,
+            clientSocket,
             data
           ) {
             _this5.log(
@@ -722,9 +758,9 @@ var Risen = (function (_ServiceCore) {
             }
 
             if (data) {
-              _this5.processComRequest(data, message, _this5.conId);
+              _this5.processComRequest(data, clientSocket, _this5.conId);
             } else {
-              _this5.processComError(data, message, _this5.conId);
+              _this5.processComError(data, clientSocket, _this5.conId);
             }
 
             _this5.log(
@@ -738,7 +774,7 @@ var Risen = (function (_ServiceCore) {
           });
 
           _this5.externalInterfaces.apiGateway.on('COM_CLOSE', function (
-            message
+            clientSocket
           ) {
             _this5.log(
               '['.concat(
@@ -756,7 +792,7 @@ var Risen = (function (_ServiceCore) {
               _this5.eventHandlers.onConClose();
             }
 
-            message.conn.destroy();
+            clientSocket.conn.destroy();
 
             _this5.log(
               '['.concat(

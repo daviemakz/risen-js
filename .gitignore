@@ -1,6 +1,11 @@
 # Example files
 eg
 json.sqlite
+tmp
+
+# Damn apple config files...
+.DS_Store
+
 # Logs
 logs
 *.log

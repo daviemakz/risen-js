@@ -75,7 +75,7 @@ export function stopService(name, instances) {
                   `Service core has recieved acknowledgement of kill command from: ${name}/port:${ports[elIndex]}`,
                   'log'
                 );
-                if (res.status.command.code === 100) {
+                if (res.status.command.code === 500) {
                   resolve(true);
                 } else {
                   reject(Error(false));

@@ -119,12 +119,12 @@ class MicroServer extends ServiceCommon {
         const responseObject = new ResponseBodyObject();
         // Build Response Object [status - transport]
         responseObject.status.transport = {
-          code: 2006,
+          code: 5006,
           message: `Micro service process exited unexpectedly. CODE: ${code}`
         };
         // Build Response Object [status - transport]
         responseObject.status.command = {
-          code: 200,
+          code: 500,
           message: 'Command not executed, transport failure'
         };
         // Build Response Object [ResBody - Error Details]
@@ -245,12 +245,12 @@ class MicroServer extends ServiceCommon {
         this.conId += 1;
         // Build Response Object [status - transport]
         responseObject.status.transport = {
-          code: 1000,
+          code: 2000,
           message: 'Micro service process has exited!'
         };
         // Build Response Object [status - transport]
         responseObject.status.command = {
-          code: 100,
+          code: 500,
           message: 'Command completed successfully'
         };
         // Build Response Object [ResBody - Error Details]

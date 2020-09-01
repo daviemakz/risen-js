@@ -389,13 +389,13 @@ var MicroServer = (function (_ServiceCommon) {
           process.on('exit', function (code) {
             var responseObject = new _response['default']();
             responseObject.status.transport = {
-              code: 2006,
+              code: 5006,
               message: 'Micro service process exited unexpectedly. CODE: '.concat(
                 code
               )
             };
             responseObject.status.command = {
-              code: 200,
+              code: 500,
               message: 'Command not executed, transport failure'
             };
             responseObject.resultBody.errData = {
@@ -525,11 +525,11 @@ var MicroServer = (function (_ServiceCommon) {
 
             _this5.conId += 1;
             responseObject.status.transport = {
-              code: 1000,
+              code: 2000,
               message: 'Micro service process has exited!'
             };
             responseObject.status.command = {
-              code: 100,
+              code: 500,
               message: 'Command completed successfully'
             };
             responseObject.resultBody.errData = {};

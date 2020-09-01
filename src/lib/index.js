@@ -366,12 +366,12 @@ class ServiceCore extends ServiceCommon {
       const responseObject = new ResponseBodyObject();
       // Build Response Object [status - transport]
       responseObject.status.transport = {
-        code: 2001,
-        message: 'No data recieved'
+        code: 5001,
+        message: 'No data received'
       };
       // Build Response Object [status - transport]
       responseObject.status.command = {
-        code: 200,
+        code: 500,
         message: 'Command not executed, tansport failure  or no data recieved!'
       };
       // Build Response Object [ResBody - Error Details]
@@ -453,12 +453,12 @@ class ServiceCore extends ServiceCommon {
         const responseObject = new ResponseBodyObject();
         // Build Response Object [status - transport]
         responseObject.status.transport = {
-          code: 2002,
-          message: 'Service connection initiation attempts, maximum reached'
+          code: 5002,
+          message: 'Reached maximum service connection initiation attempts!'
         };
         // Build Response Object [status - transport]
         responseObject.status.command = {
-          code: 200,
+          code: 500,
           message: 'Command not executed, tansport failure!'
         };
         // Build Response Object [ResBody - Error Details]
@@ -533,12 +533,12 @@ class ServiceCore extends ServiceCommon {
     const responseObject = new ResponseBodyObject();
     // Build Response Object [status - transport]
     responseObject.status.transport = {
-      code: 2007,
+      code: 5007,
       message: 'Request received & destination verified but function unknown!'
     };
     // Build Response Object [status - transport]
     responseObject.status.command = {
-      code: 203,
+      code: 503,
       message: 'Command not executed, function unknown!'
     };
     // Build Response Object [ResBody - Error Details]
@@ -562,12 +562,12 @@ class ServiceCore extends ServiceCommon {
     const responseObject = new ResponseBodyObject();
     // Build Response Object [status - transport]
     responseObject.status.transport = {
-      code: 2005,
+      code: 5005,
       message: 'Request recieved but destination unknown!'
     };
     // Build Response Object [status - transport]
     responseObject.status.command = {
-      code: 200,
+      code: 500,
       message: 'Command not executed, transport failure!'
     };
     // Build Response Object [ResBody - Error Details]

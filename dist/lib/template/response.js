@@ -9,18 +9,18 @@ var _default = function _default() {
   return {
     status: {
       transport: {
-        code: 1000,
+        code: 2000,
         message: 'Transport completed successfully',
         responseSource: ''
       },
       command: {
-        code: 100,
+        code: 500,
         message: 'Command completed successfully'
       }
     },
     resultBody: {
-      resData: {},
-      errData: {}
+      resData: null,
+      errData: null
     }
   };
 };

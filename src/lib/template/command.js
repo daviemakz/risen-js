@@ -3,5 +3,5 @@
 export default () => ({
   destination: void 0,
   funcName: '',
-  body: {}
+  body: null
 });

@@ -192,7 +192,7 @@ function stopService(name, instances) {
                                 'log'
                               );
 
-                              if (res.status.command.code === 100) {
+                              if (res.status.command.code === 500) {
                                 resolve(true);
                               } else {
                                 reject(Error(false));

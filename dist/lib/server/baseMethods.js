@@ -24,7 +24,7 @@ function redirectFailed(serviceCoreSocket, requestObj) {
   var responseObject = new _response['default']();
   responseObject.status.transport.responseSource = process.env.name;
   responseObject.status.command = {
-    code: 202,
+    code: 502,
     message: 'Command not executed, internal redirection failure'
   };
   responseObject.resultBody.errData = {
@@ -40,7 +40,7 @@ function noDataRecieved(serviceCoreSocket, requestObj) {
   var responseObject = new _response['default']();
   responseObject.status.transport.responseSource = process.env.name;
   responseObject.status.command = {
-    code: 202,
+    code: 502,
     message: 'Command not executed, no data recieved by service'
   };
   responseObject.resultBody.errData = {

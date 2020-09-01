@@ -9,7 +9,7 @@ var _default = function _default() {
   return {
     destination: void 0,
     funcName: '',
-    body: {}
+    body: null
   };
 };
 

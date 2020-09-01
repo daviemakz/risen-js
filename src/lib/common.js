@@ -113,12 +113,12 @@ class ServiceCommon {
         const responseObject = new ResponseBodyObject();
         // Build Response Object [status - transport]
         responseObject.status.transport = {
-          code: 2003,
-          message: 'Unable to connect to service core'
+          code: 5003,
+          message: 'Unable to connect to service core.'
         };
         // Build Response Object [status - transport]
         responseObject.status.command = {
-          code: 200,
+          code: 500,
           message: 'Command not executed, tansport failure!'
         };
         // Build Response Object [resBody - Error Details]
@@ -155,12 +155,12 @@ class ServiceCommon {
 
           // Build Response Object [status - transport]
           responseObject.status.transport = {
-            code: 2004,
+            code: 5004,
             message: `Unable to connect to service: ${resBody.destination}`
           };
           // Build Response Object [status - transport]
           responseObject.status.command = {
-            code: 200,
+            code: 500,
             message: 'Command not executed, tansport failure!'
           };
           // Build Response Object [resBody - Error Details]

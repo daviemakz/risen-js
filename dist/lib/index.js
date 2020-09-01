@@ -765,11 +765,11 @@ var ServiceCore = (function (_ServiceCommon) {
         if (!data) {
           var responseObject = new _response['default']();
           responseObject.status.transport = {
-            code: 2001,
-            message: 'No data recieved'
+            code: 5001,
+            message: 'No data received'
           };
           responseObject.status.command = {
-            code: 200,
+            code: 500,
             message:
               'Command not executed, tansport failure  or no data recieved!'
           };
@@ -862,11 +862,11 @@ var ServiceCore = (function (_ServiceCommon) {
             this.log('Service connection initiation attempts, maximum reached');
             var responseObject = new _response['default']();
             responseObject.status.transport = {
-              code: 2002,
-              message: 'Service connection initiation attempts, maximum reached'
+              code: 5002,
+              message: 'Reached maximum service connection initiation attempts!'
             };
             responseObject.status.command = {
-              code: 200,
+              code: 500,
               message: 'Command not executed, tansport failure!'
             };
             responseObject.resultBody.errData = {
@@ -944,12 +944,12 @@ var ServiceCore = (function (_ServiceCommon) {
         );
         var responseObject = new _response['default']();
         responseObject.status.transport = {
-          code: 2007,
+          code: 5007,
           message:
             'Request received & destination verified but function unknown!'
         };
         responseObject.status.command = {
-          code: 203,
+          code: 503,
           message: 'Command not executed, function unknown!'
         };
         responseObject.resultBody.errData = {
@@ -971,11 +971,11 @@ var ServiceCore = (function (_ServiceCommon) {
         );
         var responseObject = new _response['default']();
         responseObject.status.transport = {
-          code: 2005,
+          code: 5005,
           message: 'Request recieved but destination unknown!'
         };
         responseObject.status.command = {
-          code: 200,
+          code: 500,
           message: 'Command not executed, transport failure!'
         };
         responseObject.resultBody.errData = {

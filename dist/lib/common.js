@@ -171,11 +171,11 @@ var ServiceCommon = (function () {
 
             var responseObject = new _response['default']();
             responseObject.status.transport = {
-              code: 2003,
-              message: 'Unable to connect to service core'
+              code: 5003,
+              message: 'Unable to connect to service core.'
             };
             responseObject.status.command = {
-              code: 200,
+              code: 500,
               message: 'Command not executed, tansport failure!'
             };
             responseObject.resultBody.errData = {
@@ -210,13 +210,13 @@ var ServiceCommon = (function () {
               var _responseObject = new _response['default']();
 
               _responseObject.status.transport = {
-                code: 2004,
+                code: 5004,
                 message: 'Unable to connect to service: '.concat(
                   resBody.destination
                 )
               };
               _responseObject.status.command = {
-                code: 200,
+                code: 500,
                 message: 'Command not executed, tansport failure!'
               };
               _responseObject.resultBody.errData = {

@@ -23,7 +23,7 @@ export function redirectFailed(serviceCoreSocket, requestObj) {
   responseObject.status.transport.responseSource = process.env.name;
   // Build Response Object [status - command]
   responseObject.status.command = {
-    code: 202,
+    code: 502,
     message: 'Command not executed, internal redirection failure'
   };
   // Build Response Object [ResBody - command Details]
@@ -45,7 +45,7 @@ export function noDataRecieved(serviceCoreSocket, requestObj) {
   responseObject.status.transport.responseSource = process.env.name;
   // Build Response Object [status - command]
   responseObject.status.command = {
-    code: 202,
+    code: 502,
     message: 'Command not executed, no data recieved by service'
   };
   // Build Response Object [ResBody - command Details]

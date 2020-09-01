@@ -671,12 +671,12 @@ Executing the following code on the constructor `new ResponseBodyObject()` will 
 {
   status: {
     transport: {
-      code: 1000,
+      code: 2000,
       message: 'Transport completed successfully',
       responseSource: ''
     },
     command: {
-      code: 100,
+      code: 200,
       message: 'Command completed successfully'
     }
   },
@@ -795,30 +795,30 @@ Below are the status codes which service core will append to your response objec
 
 ### Transport
 
-- 1000 - Transport completed successfully.
+- 2000 - Transport completed successfully.
 
 ### Command
 
-- 100 - Command completed successfully.
+- 200 - Command completed successfully.
 
 ## Error Codes
 
 ### Transport
 
-- 2001 - No data received.
-- 2002 - Service connection initiation attempts, maximum reached.
-- 2003 - Unable to connect to service core.
-- 2004 - Unable to connect to specific service.
-- 2005 - Request received but destination unknown.
-- 2006 - Child service process exited unexpectedly.
-- 2007 - Child service process exited unexpectedly.
+- 5001 - No data received.
+- 5002 - Service connection initiation attempts, maximum reached.
+- 5003 - Unable to connect to service core.
+- 5004 - Unable to connect to specific service.
+- 5005 - Request received but destination unknown.
+- 5006 - Micro service process exited unexpectedly.
+- 5007 - Request received & destination verified but function unknown.
 
 ### Command
 
-- 200 - Command not executed, transport failure or no data received.
-- 201 - Command not executed, internal redirection failure.
-- 202 - Command not executed, no data received by service.
-- 203 - Command not executed, function unknown.
+- 500 - Command not executed, transport failure or no data received.
+- 501 - Command not executed, internal redirection failure.
+- 502 - Command not executed, no data received by service.
+- 503 - Command not executed, function unknown.
 
 ## Testing
 
@@ -838,13 +838,15 @@ Run the following commands to test the module:
 
 - Add a development mode to the package which allows everything to be tested while developing. [DONE]
 
-- Add full spectrum tests to support development environment & replace integration test with this.
-
 - Add methods to response object to allow self setting of data. (Getter & Setters).
 
 - Add cleaner method other than `sendRequest()` modelled around express.
 
+- Add method to allow chaining of requests between multiple micro services.
+
 - Reuse HTTP connection from express server.
+
+- Add full spectrum tests to support development environment & replace integration test with this.
 
 - Add pre-made example described in the `README.md`.
 

@@ -2,6 +2,7 @@
 
 // Assign variables
 const presets = ['@babel/preset-env'];
+
 const plugins = [
   '@babel/plugin-transform-regenerator',
   '@babel/plugin-syntax-throw-expressions',
@@ -18,7 +19,20 @@ const plugins = [
 ];
 
 // Babel configuration
-const rcConfig = {
+const rcConfigMinify = {
+  comments: false,
+  presets: presets.concat([
+    [
+      'minify',
+      {
+        builtIns: false
+      }
+    ]
+  ]),
+  plugins
+};
+
+const rcConfigTest = {
   comments: false,
   presets,
   plugins
@@ -28,5 +42,6 @@ const rcConfig = {
 module.exports = {
   presets,
   plugins,
-  rcConfig
+  rcConfigMinify,
+  rcConfigTest
 };

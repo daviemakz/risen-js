@@ -52,6 +52,10 @@ module.exports = () => {
           {
             from: '__resources__/public',
             to: 'dev/public'
+          },
+          {
+            from: '__resources__/httpsPublic',
+            to: 'dev/httpsPublic'
           }
         ]
       }),

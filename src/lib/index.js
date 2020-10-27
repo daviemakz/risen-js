@@ -8,7 +8,7 @@ import { exec } from 'child_process';
 import { dirname } from 'path';
 
 // Load Templates
-import ResponseBodyObject from './template/response';
+import ResponseBody from './template/response';
 
 // Load network components
 import { createSpeakerReconnector } from './net';
@@ -16,6 +16,7 @@ import { createSpeakerReconnector } from './net';
 // Load utils
 import {
   findAFreePort,
+  buildResponseFunctions,
   handleOnData,
   randomScheduling,
   handleReplyToSocket
@@ -33,25 +34,30 @@ class ServiceCore extends ServiceCommon {
   constructor(options) {
     // Allow access to 'this'
     super(options);
+
     // Assign instance name
     process.env.name = coreName;
+
     // Bind methods
     [
       'addServerToTracking',
-      'removeServerFromTracking',
-      'initService',
-      'initConnectionToService',
-      'processComError',
-      'microServerCommunication',
       'checkConnection',
-      'processComRequest',
+      'databaseOperation',
       'destinationUnknown',
       'functionUnknown',
+      'getMicroServiceSocket',
+      'initConnectionToService',
+      'initService',
       'initiateMicroServerConnection',
-      'databaseOperation'
+      'microServerCommunication',
+      'processComError',
+      'processComRequest',
+      'removeServerFromTracking',
+      'resolveMicroServiceSocket'
     ].forEach((func) => {
       this[func] = this[func].bind(this);
     });
+
     // Return instance
     return this;
   }
@@ -79,7 +85,7 @@ class ServiceCore extends ServiceCommon {
   }
 
   // Add new server to tracking object. This contains all the information for microservices
-  addServerToTracking(name, port, processId) {
+  addServerToTracking(name, port, instanceId) {
     // Assign port to used list
     if (!this.inUsePorts.includes(port)) {
       this.inUsePorts.push(port);
@@ -99,7 +105,7 @@ class ServiceCore extends ServiceCommon {
         ...this.serviceData[name],
         socketList: this.serviceData[name].socketList.concat(void 0),
         port: this.serviceData[name].port.concat(port),
-        processId: this.serviceData[name].processId.concat(processId),
+        instanceId: this.serviceData[name].instanceId.concat(instanceId),
         process: this.serviceData[name].process.concat(void 0),
         connectionCount: this.serviceData[name].connectionCount.concat(0)
       };
@@ -108,7 +114,7 @@ class ServiceCore extends ServiceCommon {
 
     // Add the server to the tracking
     this.serviceData[name] = {
-      processId: [processId],
+      instanceId: [instanceId],
       socketList: [void 0],
       status: false,
       error: false,
@@ -131,7 +137,7 @@ class ServiceCore extends ServiceCommon {
     // Remove tracking information for service
     if (socketIndex > -1) {
       // Remove service tracking information
-      this.serviceData[name].processId.splice(socketIndex, 1);
+      this.serviceData[name].instanceId.splice(socketIndex, 1);
       this.serviceData[name].socketList.splice(socketIndex, 1);
       this.serviceData[name].port.splice(socketIndex, 1);
       this.serviceData[name].process.splice(socketIndex, 1);
@@ -146,7 +152,7 @@ class ServiceCore extends ServiceCommon {
   initService(name, callback) {
     // Define port
     let port = void 0;
-    const processId = uuidv4();
+    const instanceId = uuidv4();
 
     // Build micro service wrapper
     const microServiceWrapper = () => {
@@ -160,7 +166,7 @@ class ServiceCore extends ServiceCommon {
               return setTimeout(initialiseOnFreePort, 50);
             }
             // Check that the retrieving a port was successful
-            this.addServerToTracking(name, port, processId);
+            this.addServerToTracking(name, port, instanceId);
             // Reset error status
             this.serviceData[name].error = false;
             // Assign process to instance
@@ -174,7 +180,7 @@ class ServiceCore extends ServiceCommon {
                   parentPid: process.pid,
                   verbose: process.env.verbose,
                   name,
-                  processId,
+                  instanceId,
                   port,
                   service: true,
                   operations: this.serviceInfo[name],
@@ -191,7 +197,7 @@ class ServiceCore extends ServiceCommon {
                   this.serviceData[name].error = true;
                 }
                 // Show log
-                handleOnData(this, port, processId)(
+                handleOnData(this, port, instanceId)(
                   name,
                   'event',
                   `Micro service - ${name}: Process has exited!`
@@ -222,7 +228,7 @@ class ServiceCore extends ServiceCommon {
             this.serviceData[name].process[this.getProcessIndex(name, port)][
               event
             ].on('data', (data) =>
-              handleOnData(this, port, processId)(name, event, data)
+              handleOnData(this, port, instanceId)(name, event, data)
             )
           );
 
@@ -358,29 +364,28 @@ class ServiceCore extends ServiceCommon {
     });
   }
 
-  // FUNCTION : Handles Error(s) In Communication/Messages
-  processComError(data, clientSocket) {
+  // Handles Error(s) In Communication/Messages
+  processComError(command, clientSocket) {
     // Check Empty Data
-    if (!data) {
+    if (!command) {
       // Create Response Object
-      const responseObject = new ResponseBodyObject();
+      const responseObject = new ResponseBody();
       // Build Response Object [status - transport]
-      responseObject.status.transport = {
+      responseObject.setTransportStatus({
         code: 5001,
         message: 'No data received'
-      };
+      });
       // Build Response Object [status - transport]
-      responseObject.status.command = {
+      responseObject.setCommandStatus({
         code: 500,
         message: 'Command not executed, tansport failure  or no data recieved!'
-      };
+      });
       // Build Response Object [ResBody - Error Details]
-      responseObject.resultBody.errData = {
+      responseObject.setErrData({
         entity: 'Service core',
         action: 'Request error handling',
-        errorType: 'ERROR',
-        originalData: data
-      };
+        originalData: command
+      });
       // Notification
       this.log(`No data received. MORE INFO: ${responseObject}`, 'log');
       // Send Response
@@ -391,14 +396,19 @@ class ServiceCore extends ServiceCommon {
   }
 
   // Communicate With MicroServer
-  microServerCommunication(recData, clientSocket, microServiceInfo, conId) {
+  async microServerCommunication(
+    recData,
+    clientSocket,
+    microServiceInfo,
+    conId
+  ) {
     // Check Socket Readiness...
     if (microServiceInfo.status === 0) {
       return 'connectionNotReady';
     }
 
     // Get socket information
-    const [socket, index] = this.getMicroServiceSocket(
+    const [socket, index] = await this.getMicroServiceSocket(
       recData.destination,
       microServiceInfo.socketList
     );
@@ -450,24 +460,23 @@ class ServiceCore extends ServiceCommon {
         // Notification
         this.log('Service connection initiation attempts, maximum reached');
         // Create Response Object
-        const responseObject = new ResponseBodyObject();
+        const responseObject = new ResponseBody();
         // Build Response Object [status - transport]
-        responseObject.status.transport = {
+        responseObject.setTransportStatus({
           code: 5002,
           message: 'Reached maximum service connection initiation attempts!'
-        };
+        });
         // Build Response Object [status - transport]
-        responseObject.status.command = {
+        responseObject.setCommandStatus({
           code: 500,
           message: 'Command not executed, tansport failure!'
-        };
+        });
         // Build Response Object [ResBody - Error Details]
-        responseObject.resultBody.errData = {
+        responseObject.setErrData({
           entity: 'Service core',
           action: 'Service redirection',
-          errorType: 'ERROR',
           originalData: recData
-        };
+        });
         // Send Response Back To Source
         clientSocket.reply(responseObject);
         // Close Socket
@@ -494,8 +503,29 @@ class ServiceCore extends ServiceCommon {
     );
   }
 
-  // Get socket depending on queue type
+  // Resolve the micro service socket and index
   getMicroServiceSocket(name, socketList) {
+    return new Promise((resolve) => {
+      let socketData;
+      // Allows us to retry getting the socket
+      const getSocket = () => {
+        socketData = this.resolveMicroServiceSocket(name, socketList);
+        const [socket, index] = socketData;
+        // If the socket exists resolve the promise else try again
+        if (socket) {
+          resolve([socket, index]);
+        } else {
+          setTimeout(() => {
+            getSocket();
+          }, 1);
+        }
+      };
+      getSocket();
+    });
+  }
+
+  // Get socket depending on queue type
+  resolveMicroServiceSocket(name, socketList) {
     // Get socket for service
     switch (true) {
       case typeof this.serviceOptions[name].loadBalancing === 'function': {
@@ -503,114 +533,118 @@ class ServiceCore extends ServiceCommon {
         return this.serviceOptions[name].loadBalancing(socketList);
       }
       case this.serviceOptions[name].loadBalancing === 'roundRobin': {
-        // Queuing: random
+        // Queuing: roundRobin
         const socketIndex = this.serviceData[name].connectionCount.indexOf(
           Math.min(...this.serviceData[name].connectionCount)
         );
-        // Queuing: roundRobin
         return [socketList[socketIndex], socketIndex];
       }
       case this.serviceOptions[name].loadBalancing === 'random': {
-        return randomScheduling();
+        // Queuing: random
+        return randomScheduling(socketList);
       }
       default: {
         this.log(
           `Load balancing strategy for ${name} is incorrect. Defaulting to "random" strategy...`,
           'warn'
         );
-        return randomScheduling();
+        return randomScheduling(socketList);
       }
     }
   }
 
   // Function unknown
-  functionUnknown(data) {
+  functionUnknown(command) {
     // Notification
     this.log(
-      `Request received & destination verified but function unknown. MORE INFO: ${data.destination}`
+      `Request received & destination verified but function unknown. MORE INFO: ${command.destination}`
     );
     // Create Response Object
-    const responseObject = new ResponseBodyObject();
+    const responseObject = new ResponseBody();
     // Build Response Object [status - transport]
-    responseObject.status.transport = {
+    responseObject.setTransportStatus({
       code: 5007,
       message: 'Request received & destination verified but function unknown!'
-    };
+    });
     // Build Response Object [status - transport]
-    responseObject.status.command = {
+    responseObject.setCommandStatus({
       code: 503,
       message: 'Command not executed, function unknown!'
-    };
+    });
     // Build Response Object [ResBody - Error Details]
-    responseObject.resultBody.errData = {
+    responseObject.setErrData({
       entity: 'Service core',
       action: 'Service redirection',
-      errorType: 'ERROR',
-      originalData: data
-    };
+      originalData: command
+    });
     // Return
     return responseObject;
   }
 
   // Destination unknown
-  destinationUnknown(data) {
+  destinationUnknown(command) {
     // Notification
     this.log(
-      `Request received but destination unknown. MORE INFO: ${data.destination}`
+      `Request received but destination unknown. MORE INFO: ${command.destination}`
     );
     // Create Response Object
-    const responseObject = new ResponseBodyObject();
+    const responseObject = new ResponseBody();
     // Build Response Object [status - transport]
-    responseObject.status.transport = {
+    responseObject.setTransportStatus({
       code: 5005,
       message: 'Request recieved but destination unknown!'
-    };
+    });
     // Build Response Object [status - transport]
-    responseObject.status.command = {
+    responseObject.setCommandStatus({
       code: 500,
       message: 'Command not executed, transport failure!'
-    };
+    });
     // Build Response Object [ResBody - Error Details]
-    responseObject.resultBody.errData = {
+    responseObject.setErrData({
       entity: 'Service core',
       action: 'Service redirection',
-      errorType: 'ERROR',
-      originalData: data
-    };
+      originalData: command
+    });
     // Return
     return responseObject;
   }
 
-  // FUNCTION : Process Communication Request
-  processComRequest(data, clientSocket, connectionId) {
+  // Process Communication Request
+  processComRequest(command, clientSocket, connectionId) {
     // Service Connection Attempt Count...
     const connectionAttempts = 0;
     // Process Request [Redirection]
     switch (true) {
-      case data.destination === process.env.name: {
+      case command.destination === process.env.name: {
         // Return
-        return setImmediate(() =>
-          Object.prototype.hasOwnProperty.call(
+        return setImmediate(() => {
+          // Build methods
+          const helperMethods = buildResponseFunctions(
+            clientSocket,
+            command,
+            this.operationScope
+          );
+          return Object.prototype.hasOwnProperty.call(
             this.coreOperations,
-            data.data.funcName
+            command.data.functionName
           )
-            ? this.coreOperations[data.data.funcName](clientSocket, data.data)
+            ? this.coreOperations[command.data.functionName](helperMethods)
             : handleReplyToSocket(
-                this.functionUnknown(data),
+                this.functionUnknown(command),
                 clientSocket,
                 false
-              )
-        );
+              );
+        });
       }
       case Object.prototype.hasOwnProperty.call(
         this.serviceData,
-        data.destination
+        command.destination
       ): {
         // Get micro server data
-        const microServiceInfo = this.serviceData[data.destination];
+        const microServiceInfo = this.serviceData[command.destination];
         // Check Connection & Send Data
         return this.checkConnection(
-          data,
+          command,
           clientSocket,
           microServiceInfo,
           connectionId,
@@ -619,7 +653,7 @@ class ServiceCore extends ServiceCommon {
       }
       default: {
         return handleReplyToSocket(
-          this.destinationUnknown(data),
+          this.destinationUnknown(command),
           clientSocket,
           false
         );

@@ -29,8 +29,11 @@ import LocalDatabase from './lib/db';
 import ServiceCore from './lib';
 
 // Load templates
-import CommandBodyObject from './lib/template/command';
-import ResponseBodyObject from './lib/template/response';
+import CommandBody from './lib/template/command';
+import ResponseBody from './lib/template/response';
+
+// Load request operations
+import { requestOperations } from './lib/core/request';
 
 // Load constants & defaults
 import {
@@ -86,6 +89,7 @@ export class Risen extends ServiceCore {
         .reduce((acc, x) => Object.assign(acc, x), {}) || {};
 
     // Set process env settings
+    process.env.service = 'false'; // Any entry point from here is not a service
     process.env.settings = this.settings;
     process.env.exitedProcessPorts = [];
 
@@ -104,6 +108,7 @@ export class Risen extends ServiceCore {
     // Bind methods
     [
       'assignCoreFunctions',
+      'assignRequestFunctions',
       'startServer',
       'initGateway',
       'bindGateway',
@@ -117,13 +122,37 @@ export class Risen extends ServiceCore {
       {},
       ...['onConRequest', 'onConClose'].map((func) =>
         typeof options[func] === 'function'
-          ? { [func]: options[func].bind(this) }
+          ? {
+              [func]: options[func].bind({
+                ...this,
+                request: this.request,
+                requestChain: this.requestChain
+              })
+            }
           : {}
       )
     );
 
     // Set verbose to enviromental variable
     process.env.verbose = this.settings.verbose === true;
+
+    // Operation scope
+    this.operationScope = {
+      request: this.request,
+      requestChain: this.requestChain,
+      sendRequest: this.sendRequest,
+      destroyConnection: this.destroyConnection,
+      operations: this.coreOperations
+    };
+
+    // Initalise micro service
+    (async () => {
+      try {
+        await this.assignRequestFunctions();
+      } catch (e) {
+        throw new Error(e);
+      }
+    })();
   }
 
   // Start the server
@@ -172,6 +201,20 @@ export class Risen extends ServiceCore {
       'Micro service framework has already been initialised!',
       'warn'
     );
+  }
+
+  // Assign request functions
+  assignRequestFunctions() {
+    return new Promise((resolve) => {
+      // Assign operations
+      Object.entries({
+        ...requestOperations
+      }).forEach(([name, func]) => {
+        this[name] = func.bind(this);
+      });
+      // Resolve promise
+      return resolve();
+    });
   }
 
   // Assign core functions
@@ -371,9 +414,9 @@ export class Risen extends ServiceCore {
                     // Allow access to the express instance
                     httpSettings.beforeStart(expressApp);
                     // Assign static path resources if defined
-                    httpSettings.static.forEach((path) =>
-                      expressApp.use(express.static(path))
-                    );
+                    httpSettings.static.forEach((path) => {
+                      expressApp.use(express.static(path));
+                    });
                     // Harden http server if hardening is defined
                     if (httpSettings.harden) {
                       hardenServer(expressApp);
@@ -445,10 +488,11 @@ export class Risen extends ServiceCore {
                               };
                               // Perform action
                               try {
-                                return route.handler(req, res, {
-                                  sendRequest: this.sendRequest,
-                                  CommandBodyObject,
-                                  ResponseBodyObject
+                                return route.handler(req, res, next, {
+                                  request: this.request,
+                                  requestChain: this.requestChain,
+                                  getCommandBody: () => new CommandBody(),
+                                  getResponseObject: () => new ResponseBody()
                                 });
                               } catch (e) {
                                 return next(e);
@@ -550,8 +594,8 @@ export class Risen extends ServiceCore {
 
 // Exports
 export {
-  CommandBodyObject,
-  ResponseBodyObject,
+  CommandBody,
+  ResponseBody,
   defaultInstanceOptions,
   defaultServiceOptions,
   buildHttpOptions,

@@ -9,8 +9,7 @@ import net from 'net';
 import networkBase from './networkBase';
 
 // Declare variables
-const ERR_REQ_REFUSED = -1;
-const MAX_WAITERS = 9999999;
+import { ERR_REQ_REFUSED, MAX_WAITERS } from './constants';
 
 // Extend object
 const extendsObj = function (child, parent) {

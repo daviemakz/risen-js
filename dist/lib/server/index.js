@@ -1,559 +1,530 @@
 'use strict';
-
-require('core-js');
-
-require('regenerator-runtime');
-
-var _isPortFree = _interopRequireDefault(require('is-port-free'));
-
-var _isRunning = _interopRequireDefault(require('is-running'));
-
-var _net = require('../net');
-
-var _common = _interopRequireDefault(require('../common'));
-
-var _response = _interopRequireDefault(require('../template/response'));
-
-var _baseMethods = require('./baseMethods');
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
+require('core-js'), require('regenerator-runtime');
+var _isPortFree = _interopRequireDefault(require('is-port-free')),
+  _isRunning = _interopRequireDefault(require('is-running')),
+  _net = require('../net'),
+  _common = _interopRequireDefault(require('../common')),
+  _response = _interopRequireDefault(require('../template/response')),
+  _baseMethods = require('./baseMethods'),
+  _request = require('../core/request'),
+  _util = require('../util');
+function _interopRequireDefault(a) {
+  return a && a.__esModule ? a : { default: a };
 }
-
-function _typeof(obj) {
+function _typeof(a) {
   '@babel/helpers - typeof';
-  if (typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol') {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj &&
-        typeof Symbol === 'function' &&
-        obj.constructor === Symbol &&
-        obj !== Symbol.prototype
-        ? 'symbol'
-        : typeof obj;
-    };
-  }
-  return _typeof(obj);
-}
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-
-function _slicedToArray(arr, i) {
   return (
-    _arrayWithHoles(arr) ||
-    _iterableToArrayLimit(arr, i) ||
-    _unsupportedIterableToArray(arr, i) ||
+    (_typeof =
+      'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
+        ? function (a) {
+            return typeof a;
+          }
+        : function (a) {
+            return a &&
+              'function' == typeof Symbol &&
+              a.constructor === Symbol &&
+              a !== Symbol.prototype
+              ? 'symbol'
+              : typeof a;
+          }),
+    _typeof(a)
+  );
+}
+function _slicedToArray(a, b) {
+  return (
+    _arrayWithHoles(a) ||
+    _iterableToArrayLimit(a, b) ||
+    _unsupportedIterableToArray(a, b) ||
     _nonIterableRest()
   );
 }
-
 function _nonIterableRest() {
   throw new TypeError(
     'Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.'
   );
 }
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === 'string') return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === 'Object' && o.constructor) n = o.constructor.name;
-  if (n === 'Map' || n === 'Set') return Array.from(o);
-  if (n === 'Arguments' || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
-    return _arrayLikeToArray(o, minLen);
-}
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
+function _unsupportedIterableToArray(a, b) {
+  if (a) {
+    if ('string' == typeof a) return _arrayLikeToArray(a, b);
+    var c = Object.prototype.toString.call(a).slice(8, -1);
+    return (
+      'Object' === c && a.constructor && (c = a.constructor.name),
+      'Map' === c || 'Set' === c
+        ? Array.from(a)
+        : 'Arguments' === c ||
+          /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(c)
+        ? _arrayLikeToArray(a, b)
+        : void 0
+    );
   }
-  return arr2;
 }
-
-function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === 'undefined' || !(Symbol.iterator in Object(arr)))
-    return;
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-  try {
-    for (
-      var _i = arr[Symbol.iterator](), _s;
-      !(_n = (_s = _i.next()).done);
-      _n = true
-    ) {
-      _arr.push(_s.value);
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
+function _arrayLikeToArray(a, b) {
+  (null == b || b > a.length) && (b = a.length);
+  for (var c = 0, d = Array(b); c < b; c++) d[c] = a[c];
+  return d;
+}
+function _iterableToArrayLimit(a, b) {
+  if ('undefined' != typeof Symbol && Symbol.iterator in Object(a)) {
+    var c = [],
+      d = !0,
+      e = !1,
+      f = void 0;
     try {
-      if (!_n && _i['return'] != null) _i['return']();
+      for (
+        var g, h = a[Symbol.iterator]();
+        !(d = (g = h.next()).done) && (c.push(g.value), !(b && c.length === b));
+        d = !0
+      );
+    } catch (a) {
+      (e = !0), (f = a);
     } finally {
-      if (_d) throw _e;
+      try {
+        d || null == h['return'] || h['return']();
+      } finally {
+        if (e) throw f;
+      }
     }
+    return c;
   }
-  return _arr;
 }
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
+function _arrayWithHoles(a) {
+  if (Array.isArray(a)) return a;
 }
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+function ownKeys(a, b) {
+  var c = Object.keys(a);
+  if (Object.getOwnPropertySymbols) {
+    var d = Object.getOwnPropertySymbols(a);
+    b &&
+      (d = d.filter(function (b) {
+        return Object.getOwnPropertyDescriptor(a, b).enumerable;
+      })),
+      c.push.apply(c, d);
+  }
+  return c;
+}
+function _objectSpread(a) {
+  for (var b, c = 1; c < arguments.length; c++)
+    (b = null == arguments[c] ? {} : arguments[c]),
+      c % 2
+        ? ownKeys(Object(b), !0).forEach(function (c) {
+            _defineProperty(a, c, b[c]);
+          })
+        : Object.getOwnPropertyDescriptors
+        ? Object.defineProperties(a, Object.getOwnPropertyDescriptors(b))
+        : ownKeys(Object(b)).forEach(function (c) {
+            Object.defineProperty(a, c, Object.getOwnPropertyDescriptor(b, c));
+          });
+  return a;
+}
+function _defineProperty(a, b, c) {
+  return (
+    b in a
+      ? Object.defineProperty(a, b, {
+          value: c,
+          enumerable: !0,
+          configurable: !0,
+          writable: !0
+        })
+      : (a[b] = c),
+    a
+  );
+}
+function asyncGeneratorStep(a, b, c, d, e, f, g) {
   try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
+    var h = a[f](g),
+      i = h.value;
+  } catch (a) {
+    return void c(a);
   }
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
+  h.done ? b(i) : Promise.resolve(i).then(d, e);
 }
-
-function _asyncToGenerator(fn) {
+function _asyncToGenerator(a) {
   return function () {
-    var self = this,
-      args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, 'next', value);
+    var b = this,
+      c = arguments;
+    return new Promise(function (d, e) {
+      function f(a) {
+        asyncGeneratorStep(h, d, e, f, g, 'next', a);
       }
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, 'throw', err);
+      function g(a) {
+        asyncGeneratorStep(h, d, e, f, g, 'throw', a);
       }
-      _next(undefined);
+      var h = a.apply(b, c);
+      f(void 0);
     });
   };
 }
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
+function _classCallCheck(a, b) {
+  if (!(a instanceof b))
     throw new TypeError('Cannot call a class as a function');
-  }
 }
-
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ('value' in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
+function _defineProperties(a, b) {
+  for (var c, d = 0; d < b.length; d++)
+    (c = b[d]),
+      (c.enumerable = c.enumerable || !1),
+      (c.configurable = !0),
+      'value' in c && (c.writable = !0),
+      Object.defineProperty(a, c.key, c);
 }
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
+function _createClass(a, b, c) {
+  return (
+    b && _defineProperties(a.prototype, b), c && _defineProperties(a, c), a
+  );
 }
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
+function _inherits(a, b) {
+  if ('function' != typeof b && null !== b)
     throw new TypeError('Super expression must either be null or a function');
-  }
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: { value: subClass, writable: true, configurable: true }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
+  (a.prototype = Object.create(b && b.prototype, {
+    constructor: { value: a, writable: !0, configurable: !0 }
+  })),
+    b && _setPrototypeOf(a, b);
 }
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf =
-    Object.setPrototypeOf ||
-    function _setPrototypeOf(o, p) {
-      o.__proto__ = p;
-      return o;
-    };
-  return _setPrototypeOf(o, p);
+function _setPrototypeOf(a, b) {
+  return (
+    (_setPrototypeOf =
+      Object.setPrototypeOf ||
+      function (a, b) {
+        return (a.__proto__ = b), a;
+      }),
+    _setPrototypeOf(a, b)
+  );
 }
-
-function _createSuper(Derived) {
-  var hasNativeReflectConstruct = _isNativeReflectConstruct();
-  return function _createSuperInternal() {
-    var Super = _getPrototypeOf(Derived),
-      result;
-    if (hasNativeReflectConstruct) {
-      var NewTarget = _getPrototypeOf(this).constructor;
-      result = Reflect.construct(Super, arguments, NewTarget);
-    } else {
-      result = Super.apply(this, arguments);
-    }
-    return _possibleConstructorReturn(this, result);
+function _createSuper(a) {
+  var b = _isNativeReflectConstruct();
+  return function () {
+    var c,
+      d = _getPrototypeOf(a);
+    if (b) {
+      var e = _getPrototypeOf(this).constructor;
+      c = Reflect.construct(d, arguments, e);
+    } else c = d.apply(this, arguments);
+    return _possibleConstructorReturn(this, c);
   };
 }
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === 'object' || typeof call === 'function')) {
-    return call;
-  }
-  return _assertThisInitialized(self);
+function _possibleConstructorReturn(a, b) {
+  return b && ('object' === _typeof(b) || 'function' == typeof b)
+    ? b
+    : _assertThisInitialized(a);
 }
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
+function _assertThisInitialized(a) {
+  if (void 0 === a)
     throw new ReferenceError(
       "this hasn't been initialised - super() hasn't been called"
     );
-  }
-  return self;
+  return a;
 }
-
 function _isNativeReflectConstruct() {
-  if (typeof Reflect === 'undefined' || !Reflect.construct) return false;
-  if (Reflect.construct.sham) return false;
-  if (typeof Proxy === 'function') return true;
+  if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
+  if (Reflect.construct.sham) return !1;
+  if ('function' == typeof Proxy) return !0;
   try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
-    return true;
-  } catch (e) {
-    return false;
+    return (
+      Date.prototype.toString.call(Reflect.construct(Date, [], function () {})),
+      !0
+    );
+  } catch (a) {
+    return !1;
   }
 }
-
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf
-    ? Object.getPrototypeOf
-    : function _getPrototypeOf(o) {
-        return o.__proto__ || Object.getPrototypeOf(o);
-      };
-  return _getPrototypeOf(o);
+function _getPrototypeOf(a) {
+  return (
+    (_getPrototypeOf = Object.setPrototypeOf
+      ? Object.getPrototypeOf
+      : function (a) {
+          return a.__proto__ || Object.getPrototypeOf(a);
+        }),
+    _getPrototypeOf(a)
+  );
 }
-
 var standardFunctions = [
-  {
-    name: 'echoData',
-    func: _baseMethods.echoData
+    { name: 'echoData', func: _baseMethods.echoData },
+    { name: 'noDataRecieved', func: _baseMethods.noDataRecieved },
+    { name: 'redirectFailed', func: _baseMethods.redirectFailed }
+  ],
+  processManagement = function () {
+    (0, _isRunning['default'])(process.env.parentPid) ||
+      setTimeout(function () {
+        return process.exit();
+      }, 1e3);
   },
-  {
-    name: 'noDataRecieved',
-    func: _baseMethods.noDataRecieved
-  },
-  {
-    name: 'redirectFailed',
-    func: _baseMethods.redirectFailed
-  }
-];
-
-var processManagement = function processManagement() {
-  if (!(0, _isRunning['default'])(process.env.parentPid)) {
-    setTimeout(function () {
-      return process.exit();
-    }, 1000);
-  }
-};
-
-var MicroServer = (function (_ServiceCommon) {
-  _inherits(MicroServer, _ServiceCommon);
-
-  var _super = _createSuper(MicroServer);
-
-  function MicroServer() {
-    var _this;
-
-    _classCallCheck(this, MicroServer);
-
-    _this = _super.call(this);
-    _this.conId = 0;
-    _this['interface'] = void 0;
-    _this.connectionIndex = {};
-    _this.operations = {};
-    _this.settings = JSON.parse(process.env.settings);
-    _this.options = JSON.parse(process.env.options);
-    _this.serviceInfo = JSON.parse(process.env.serviceInfo);
-    process.env.verbose = _this.settings.verbose;
-    [
-      'processRequest',
-      'assignProcessListers',
-      'assignOperations',
-      'bindService',
-      'initServer'
-    ].forEach(function (func) {
-      _this[func] = _this[func].bind(_assertThisInitialized(_this));
-    });
-    setInterval(processManagement, 1000);
-
-    _asyncToGenerator(
-      regeneratorRuntime.mark(function _callee() {
-        return regeneratorRuntime.wrap(
-          function _callee$(_context) {
-            while (1) {
-              switch ((_context.prev = _context.next)) {
-                case 0:
-                  _context.prev = 0;
-                  _context.next = 3;
-                  return _this.assignOperations();
-
-                case 3:
-                  _context.next = 5;
-                  return _this.assignProcessListers();
-
-                case 5:
-                  _context.next = 7;
-                  return _this.initServer();
-
-                case 7:
-                  _context.next = 9;
-                  return _this.bindService();
-
-                case 9:
-                  _context.next = 11;
-                  return _this.executeInitialFunctions('operations');
-
-                case 11:
-                  return _context.abrupt('return', void 0);
-
-                case 14:
-                  _context.prev = 14;
-                  _context.t0 = _context['catch'](0);
-                  throw new Error(_context.t0);
-
-                case 17:
-                case 'end':
-                  return _context.stop();
-              }
-            }
-          },
-          _callee,
-          null,
-          [[0, 14]]
-        );
-      })
-    )();
-
-    return _possibleConstructorReturn(_this, _assertThisInitialized(_this));
-  }
-
-  _createClass(MicroServer, [
-    {
-      key: 'assignOperations',
-      value: function assignOperations() {
-        var _this2 = this;
-
-        return new Promise(function (resolve) {
-          var operationScope = {
-            sendRequest: _this2.sendRequest,
-            destroyConnection: _this2.destroyConnection,
-            operations: _this2.operations,
-            localStorage: {}
-          };
-          Object.entries(require(process.env.operations)).forEach(function (
-            _ref2
-          ) {
-            var _ref3 = _slicedToArray(_ref2, 2),
-              name = _ref3[0],
-              op = _ref3[1];
-
-            _this2.operations[name] = op.bind(operationScope);
-          });
-          standardFunctions.forEach(function (_ref4) {
-            var name = _ref4.name,
-              func = _ref4.func;
-            _this2.operations[name] = func.bind(operationScope);
-          });
-          return resolve();
-        });
-      }
-    },
-    {
-      key: 'assignProcessListers',
-      value: function assignProcessListers() {
-        var _this3 = this;
-
-        return new Promise(function (resolve) {
-          process.on('exit', function (code) {
-            var responseObject = new _response['default']();
-            responseObject.status.transport = {
-              code: 5006,
-              message: 'Micro service process exited unexpectedly. CODE: '.concat(
-                code
-              )
-            };
-            responseObject.status.command = {
-              code: 500,
-              message: 'Command not executed, transport failure'
-            };
-            responseObject.resultBody.errData = {
-              entity: 'Unknown error',
-              action: 'Micro service process exited unexpectedly. CODE: '.concat(
-                code
-              ),
-              errorType: 'ERROR',
-              originalData: null
-            };
-            Object.values(_this3.connectionIndex).forEach(function (socket) {
-              socket.reply(responseObject);
-              socket.conn.destroy();
-            });
-          });
-          return resolve();
-        });
-      }
-    },
-    {
-      key: 'initServer',
-      value: function initServer() {
-        var _this4 = this;
-
-        return new Promise(function (resolve, reject) {
-          return (0, _isPortFree['default'])(parseInt(process.env.port, 10))
-            .then(function () {
-              _this4.log(
-                'Starting service on port: '.concat(
-                  parseInt(process.env.port, 10)
-                ),
-                'log'
-              );
-
-              _this4['interface'] = (0, _net.createListener)(
-                parseInt(process.env.port, 10)
-              );
-
-              if (!_this4['interface']) {
-                _this4.log('Unable to start Micro service!', 'log');
-
-                return reject(Error('Unable to start Micro service!'));
-              }
-
-              _this4.log('Service started successfully!', 'log');
-
-              return resolve(true);
-            })
-            ['catch'](function (e) {
-              _this4.log(e, 'error');
-
-              _this4.log(
-                'Service port "'
-                  .concat(
-                    parseInt(process.env.port, 10),
-                    '" not free or unknown error has occurred. MORE INFO: '
-                  )
-                  .concat(JSON.stringify(e, null, 2)),
-                'error'
-              );
-
-              return reject(
-                Error(
-                  'Service port "'
-                    .concat(
-                      parseInt(process.env.port, 10),
-                      '" not free or unknown error has occurred. MORE INFO: '
-                    )
-                    .concat(JSON.stringify(e, null, 2))
-                )
-              );
-            });
-        });
-      }
-    },
-    {
-      key: 'bindService',
-      value: function bindService() {
-        var _this5 = this;
-
-        return new Promise(function (resolve) {
-          _this5['interface'].on('SERVICE_REQUEST', function (socket, data) {
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Micro service connection request received'
-              )
+  MicroServer = (function (a) {
+    function b() {
+      var a;
+      return (
+        _classCallCheck(this, b),
+        (a = c.call(this)),
+        (a.conId = 0),
+        (a['interface'] = void 0),
+        (a.connectionIndex = {}),
+        (a.operations = {}),
+        (a.settings = JSON.parse(process.env.settings)),
+        (a.options = JSON.parse(process.env.options)),
+        (a.serviceInfo = JSON.parse(process.env.serviceInfo)),
+        (process.env.verbose = a.settings.verbose),
+        [
+          'assignRequestFunctions',
+          'assignProcessListeners',
+          'assignFunctions',
+          'processRequest',
+          'bindService',
+          'initServer'
+        ].forEach(function (b) {
+          a[b] = a[b].bind(_assertThisInitialized(a));
+        }),
+        setInterval(processManagement, 1e3),
+        _asyncToGenerator(
+          regeneratorRuntime.mark(function b() {
+            return regeneratorRuntime.wrap(
+              function (b) {
+                for (;;)
+                  switch ((b.prev = b.next)) {
+                    case 0:
+                      return (
+                        (b.prev = 0), (b.next = 3), a.assignRequestFunctions()
+                      );
+                    case 3:
+                      return (b.next = 5), a.assignFunctions();
+                    case 5:
+                      return (b.next = 7), a.assignProcessListeners();
+                    case 7:
+                      return (b.next = 9), a.initServer();
+                    case 9:
+                      return (b.next = 11), a.bindService();
+                    case 11:
+                      return (
+                        (b.next = 13), a.executeInitialFunctions('operations')
+                      );
+                    case 13:
+                      return b.abrupt('return', void 0);
+                    case 16:
+                      throw (
+                        ((b.prev = 16), (b.t0 = b['catch'](0)), new Error(b.t0))
+                      );
+                    case 19:
+                    case 'end':
+                      return b.stop();
+                  }
+              },
+              b,
+              null,
+              [[0, 16]]
             );
-
-            _this5.connectionIndex = _defineProperty({}, _this5.conId, socket);
-
-            if (data) {
-              _this5.processRequest(socket, data);
-            } else {
-              _this5.noDataRecieved(socket, data);
-            }
-
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Micro service connection request processed!'
-              )
-            );
-
-            _this5.conId += 1;
-            return void 0;
-          });
-
-          _this5['interface'].on('SERVICE_KILL', function (socket) {
-            var responseObject = new _response['default']();
-
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Micro service connection request received'
-              )
-            );
-
-            _this5.connectionIndex = _defineProperty({}, _this5.conId, socket);
-
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Micro service connection request processed, kill command recieved!'
-              )
-            );
-
-            _this5.conId += 1;
-            responseObject.status.transport = {
-              code: 2000,
-              message: 'Micro service process has exited!'
-            };
-            responseObject.status.command = {
-              code: 500,
-              message: 'Command completed successfully'
-            };
-            responseObject.resultBody.errData = {};
-            socket.reply(responseObject);
-            return process.exit();
-          });
-
-          return resolve();
-        });
-      }
-    },
-    {
-      key: 'processRequest',
-      value: function processRequest(socket, requestObj) {
-        var commandData = requestObj.data;
-        var funcName = commandData.funcName;
-        return Object.prototype.hasOwnProperty.call(this.operations, funcName)
-          ? this.operations[funcName](socket, commandData)
-          : this.redirectFailed(socket, requestObj);
-      }
+          })
+        )(),
+        (a.operationScope = {
+          request: a.request,
+          requestChain: a.requestChain,
+          sendRequest: a.sendRequest,
+          destroyConnection: a.destroyConnection,
+          operations: a.operations,
+          localStorage: {}
+        }),
+        _possibleConstructorReturn(a, _assertThisInitialized(a))
+      );
     }
-  ]);
-
-  return MicroServer;
-})(_common['default']);
-
+    _inherits(b, a);
+    var c = _createSuper(b);
+    return (
+      _createClass(b, [
+        {
+          key: 'assignRequestFunctions',
+          value: function assignRequestFunctions() {
+            var a = this;
+            return new Promise(function (b) {
+              return (
+                Object.entries(
+                  _objectSpread({}, _request.requestOperations)
+                ).forEach(function (b) {
+                  var c = _slicedToArray(b, 2),
+                    d = c[0],
+                    e = c[1];
+                  a[d] = e.bind(a);
+                }),
+                b()
+              );
+            });
+          }
+        },
+        {
+          key: 'assignFunctions',
+          value: function assignFunctions() {
+            var a = this;
+            return new Promise(function (b) {
+              return (
+                Object.entries(require(process.env.operations)).forEach(
+                  function (b) {
+                    var c = _slicedToArray(b, 2),
+                      d = c[0],
+                      e = c[1];
+                    a.operations[d] = e.bind(a.operationScope);
+                  }
+                ),
+                standardFunctions.forEach(function (b) {
+                  var c = b.name,
+                    d = b.func;
+                  a.operations[c] = d.bind(a.operationScope);
+                }),
+                b()
+              );
+            });
+          }
+        },
+        {
+          key: 'assignProcessListeners',
+          value: function assignProcessListeners() {
+            var a = this;
+            return new Promise(function (b) {
+              return (
+                process.on('exit', function (b) {
+                  var c = new _response['default']();
+                  c.setTransportStatus({
+                    code: 5006,
+                    message: 'Micro service process exited unexpectedly. CODE: '.concat(
+                      b
+                    )
+                  }),
+                    c.setCommandStatus({
+                      code: 500,
+                      message: 'Command not executed, transport failure'
+                    }),
+                    c.setErrData({
+                      entity: 'Unknown error',
+                      action: 'Micro service process exited unexpectedly. CODE: '.concat(
+                        b
+                      ),
+                      originalData: null
+                    }),
+                    Object.values(a.connectionIndex).forEach(function (a) {
+                      a.reply(c), a.conn.destroy();
+                    });
+                }),
+                b()
+              );
+            });
+          }
+        },
+        {
+          key: 'initServer',
+          value: function initServer() {
+            var a = this;
+            return new Promise(function (b, c) {
+              return (0, _isPortFree['default'])(parseInt(process.env.port, 10))
+                .then(function () {
+                  return (a.log(
+                    'Starting service on port: '.concat(
+                      parseInt(process.env.port, 10)
+                    ),
+                    'log'
+                  ),
+                  (a['interface'] = (0, _net.createListener)(
+                    parseInt(process.env.port, 10)
+                  )),
+                  !a['interface'])
+                    ? (a.log('Unable to start micro service!', 'log'),
+                      c(Error('Unable to start micro service!')))
+                    : (a.log('Service started successfully!', 'log'), b(!0));
+                })
+                ['catch'](function (b) {
+                  return (
+                    a.log(b, 'error'),
+                    a.log(
+                      'Service port "'
+                        .concat(
+                          parseInt(process.env.port, 10),
+                          '" not free or unknown error has occurred. MORE INFO: '
+                        )
+                        .concat(JSON.stringify(b, null, 2)),
+                      'error'
+                    ),
+                    c(
+                      Error(
+                        'Service port "'
+                          .concat(
+                            parseInt(process.env.port, 10),
+                            '" not free or unknown error has occurred. MORE INFO: '
+                          )
+                          .concat(JSON.stringify(b, null, 2))
+                      )
+                    )
+                  );
+                });
+            });
+          }
+        },
+        {
+          key: 'bindService',
+          value: function bindService() {
+            var a = this;
+            return new Promise(function (b) {
+              return (
+                a['interface'].on('SERVICE_REQUEST', function (b, c) {
+                  return (
+                    a.log(
+                      '['.concat(
+                        a.conId,
+                        '] Micro service connection request received'
+                      )
+                    ),
+                    (a.connectionIndex = _defineProperty({}, a.conId, b)),
+                    c
+                      ? a.processRequest(b, c)
+                      : a.operations.noDataRecieved(b, c),
+                    a.log(
+                      '['.concat(
+                        a.conId,
+                        '] Micro service connection request processed!'
+                      )
+                    ),
+                    void (a.conId += 1)
+                  );
+                }),
+                a['interface'].on('SERVICE_KILL', function (b) {
+                  var c = new _response['default']();
+                  return (
+                    a.log(
+                      '['.concat(
+                        a.conId,
+                        '] Micro service connection request received'
+                      )
+                    ),
+                    (a.connectionIndex = _defineProperty({}, a.conId, b)),
+                    a.log(
+                      '['.concat(
+                        a.conId,
+                        '] Micro service connection request processed, kill command recieved!'
+                      )
+                    ),
+                    (a.conId += 1),
+                    c.setTransportStatus({
+                      code: 2e3,
+                      message: 'Micro service process has exited!'
+                    }),
+                    c.setCommandStatus({
+                      code: 200,
+                      message: 'Command completed successfully'
+                    }),
+                    b.reply(c),
+                    process.exit()
+                  );
+                }),
+                b()
+              );
+            });
+          }
+        },
+        {
+          key: 'processRequest',
+          value: function processRequest(a, b) {
+            var c = b.data,
+              d = c.functionName,
+              e = (0, _util.buildResponseFunctions)(a, b, this.operationScope);
+            return Object.prototype.hasOwnProperty.call(this.operations, d)
+              ? this.operations[d](e)
+              : this.operations.redirectFailed(e);
+          }
+        }
+      ]),
+      b
+    );
+  })(_common['default']);
 new MicroServer();

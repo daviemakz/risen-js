@@ -1,251 +1,142 @@
 'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-exports['default'] = void 0;
-
-var _net = _interopRequireDefault(require('net'));
-
-var _networkBase = _interopRequireDefault(require('./networkBase'));
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
+Object.defineProperty(exports, '__esModule', { value: !0 }),
+  (exports['default'] = void 0);
+var _net = _interopRequireDefault(require('net')),
+  _networkBase = _interopRequireDefault(require('./networkBase')),
+  _constants = require('./constants');
+function _interopRequireDefault(a) {
+  return a && a.__esModule ? a : { default: a };
 }
-
-var ERR_REQ_REFUSED = -1;
-var MAX_WAITERS = 9999999;
-
-var extendsObj = function extendsObj(child, parent) {
-  for (var key in parent) {
-    if ({}.hasOwnProperty.call(parent, key)) {
-      child[key] = parent[key];
+var extendsObj = function (a, b) {
+    function c() {
+      this.constructor = a;
     }
-  }
-
-  function ctor() {
-    this.constructor = child;
-  }
-
-  ctor.prototype = parent.prototype;
-  child.prototype = new ctor();
-  child.__super__ = parent.prototype;
-  return child;
-};
-
-var SpeakerReconnector = (function (_super) {
-  extendsObj(SpeakerReconnector, _super);
-
-  function SpeakerReconnector(addresses) {
-    var address;
-
-    var _i;
-
-    var _len;
-
-    SpeakerReconnector.__super__.constructor.call(this);
-
-    this.uniqueId = 1;
-    this.sockets = [];
-    this.waiters = {};
-    this.socketIterator = 0;
-
-    for (_i = 0, _len = addresses.length; _i < _len; _i++) {
-      address = addresses[_i];
-      this.connect(address);
+    for (var d in b) ({}.hasOwnProperty.call(b, d) && (a[d] = b[d]));
+    return (
+      (c.prototype = b.prototype),
+      (a.prototype = new c()),
+      (a.__super__ = b.prototype),
+      a
+    );
+  },
+  SpeakerReconnector = (function (a) {
+    function b(a) {
+      var c, d, e;
+      for (
+        b.__super__.constructor.call(this),
+          this.uniqueId = 1,
+          this.sockets = [],
+          this.waiters = {},
+          this.socketIterator = 0,
+          ((d = 0), (e = a.length));
+        d < e;
+        d++
+      )
+        (c = a[d]), this.connect(c);
     }
-  }
-
-  SpeakerReconnector.prototype.connect = function (address) {
-    var host;
-    var port;
-    var self;
-    var socket;
-
-    var _this = this;
-
-    self = this;
-    host = this.getHostByAddress(address);
-    port = this.getPortByAddress(address);
-    socket = new _net['default'].Socket();
-    socket.uniqueSocketId = this.generateUniqueId();
-    socket.setEncoding('utf8');
-    socket.setNoDelay(true);
-    socket.setMaxListeners(Infinity);
-    socket.connect(port, host, function () {
-      process.env.verbose === 'true' &&
-        console.log('Successfully connected on port: '.concat(port));
-      return _this.sockets.push(socket);
-    });
-    socket.on('data', function (data) {
-      var message;
-      var messageText;
-
-      var _i;
-
-      var _len;
-
-      var _ref;
-
-      var _results;
-
-      _ref = _this.tokenizeData(data);
-      _results = [];
-
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        messageText = _ref[_i];
-        message = JSON.parse(messageText);
-
-        if (!_this.waiters[message.id]) {
-          continue;
-        }
-
-        _this.waiters[message.id](message.data);
-
-        _results.push(delete _this.waiters[message.id]);
-      }
-
-      return _results;
-    });
-    socket.on('error', function () {});
-    return socket.on('close', function () {
-      if (
-        !(typeof process.env.exitedProcessPorts === 'string'
-          ? process.env.exitedProcessPorts.split(',')
-          : process.env.exitedProcessPorts
-        )
-          .map(function (port) {
-            return parseInt(port, 10);
+    return (
+      extendsObj(b, a),
+      (b.prototype.connect = function (a) {
+        var b,
+          c,
+          d,
+          e,
+          f = this;
+        return (
+          (d = this),
+          (b = this.getHostByAddress(a)),
+          (c = this.getPortByAddress(a)),
+          (e = new _net['default'].Socket()),
+          (e.uniqueSocketId = this.generateUniqueId()),
+          e.setEncoding('utf8'),
+          e.setNoDelay(!0),
+          e.setMaxListeners(1 / 0),
+          e.connect(c, b, function () {
+            return (
+              'true' === process.env.verbose &&
+                console.log('Successfully connected on port: '.concat(c)),
+              f.sockets.push(e)
+            );
+          }),
+          e.on('data', function (a) {
+            var b, c, d, e, g, h;
+            for (
+              g = f.tokenizeData(a), h = [], ((d = 0), (e = g.length));
+              d < e;
+              d++
+            )
+              ((c = g[d]), (b = JSON.parse(c)), !!f.waiters[b.id]) &&
+                (f.waiters[b.id](b.data), h.push(delete f.waiters[b.id]));
+            return h;
+          }),
+          e.on('error', function () {}),
+          e.on('close', function () {
+            if (
+              !('string' == typeof process.env.exitedProcessPorts
+                ? process.env.exitedProcessPorts.split(',')
+                : process.env.exitedProcessPorts
+              )
+                .map(function (a) {
+                  return parseInt(a, 10);
+                })
+                .includes(c)
+            ) {
+              'true' === process.env.verbose &&
+                console.log('Attempting to connect to port: '.concat(c));
+              var b, g, h, i, j;
+              for (
+                b = 0, j = f.sockets, ((h = 0), (i = j.length));
+                h < i && ((g = j[h]), g.uniqueSocketId !== e.uniqueSocketId);
+                h++
+              )
+                b += 1;
+              return (
+                f.sockets.splice(b, 1),
+                e.destroy(),
+                setTimeout(function () {
+                  return d.connect(a);
+                }, 100)
+              );
+            }
           })
-          .includes(port)
-      ) {
-        process.env.verbose === 'true' &&
-          console.log('Attempting to connect to port: '.concat(port));
-        var index;
-        var sock;
-
-        var _i;
-
-        var _len;
-
-        var _ref;
-
-        index = 0;
-        _ref = _this.sockets;
-
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          sock = _ref[_i];
-
-          if (sock.uniqueSocketId === socket.uniqueSocketId) {
-            break;
-          }
-
-          index += 1;
-        }
-
-        _this.sockets.splice(index, 1);
-
-        socket.destroy();
-        return setTimeout(function () {
-          return self.connect(address);
-        }, 100);
-      }
-    });
-  };
-
-  SpeakerReconnector.prototype.request = function (subject, data, callback) {
-    if (callback === null) {
-      callback = null;
-    }
-
-    return this.send(subject, data, callback);
-  };
-
-  SpeakerReconnector.prototype.send = function (subject, data, callback) {
-    var messageId;
-    var payload;
-
-    if (callback === null) {
-      callback = null;
-    }
-
-    if (this.sockets.length === 0) {
-      if (callback) {
-        callback({
-          error: ERR_REQ_REFUSED
-        });
-      }
-
-      return;
-    }
-
-    if (!this.sockets[this.socketIterator]) {
-      this.socketIterator = 0;
-    }
-
-    if (callback) {
-      messageId = this.generateUniqueId();
-      this.waiters[messageId] = callback;
-    }
-
-    payload = this.prepareJsonToSend({
-      id: messageId,
-      subject: subject,
-      data: data
-    });
-    return this.sockets[this.socketIterator++].write(payload);
-  };
-
-  SpeakerReconnector.prototype.shout = function (subject, data) {
-    var payload;
-    var socket;
-
-    var _i;
-
-    var _len;
-
-    var _ref;
-
-    var _results;
-
-    payload = {
-      subject: subject,
-      data: data
-    };
-    _ref = this.sockets;
-    _results = [];
-
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      socket = _ref[_i];
-
-      _results.push(socket.write(this.prepareJsonToSend(payload)));
-    }
-
-    return _results;
-  };
-
-  SpeakerReconnector.prototype.generateUniqueId = function () {
-    var id;
-    var newId;
-    id = 'id-'.concat(this.uniqueId);
-
-    if (!this.waiters[id]) {
-      return id;
-    }
-
-    if (this.uniqueId++ === MAX_WAITERS) {
-      this.uniqueId = 1;
-    }
-
-    if (this.waiters[(newId = 'id-'.concat(this.uniqueId))]) {
-      delete this.waiters[newId];
-    }
-
-    return this.generateUniqueId();
-  };
-
-  return SpeakerReconnector;
-})(_networkBase['default']);
-
-var _default = SpeakerReconnector;
+        );
+      }),
+      (b.prototype.request = function (a, b, c) {
+        return null === c && (c = null), this.send(a, b, c);
+      }),
+      (b.prototype.send = function (a, b, c) {
+        var d, e;
+        return (null === c && (c = null), 0 === this.sockets.length)
+          ? void (c && c({ error: _constants.ERR_REQ_REFUSED }))
+          : (this.sockets[this.socketIterator] || (this.socketIterator = 0),
+            c && ((d = this.generateUniqueId()), (this.waiters[d] = c)),
+            (e = this.prepareJsonToSend({ id: d, subject: a, data: b })),
+            this.sockets[this.socketIterator++].write(e));
+      }),
+      (b.prototype.shout = function (a, b) {
+        var c, d, e, f, g, h;
+        for (
+          c = { subject: a, data: b },
+            g = this.sockets,
+            h = [],
+            ((e = 0), (f = g.length));
+          e < f;
+          e++
+        )
+          (d = g[e]), h.push(d.write(this.prepareJsonToSend(c)));
+        return h;
+      }),
+      (b.prototype.generateUniqueId = function () {
+        var a, b;
+        return ((a = 'id-'.concat(this.uniqueId)), !this.waiters[a])
+          ? a
+          : (this.uniqueId++ === _constants.MAX_WAITERS && (this.uniqueId = 1),
+            this.waiters[(b = 'id-'.concat(this.uniqueId))] &&
+              delete this.waiters[b],
+            this.generateUniqueId());
+      }),
+      b
+    );
+  })(_networkBase['default']),
+  _default = SpeakerReconnector;
 exports['default'] = _default;

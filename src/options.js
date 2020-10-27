@@ -56,6 +56,7 @@ export const buildHttpOptions = (options) => ({
 });
 
 export const defaultServiceOptions = {
+  babelConfig: {},
   loadBalancing: 'roundRobin',
   runOnStart: [],
   instances: 1

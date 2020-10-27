@@ -1,19 +1,92 @@
 'use strict';
 
-export default () => ({
-  status: {
-    transport: {
-      code: 2000,
-      message: 'Transport completed successfully',
-      responseSource: ''
+const isSuccess = (self) => {
+  return (
+    (self?.status?.transport?.code ?? self?.transport?.code) === 2000 &&
+    (self?.status?.command?.code ?? self?.command?.code) === 200
+  );
+};
+
+function getResponseBody() {
+  return {
+    status: {
+      transport: {
+        code: 2000,
+        message: 'Transport completed successfully',
+        responseSource: void 0
+      },
+      command: {
+        code: 200,
+        message: 'Command completed successfully'
+      }
     },
-    command: {
-      code: 500,
-      message: 'Command completed successfully'
+    resultBody: {
+      resData: null,
+      errData: null
+    },
+    setResponseSource(
+      { name, pid, instanceId, port } = {
+        name: process.env.name,
+        pid: process.pid,
+        instanceId: process.env.instanceId,
+        port: parseInt(process.env.port, 10)
+      }
+    ) {
+      this.status.transport.responseSource = {
+        name,
+        pid,
+        port,
+        instanceId
+      };
+    },
+    setCommandStatus({ code, message }) {
+      Object.assign(this.status.command, {
+        code: code || this.status.command.code,
+        message: message || this.status.command.message
+      });
+    },
+    setTransportStatus({ code, message }) {
+      Object.assign(this.status.transport, {
+        code: code || this.status.transport.code,
+        message: message || this.status.transport.message
+      });
+    },
+    setResData(data) {
+      this.resultBody.resData = data;
+    },
+    setErrData(data) {
+      this.resultBody.errData = data;
+    },
+    success({ data, code = 200, message = 'Command completed successfully' }) {
+      // Set the source of the request
+      this.setResponseSource();
+      // Set's the command status
+      this.setCommandStatus({ code, message });
+      // Set's the res data of the response object
+      this.setResData(data);
+    },
+    error({
+      data,
+      code = 400,
+      message = 'Command executed but an error occurred while processing the request'
+    }) {
+      // Set the source of the request
+      this.setResponseSource();
+      // Set's the command status
+      this.setCommandStatus({ code, message });
+      // Set's the err data of the response object
+      this.setErrData(data);
+    },
+    getResponse() {
+      return {
+        status: isSuccess(this),
+        transport: this.status.transport,
+        command: this.status.command,
+        response: this.resultBody.resData,
+        error: this.resultBody.errData
+      };
     }
-  },
-  resultBody: {
-    resData: null,
-    errData: null
-  }
-});
+  };
+}
+
+export default getResponseBody;

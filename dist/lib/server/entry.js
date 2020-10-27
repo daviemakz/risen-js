@@ -1,8 +1,8 @@
 'use strict';
-
-var _require = require('../../../babel.config.base'),
-  rcConfig = _require.rcConfig;
-
-require('@babel/register')(rcConfig);
-
-module.exports = require('./index');
+var deepMerge = require('deepmerge'),
+  _require = require('../../../babel.config.base'),
+  rcConfig = _require.rcConfig,
+  _JSON$parse = JSON.parse(process.env.options),
+  babelConfig = _JSON$parse.babelConfig;
+require('@babel/register')(deepMerge(rcConfig, babelConfig)),
+  (module.exports = require('./index'));

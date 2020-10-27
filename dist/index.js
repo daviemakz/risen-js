@@ -1,1049 +1,939 @@
 'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-Object.defineProperty(exports, 'CommandBodyObject', {
-  enumerable: true,
-  get: function get() {
-    return _command['default'];
-  }
-});
-Object.defineProperty(exports, 'ResponseBodyObject', {
-  enumerable: true,
-  get: function get() {
-    return _response['default'];
-  }
-});
-Object.defineProperty(exports, 'buildHttpOptions', {
-  enumerable: true,
-  get: function get() {
-    return _options.buildHttpOptions;
-  }
-});
-Object.defineProperty(exports, 'buildSecureOptions', {
-  enumerable: true,
-  get: function get() {
-    return _options.buildSecureOptions;
-  }
-});
-Object.defineProperty(exports, 'defaultServiceOptions', {
-  enumerable: true,
-  get: function get() {
-    return _options.defaultServiceOptions;
-  }
-});
-Object.defineProperty(exports, 'defaultInstanceOptions', {
-  enumerable: true,
-  get: function get() {
-    return _options.defaultInstanceOptions;
-  }
-});
-exports.Risen = void 0;
-
-require('core-js');
-
-require('regenerator-runtime');
-
-require('./lib/runtime');
-
-var _isPortFree = _interopRequireDefault(require('is-port-free'));
-
-var _https = _interopRequireDefault(require('https'));
-
-var _http = _interopRequireDefault(require('http'));
-
-var _express = _interopRequireDefault(require('express'));
-
-var _fs = require('fs');
-
-var _uuid = require('uuid');
-
-var _path = require('path');
-
-var _lodash = require('lodash');
-
-var _package = require('../package.json');
-
-var _net = require('./lib/net');
-
-var _core = _interopRequireDefault(require('./lib/core'));
-
-var _db = _interopRequireDefault(require('./lib/db'));
-
-var _lib = _interopRequireDefault(require('./lib'));
-
-var _command = _interopRequireDefault(require('./lib/template/command'));
-
-var _response = _interopRequireDefault(require('./lib/template/response'));
-
-var _options = require('./options');
-
-var _validate = require('./lib/validate');
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
+Object.defineProperty(exports, '__esModule', { value: !0 }),
+  Object.defineProperty(exports, 'CommandBody', {
+    enumerable: !0,
+    get: function get() {
+      return _command['default'];
+    }
+  }),
+  Object.defineProperty(exports, 'ResponseBody', {
+    enumerable: !0,
+    get: function get() {
+      return _response['default'];
+    }
+  }),
+  Object.defineProperty(exports, 'buildHttpOptions', {
+    enumerable: !0,
+    get: function get() {
+      return _options.buildHttpOptions;
+    }
+  }),
+  Object.defineProperty(exports, 'buildSecureOptions', {
+    enumerable: !0,
+    get: function get() {
+      return _options.buildSecureOptions;
+    }
+  }),
+  Object.defineProperty(exports, 'defaultServiceOptions', {
+    enumerable: !0,
+    get: function get() {
+      return _options.defaultServiceOptions;
+    }
+  }),
+  Object.defineProperty(exports, 'defaultInstanceOptions', {
+    enumerable: !0,
+    get: function get() {
+      return _options.defaultInstanceOptions;
+    }
+  }),
+  (exports.Risen = void 0),
+  require('core-js'),
+  require('regenerator-runtime'),
+  require('./lib/runtime');
+var _isPortFree = _interopRequireDefault(require('is-port-free')),
+  _https = _interopRequireDefault(require('https')),
+  _http = _interopRequireDefault(require('http')),
+  _express = _interopRequireDefault(require('express')),
+  _fs = require('fs'),
+  _uuid = require('uuid'),
+  _path = require('path'),
+  _lodash = require('lodash'),
+  _package = require('../package.json'),
+  _net = require('./lib/net'),
+  _core = _interopRequireDefault(require('./lib/core')),
+  _db = _interopRequireDefault(require('./lib/db')),
+  _lib = _interopRequireDefault(require('./lib')),
+  _command = _interopRequireDefault(require('./lib/template/command')),
+  _response = _interopRequireDefault(require('./lib/template/response')),
+  _request = require('./lib/core/request'),
+  _options = require('./options'),
+  _validate = require('./lib/validate');
+function _interopRequireDefault(a) {
+  return a && a.__esModule ? a : { default: a };
 }
-
-function _typeof(obj) {
+function _typeof(a) {
   '@babel/helpers - typeof';
-  if (typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol') {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj &&
-        typeof Symbol === 'function' &&
-        obj.constructor === Symbol &&
-        obj !== Symbol.prototype
-        ? 'symbol'
-        : typeof obj;
-    };
-  }
-  return _typeof(obj);
-}
-
-function _slicedToArray(arr, i) {
   return (
-    _arrayWithHoles(arr) ||
-    _iterableToArrayLimit(arr, i) ||
-    _unsupportedIterableToArray(arr, i) ||
+    (_typeof =
+      'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
+        ? function (a) {
+            return typeof a;
+          }
+        : function (a) {
+            return a &&
+              'function' == typeof Symbol &&
+              a.constructor === Symbol &&
+              a !== Symbol.prototype
+              ? 'symbol'
+              : typeof a;
+          }),
+    _typeof(a)
+  );
+}
+function _slicedToArray(a, b) {
+  return (
+    _arrayWithHoles(a) ||
+    _iterableToArrayLimit(a, b) ||
+    _unsupportedIterableToArray(a, b) ||
     _nonIterableRest()
   );
 }
-
 function _nonIterableRest() {
   throw new TypeError(
     'Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.'
   );
 }
-
-function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === 'undefined' || !(Symbol.iterator in Object(arr)))
-    return;
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-  try {
-    for (
-      var _i = arr[Symbol.iterator](), _s;
-      !(_n = (_s = _i.next()).done);
-      _n = true
-    ) {
-      _arr.push(_s.value);
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
+function _iterableToArrayLimit(a, b) {
+  if ('undefined' != typeof Symbol && Symbol.iterator in Object(a)) {
+    var c = [],
+      d = !0,
+      e = !1,
+      f = void 0;
     try {
-      if (!_n && _i['return'] != null) _i['return']();
+      for (
+        var g, h = a[Symbol.iterator]();
+        !(d = (g = h.next()).done) && (c.push(g.value), !(b && c.length === b));
+        d = !0
+      );
+    } catch (a) {
+      (e = !0), (f = a);
     } finally {
-      if (_d) throw _e;
+      try {
+        d || null == h['return'] || h['return']();
+      } finally {
+        if (e) throw f;
+      }
     }
+    return c;
   }
-  return _arr;
 }
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
+function _arrayWithHoles(a) {
+  if (Array.isArray(a)) return a;
 }
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+function asyncGeneratorStep(a, b, c, d, e, f, g) {
   try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
+    var h = a[f](g),
+      i = h.value;
+  } catch (a) {
+    return void c(a);
   }
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
+  h.done ? b(i) : Promise.resolve(i).then(d, e);
 }
-
-function _asyncToGenerator(fn) {
+function _asyncToGenerator(a) {
   return function () {
-    var self = this,
-      args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, 'next', value);
+    var b = this,
+      c = arguments;
+    return new Promise(function (d, e) {
+      function f(a) {
+        asyncGeneratorStep(h, d, e, f, g, 'next', a);
       }
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, 'throw', err);
+      function g(a) {
+        asyncGeneratorStep(h, d, e, f, g, 'throw', a);
       }
-      _next(undefined);
+      var h = a.apply(b, c);
+      f(void 0);
     });
   };
 }
-
-function _toConsumableArray(arr) {
+function _toConsumableArray(a) {
   return (
-    _arrayWithoutHoles(arr) ||
-    _iterableToArray(arr) ||
-    _unsupportedIterableToArray(arr) ||
+    _arrayWithoutHoles(a) ||
+    _iterableToArray(a) ||
+    _unsupportedIterableToArray(a) ||
     _nonIterableSpread()
   );
 }
-
 function _nonIterableSpread() {
   throw new TypeError(
     'Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.'
   );
 }
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === 'string') return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === 'Object' && o.constructor) n = o.constructor.name;
-  if (n === 'Map' || n === 'Set') return Array.from(o);
-  if (n === 'Arguments' || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
-    return _arrayLikeToArray(o, minLen);
-}
-
-function _iterableToArray(iter) {
-  if (typeof Symbol !== 'undefined' && Symbol.iterator in Object(iter))
-    return Array.from(iter);
-}
-
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-}
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
+function _unsupportedIterableToArray(a, b) {
+  if (a) {
+    if ('string' == typeof a) return _arrayLikeToArray(a, b);
+    var c = Object.prototype.toString.call(a).slice(8, -1);
+    return (
+      'Object' === c && a.constructor && (c = a.constructor.name),
+      'Map' === c || 'Set' === c
+        ? Array.from(a)
+        : 'Arguments' === c ||
+          /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(c)
+        ? _arrayLikeToArray(a, b)
+        : void 0
+    );
   }
-  return arr2;
 }
-
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
+function _iterableToArray(a) {
+  if ('undefined' != typeof Symbol && Symbol.iterator in Object(a))
+    return Array.from(a);
+}
+function _arrayWithoutHoles(a) {
+  if (Array.isArray(a)) return _arrayLikeToArray(a);
+}
+function _arrayLikeToArray(a, b) {
+  (null == b || b > a.length) && (b = a.length);
+  for (var c = 0, d = Array(b); c < b; c++) d[c] = a[c];
+  return d;
+}
+function ownKeys(a, b) {
+  var c = Object.keys(a);
   if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly)
-      symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-    keys.push.apply(keys, symbols);
+    var d = Object.getOwnPropertySymbols(a);
+    b &&
+      (d = d.filter(function (b) {
+        return Object.getOwnPropertyDescriptor(a, b).enumerable;
+      })),
+      c.push.apply(c, d);
   }
-  return keys;
+  return c;
 }
-
-function _objectSpread(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(
-          target,
-          key,
-          Object.getOwnPropertyDescriptor(source, key)
-        );
-      });
-    }
-  }
-  return target;
+function _objectSpread(a) {
+  for (var b, c = 1; c < arguments.length; c++)
+    (b = null == arguments[c] ? {} : arguments[c]),
+      c % 2
+        ? ownKeys(Object(b), !0).forEach(function (c) {
+            _defineProperty(a, c, b[c]);
+          })
+        : Object.getOwnPropertyDescriptors
+        ? Object.defineProperties(a, Object.getOwnPropertyDescriptors(b))
+        : ownKeys(Object(b)).forEach(function (c) {
+            Object.defineProperty(a, c, Object.getOwnPropertyDescriptor(b, c));
+          });
+  return a;
 }
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
+function _defineProperty(a, b, c) {
+  return (
+    b in a
+      ? Object.defineProperty(a, b, {
+          value: c,
+          enumerable: !0,
+          configurable: !0,
+          writable: !0
+        })
+      : (a[b] = c),
+    a
+  );
 }
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
+function _classCallCheck(a, b) {
+  if (!(a instanceof b))
     throw new TypeError('Cannot call a class as a function');
-  }
 }
-
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ('value' in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
+function _defineProperties(a, b) {
+  for (var c, d = 0; d < b.length; d++)
+    (c = b[d]),
+      (c.enumerable = c.enumerable || !1),
+      (c.configurable = !0),
+      'value' in c && (c.writable = !0),
+      Object.defineProperty(a, c.key, c);
 }
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
+function _createClass(a, b, c) {
+  return (
+    b && _defineProperties(a.prototype, b), c && _defineProperties(a, c), a
+  );
 }
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
+function _inherits(a, b) {
+  if ('function' != typeof b && null !== b)
     throw new TypeError('Super expression must either be null or a function');
-  }
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: { value: subClass, writable: true, configurable: true }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
+  (a.prototype = Object.create(b && b.prototype, {
+    constructor: { value: a, writable: !0, configurable: !0 }
+  })),
+    b && _setPrototypeOf(a, b);
 }
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf =
-    Object.setPrototypeOf ||
-    function _setPrototypeOf(o, p) {
-      o.__proto__ = p;
-      return o;
-    };
-  return _setPrototypeOf(o, p);
+function _setPrototypeOf(a, b) {
+  return (
+    (_setPrototypeOf =
+      Object.setPrototypeOf ||
+      function (a, b) {
+        return (a.__proto__ = b), a;
+      }),
+    _setPrototypeOf(a, b)
+  );
 }
-
-function _createSuper(Derived) {
-  var hasNativeReflectConstruct = _isNativeReflectConstruct();
-  return function _createSuperInternal() {
-    var Super = _getPrototypeOf(Derived),
-      result;
-    if (hasNativeReflectConstruct) {
-      var NewTarget = _getPrototypeOf(this).constructor;
-      result = Reflect.construct(Super, arguments, NewTarget);
-    } else {
-      result = Super.apply(this, arguments);
-    }
-    return _possibleConstructorReturn(this, result);
+function _createSuper(a) {
+  var b = _isNativeReflectConstruct();
+  return function () {
+    var c,
+      d = _getPrototypeOf(a);
+    if (b) {
+      var e = _getPrototypeOf(this).constructor;
+      c = Reflect.construct(d, arguments, e);
+    } else c = d.apply(this, arguments);
+    return _possibleConstructorReturn(this, c);
   };
 }
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === 'object' || typeof call === 'function')) {
-    return call;
-  }
-  return _assertThisInitialized(self);
+function _possibleConstructorReturn(a, b) {
+  return b && ('object' === _typeof(b) || 'function' == typeof b)
+    ? b
+    : _assertThisInitialized(a);
 }
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
+function _assertThisInitialized(a) {
+  if (void 0 === a)
     throw new ReferenceError(
       "this hasn't been initialised - super() hasn't been called"
     );
-  }
-  return self;
+  return a;
 }
-
 function _isNativeReflectConstruct() {
-  if (typeof Reflect === 'undefined' || !Reflect.construct) return false;
-  if (Reflect.construct.sham) return false;
-  if (typeof Proxy === 'function') return true;
+  if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
+  if (Reflect.construct.sham) return !1;
+  if ('function' == typeof Proxy) return !0;
   try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
-    return true;
-  } catch (e) {
-    return false;
+    return (
+      Date.prototype.toString.call(Reflect.construct(Date, [], function () {})),
+      !0
+    );
+  } catch (a) {
+    return !1;
   }
 }
-
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf
-    ? Object.getPrototypeOf
-    : function _getPrototypeOf(o) {
-        return o.__proto__ || Object.getPrototypeOf(o);
-      };
-  return _getPrototypeOf(o);
+function _getPrototypeOf(a) {
+  return (
+    (_getPrototypeOf = Object.setPrototypeOf
+      ? Object.getPrototypeOf
+      : function (a) {
+          return a.__proto__ || Object.getPrototypeOf(a);
+        }),
+    _getPrototypeOf(a)
+  );
 }
-
-var Risen = (function (_ServiceCore) {
-  _inherits(Risen, _ServiceCore);
-
-  var _super = _createSuper(Risen);
-
-  function Risen(options) {
-    var _this;
-
-    _classCallCheck(this, Risen);
-
-    _this = _super.call(this, options);
-
-    if (!(0, _validate.validateOptions)(options)) {
-      process.exit(1);
-    }
-
-    _this.microServiceStarted = false;
-    _this.conId = 0;
-    _this.settings = _objectSpread(
-      _objectSpread(
-        _objectSpread({}, _options.defaultInstanceOptions),
-        options
-      ),
-      {},
-      {
-        http:
-          Array.isArray(options.http) && options.http.length
-            ? options.http.map(function (httpSettings) {
-                return (0, _options.buildHttpOptions)(httpSettings);
-              })
-            : false
-      }
-    );
-    ['httpsServer', 'httpServer', 'inUsePorts'].forEach(function (prop) {
-      _this[prop] = [];
-    });
-    _this.db =
-      _this.settings.databaseNames
-        .map(function (table) {
-          return _defineProperty(
-            {},
-            table,
-            new _db['default']({
-              databaseName: table
-            }).db
+var Risen = (function (a) {
+  function b(a) {
+    var d;
+    return (
+      _classCallCheck(this, b),
+      (d = c.call(this, a)),
+      (0, _validate.validateOptions)(a) || process.exit(1),
+      (d.microServiceStarted = !1),
+      (d.conId = 0),
+      (d.settings = _objectSpread(
+        _objectSpread(_objectSpread({}, _options.defaultInstanceOptions), a),
+        {},
+        {
+          http:
+            !!(Array.isArray(a.http) && a.http.length) &&
+            a.http.map(function (a) {
+              return (0, _options.buildHttpOptions)(a);
+            })
+        }
+      )),
+      ['httpsServer', 'httpServer', 'inUsePorts'].forEach(function (a) {
+        d[a] = [];
+      }),
+      (d.db =
+        d.settings.databaseNames
+          .map(function (a) {
+            return _defineProperty(
+              {},
+              a,
+              new _db['default']({ databaseName: a }).db
+            );
+          })
+          .reduce(function (a, b) {
+            return Object.assign(a, b);
+          }, {}) || {}),
+      (process.env.service = 'false'),
+      (process.env.settings = d.settings),
+      (process.env.exitedProcessPorts = []),
+      [
+        'externalInterfaces',
+        'coreOperations',
+        'serviceInfo',
+        'serviceOptions',
+        'serviceData',
+        'eventHandlers'
+      ].forEach(function (a) {
+        d[a] = {};
+      }),
+      [
+        'assignCoreFunctions',
+        'assignRequestFunctions',
+        'startServer',
+        'initGateway',
+        'bindGateway',
+        'startHttpServer'
+      ].forEach(function (a) {
+        d[a] = d[a].bind(_assertThisInitialized(d));
+      }),
+      (d.eventHandlers = Object.assign.apply(
+        Object,
+        [{}].concat(
+          _toConsumableArray(
+            ['onConRequest', 'onConClose'].map(function (b) {
+              return 'function' == typeof a[b]
+                ? _defineProperty(
+                    {},
+                    b,
+                    a[b].bind(
+                      _objectSpread(
+                        _objectSpread({}, _assertThisInitialized(d)),
+                        {},
+                        { request: d.request, requestChain: d.requestChain }
+                      )
+                    )
+                  )
+                : {};
+            })
+          )
+        )
+      )),
+      (process.env.verbose = !0 === d.settings.verbose),
+      (d.operationScope = {
+        request: d.request,
+        requestChain: d.requestChain,
+        sendRequest: d.sendRequest,
+        destroyConnection: d.destroyConnection,
+        operations: d.coreOperations
+      }),
+      _asyncToGenerator(
+        regeneratorRuntime.mark(function a() {
+          return regeneratorRuntime.wrap(
+            function (a) {
+              for (;;)
+                switch ((a.prev = a.next)) {
+                  case 0:
+                    return (
+                      (a.prev = 0), (a.next = 3), d.assignRequestFunctions()
+                    );
+                  case 3:
+                    a.next = 8;
+                    break;
+                  case 5:
+                    throw (
+                      ((a.prev = 5), (a.t0 = a['catch'](0)), new Error(a.t0))
+                    );
+                  case 8:
+                  case 'end':
+                    return a.stop();
+                }
+            },
+            a,
+            null,
+            [[0, 5]]
           );
         })
-        .reduce(function (acc, x) {
-          return Object.assign(acc, x);
-        }, {}) || {};
-    process.env.settings = _this.settings;
-    process.env.exitedProcessPorts = [];
-    [
-      'externalInterfaces',
-      'coreOperations',
-      'serviceInfo',
-      'serviceOptions',
-      'serviceData',
-      'eventHandlers'
-    ].forEach(function (prop) {
-      _this[prop] = {};
-    });
-    [
-      'assignCoreFunctions',
-      'startServer',
-      'initGateway',
-      'bindGateway',
-      'startHttpServer'
-    ].forEach(function (func) {
-      _this[func] = _this[func].bind(_assertThisInitialized(_this));
-    });
-    _this.eventHandlers = Object.assign.apply(
-      Object,
-      [{}].concat(
-        _toConsumableArray(
-          ['onConRequest', 'onConClose'].map(function (func) {
-            return typeof options[func] === 'function'
-              ? _defineProperty(
-                  {},
-                  func,
-                  options[func].bind(_assertThisInitialized(_this))
-                )
-              : {};
-          })
-        )
-      )
+      )(),
+      d
     );
-    process.env.verbose = _this.settings.verbose === true;
-    return _this;
   }
-
-  _createClass(Risen, [
-    {
-      key: 'startServer',
-      value: function startServer() {
-        var _this2 = this;
-
-        var callback =
-          arguments.length > 0 && arguments[0] !== undefined
-            ? arguments[0]
-            : function () {
-                return void 0;
-              };
-
-        if (!this.microServiceStarted) {
-          return _asyncToGenerator(
-            regeneratorRuntime.mark(function _callee() {
-              return regeneratorRuntime.wrap(
-                function _callee$(_context) {
-                  while (1) {
-                    switch ((_context.prev = _context.next)) {
-                      case 0:
-                        _context.prev = 0;
-                        _this2.microServiceStarted = true;
-
-                        if (
-                          !['client', 'server'].includes(_this2.settings.mode)
-                        ) {
-                          _context.next = 28;
-                          break;
+  _inherits(b, a);
+  var c = _createSuper(b);
+  return (
+    _createClass(b, [
+      {
+        key: 'startServer',
+        value: function startServer() {
+          var a = this,
+            b =
+              0 < arguments.length && void 0 !== arguments[0]
+                ? arguments[0]
+                : function () {};
+          return this.microServiceStarted
+            ? this.log(
+                'Micro service framework has already been initialised!',
+                'warn'
+              )
+            : _asyncToGenerator(
+                regeneratorRuntime.mark(function c() {
+                  return regeneratorRuntime.wrap(
+                    function (c) {
+                      for (;;)
+                        switch ((c.prev = c.next)) {
+                          case 0:
+                            if (
+                              ((c.prev = 0),
+                              (a.microServiceStarted = !0),
+                              !['client', 'server'].includes(a.settings.mode))
+                            ) {
+                              c.next = 28;
+                              break;
+                            }
+                            if ('server' !== a.settings.mode) {
+                              c.next = 25;
+                              break;
+                            }
+                            return (
+                              (c.prev = 4),
+                              (c.next = 7),
+                              a.assignCoreFunctions()
+                            );
+                          case 7:
+                            return (c.next = 9), a.initGateway();
+                          case 9:
+                            return (c.next = 11), a.bindGateway();
+                          case 11:
+                            return (c.next = 13), a.startServices();
+                          case 13:
+                            return (c.next = 15), a.startHttpServer();
+                          case 15:
+                            return (
+                              (c.next = 17),
+                              a.executeInitialFunctions(
+                                'coreOperations',
+                                'settings'
+                              )
+                            );
+                          case 17:
+                            return b(), c.abrupt('return', void 0);
+                          case 21:
+                            (c.prev = 21),
+                              (c.t0 = c['catch'](4)),
+                              a.log(
+                                'A fatal error has occurred when starting the framework. Process cannot continue, exiting...',
+                                'error'
+                              ),
+                              process.exit(1);
+                          case 25:
+                            return (
+                              a.log(
+                                'Micro Service Framework: '.concat(
+                                  _package.version
+                                ),
+                                'log'
+                              ),
+                              a.log('Running in client mode...', 'log'),
+                              c.abrupt('return', void 0)
+                            );
+                          case 28:
+                            throw new Error(
+                              "Unsupported mode detected. Valid options are 'server' or 'client'"
+                            );
+                          case 31:
+                            throw (
+                              ((c.prev = 31),
+                              (c.t1 = c['catch'](0)),
+                              new Error(c.t1))
+                            );
+                          case 34:
+                          case 'end':
+                            return c.stop();
                         }
-
-                        if (!(_this2.settings.mode === 'server')) {
-                          _context.next = 25;
-                          break;
-                        }
-
-                        _context.prev = 4;
-                        _context.next = 7;
-                        return _this2.assignCoreFunctions();
-
-                      case 7:
-                        _context.next = 9;
-                        return _this2.initGateway();
-
-                      case 9:
-                        _context.next = 11;
-                        return _this2.bindGateway();
-
-                      case 11:
-                        _context.next = 13;
-                        return _this2.startServices();
-
-                      case 13:
-                        _context.next = 15;
-                        return _this2.startHttpServer();
-
-                      case 15:
-                        _context.next = 17;
-                        return _this2.executeInitialFunctions(
-                          'coreOperations',
-                          'settings'
-                        );
-
-                      case 17:
-                        callback();
-                        return _context.abrupt('return', void 0);
-
-                      case 21:
-                        _context.prev = 21;
-                        _context.t0 = _context['catch'](4);
-
-                        _this2.log(
-                          'A fatal error has occurred when starting the framework. Process cannot continue, exiting...',
-                          'error'
-                        );
-
-                        process.exit(1);
-
-                      case 25:
-                        _this2.log(
-                          'Micro Service Framework: '.concat(_package.version),
-                          'log'
-                        );
-
-                        _this2.log('Running in client mode...', 'log');
-
-                        return _context.abrupt('return', void 0);
-
-                      case 28:
-                        throw new Error(
-                          "Unsupported mode detected. Valid options are 'server' or 'client'"
-                        );
-
-                      case 31:
-                        _context.prev = 31;
-                        _context.t1 = _context['catch'](0);
-                        throw new Error(_context.t1);
-
-                      case 34:
-                      case 'end':
-                        return _context.stop();
-                    }
-                  }
-                },
-                _callee,
-                null,
-                [
-                  [0, 31],
-                  [4, 21]
-                ]
-              );
-            })
-          )();
+                    },
+                    c,
+                    null,
+                    [
+                      [0, 31],
+                      [4, 21]
+                    ]
+                  );
+                })
+              )();
         }
-
-        return this.log(
-          'Micro service framework has already been initialised!',
-          'warn'
-        );
-      }
-    },
-    {
-      key: 'assignCoreFunctions',
-      value: function assignCoreFunctions() {
-        var _this3 = this;
-
-        return new Promise(function (resolve) {
-          Object.entries(
-            _objectSpread(
-              _objectSpread({}, _core['default']),
-              _this3.settings.coreOperations
-            )
-          ).forEach(function (_ref4) {
-            var _ref5 = _slicedToArray(_ref4, 2),
-              name = _ref5[0],
-              func = _ref5[1];
-
-            _this3.coreOperations[name] = func.bind(_this3);
+      },
+      {
+        key: 'assignRequestFunctions',
+        value: function assignRequestFunctions() {
+          var a = this;
+          return new Promise(function (b) {
+            return (
+              Object.entries(
+                _objectSpread({}, _request.requestOperations)
+              ).forEach(function (b) {
+                var c = _slicedToArray(b, 2),
+                  d = c[0],
+                  e = c[1];
+                a[d] = e.bind(a);
+              }),
+              b()
+            );
           });
-          return resolve();
-        });
-      }
-    },
-    {
-      key: 'defineService',
-      value: function defineService(name, servicePath, options) {
-        if (this.settings.mode !== 'server') {
-          return this.log(
-            "Cannot define service because framework is not running in 'server' mode. Mode: ".concat(
-              this.settings.mode
-            ),
-            'error'
-          );
         }
-
-        if (
-          !(0, _validate.validateServiceOptions)(
-            options || _options.defaultServiceOptions
-          )
-        ) {
-          return this.log(
-            'Unable to add '.concat(
-              name,
-              ' because the options are not valid! Check options and try again!'
-            ),
-            'log'
-          );
-        }
-
-        var resolvedPath = ''.concat((0, _path.resolve)(servicePath), '.js');
-        var serviceData = {
-          operations: require(resolvedPath),
-          resolvedPath: resolvedPath
-        };
-
-        switch (true) {
-          case typeof name === 'undefined': {
-            throw new Error(
-              'The name of the microservice is not defined! '.concat(name)
-            );
-          }
-
-          case typeof serviceData.operations === 'undefined' ||
-            !(0, _fs.existsSync)(serviceData.resolvedPath): {
-            throw new Error(
-              'The operations path of the microservice is not defined or cannot be found! PATH: '.concat(
-                serviceData.resolvedPath
-              )
-            );
-          }
-
-          case _typeof(serviceData.operations) !== 'object' ||
-            !Object.keys(serviceData.operations).length: {
-            throw new Error(
-              'No operations found. Expecting an exported object with atleast one key! PATH: '.concat(
-                serviceData.resolvedPath
-              )
-            );
-          }
-
-          case Object.prototype.hasOwnProperty.call(this.serviceInfo, name): {
-            throw new Error(
-              'The microservice '.concat(name, ' has already been defined.')
-            );
-          }
-
-          default: {
-            this.serviceOptions[name] = _objectSpread(
-              _objectSpread({}, _options.defaultServiceOptions),
-              options
-            );
-            this.serviceInfo[name] = resolvedPath;
-            return true;
-          }
-        }
-      }
-    },
-    {
-      key: 'initGateway',
-      value: function initGateway() {
-        var _this4 = this;
-
-        this.log(
-          'Risen.JS Micro Service Framework: '.concat(_package.version),
-          'log',
-          true
-        );
-        return new Promise(function (resolve, reject) {
-          return (0, _isPortFree['default'])(_this4.settings.apiGatewayPort)
-            .then(function () {
-              _this4.log('Starting service core...', 'log', true);
-
-              _this4.externalInterfaces.apiGateway = (0, _net.createListener)(
-                _this4.settings.apiGatewayPort
-              );
-
-              if (!_this4.externalInterfaces.apiGateway) {
-                return (
-                  _this4.log(
-                    'Unable to start gateway, exiting!',
-                    'error',
-                    true
-                  ) || reject(Error('Unable to start gateway, exiting!'))
-                );
-              }
-
-              return (
-                _this4.log('Service core started!', 'log', true) ||
-                resolve(true)
-              );
-            })
-            ['catch'](function (e) {
-              _this4.log(
-                'Gateway port not free or unknown error has occurred. INFO: '.concat(
-                  JSON.stringify(e, null, 2)
-                ),
-                'log'
-              );
-
-              return reject(
-                Error(
-                  'Gateway port not free or unknown error has occurred. INFO: '.concat(
-                    JSON.stringify(e, null, 2)
-                  )
+      },
+      {
+        key: 'assignCoreFunctions',
+        value: function assignCoreFunctions() {
+          var a = this;
+          return new Promise(function (b) {
+            return (
+              Object.entries(
+                _objectSpread(
+                  _objectSpread({}, _core['default']),
+                  a.settings.coreOperations
                 )
-              );
-            });
-        });
-      }
-    },
-    {
-      key: 'bindGateway',
-      value: function bindGateway() {
-        var _this5 = this;
-
-        return new Promise(function (resolve) {
-          _this5.externalInterfaces.apiGateway.on('COM_REQUEST', function (
-            clientSocket,
-            data
-          ) {
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Service core connection request recieved'
+              ).forEach(function (b) {
+                var c = _slicedToArray(b, 2),
+                  d = c[0],
+                  e = c[1];
+                a.coreOperations[d] = e.bind(a);
+              }),
+              b()
+            );
+          });
+        }
+      },
+      {
+        key: 'defineService',
+        value: function defineService(a, b, c) {
+          if ('server' !== this.settings.mode)
+            return this.log(
+              "Cannot define service because framework is not running in 'server' mode. Mode: ".concat(
+                this.settings.mode
+              ),
+              'error'
+            );
+          if (
+            !(0, _validate.validateServiceOptions)(
+              c || _options.defaultServiceOptions
+            )
+          )
+            return this.log(
+              'Unable to add '.concat(
+                a,
+                ' because the options are not valid! Check options and try again!'
               ),
               'log'
             );
-
-            if (
-              Object.prototype.hasOwnProperty.call(
-                _this5.eventHandlers,
-                'onConRequest'
-              )
-            ) {
-              _this5.eventHandlers.onConRequest(data);
-            }
-
-            if (data) {
-              _this5.processComRequest(data, clientSocket, _this5.conId);
-            } else {
-              _this5.processComError(data, clientSocket, _this5.conId);
-            }
-
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Service core connection request processed'
-              )
-            );
-
-            _this5.conId += 1;
-          });
-
-          _this5.externalInterfaces.apiGateway.on('COM_CLOSE', function (
-            clientSocket
-          ) {
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Service core connection close requested'
-              )
-            );
-
-            if (
-              Object.prototype.hasOwnProperty.call(
-                _this5.eventHandlers,
-                'onConClose'
-              )
-            ) {
-              _this5.eventHandlers.onConClose();
-            }
-
-            clientSocket.conn.destroy();
-
-            _this5.log(
-              '['.concat(
-                _this5.conId,
-                '] Service core connection successfully closed'
-              )
-            );
-
-            _this5.conId += 1;
-          });
-
-          _this5.externalInterfaces.apiGateway.on('KILL', function () {
-            process.exit();
-          });
-
-          return resolve();
-        });
-      }
-    },
-    {
-      key: 'startHttpServer',
-      value: function startHttpServer() {
-        var _this6 = this;
-
-        return Array.isArray(this.settings.http)
-          ? Promise.all(
-              this.settings.http.map(function (httpSettings) {
-                return new Promise(function (resolve, reject) {
-                  try {
-                    if (httpSettings) {
-                      var expressApp = (0, _express['default'])();
-                      httpSettings.beforeStart(expressApp);
-                      httpSettings['static'].forEach(function (path) {
-                        return expressApp.use(
-                          _express['default']['static'](path)
-                        );
-                      });
-
-                      if (httpSettings.harden) {
-                        (0, _options.hardenServer)(expressApp);
-                      }
-
-                      httpSettings.middlewares.forEach(function (middleware) {
-                        return expressApp.use(middleware);
-                      });
-                      httpSettings.routes
-                        .filter(function (route) {
-                          if (
-                            ['put', 'post', 'get', 'delete', 'patch'].includes(
-                              route.method.toLowerCase()
-                            )
-                          ) {
-                            return true;
-                          }
-
-                          _this6.log(
-                            'This route has an unknown method, skipping: '.concat(
-                              JSON.stringify(route, null, 2)
-                            ),
-                            'warn'
-                          );
-
-                          return false;
-                        })
-                        .forEach(function (route) {
-                          return expressApp[route.method.toLowerCase()].apply(
-                            expressApp,
-                            [route.uri].concat(
-                              _toConsumableArray(route.preMiddleware || []),
-                              [
-                                function (req, res, next) {
-                                  var resultSend = res.send;
-                                  var requestId = (0, _uuid.v4)();
-
-                                  var handleException = (function (
-                                    res,
-                                    requestIdScoped
-                                  ) {
-                                    return function (err) {
-                                      if (requestIdScoped === requestId) {
-                                        _options.eventList.forEach(function (
-                                          event
-                                        ) {
-                                          return process.removeListener(
-                                            event,
-                                            handleException
-                                          );
-                                        });
-
-                                        next(err);
-                                      }
-                                    };
-                                  })(res, requestId);
-
-                                  _options.eventList.forEach(function (event) {
-                                    return process.on(event, handleException);
-                                  });
-
-                                  setImmediate(function () {
-                                    res.send = function () {
-                                      _options.eventList.forEach(function (
-                                        event
-                                      ) {
-                                        return process.removeListener(
-                                          event,
-                                          handleException
-                                        );
-                                      });
-
-                                      for (
-                                        var _len = arguments.length,
-                                          args = new Array(_len),
-                                          _key = 0;
-                                        _key < _len;
-                                        _key++
-                                      ) {
-                                        args[_key] = arguments[_key];
-                                      }
-
-                                      if (typeof args[0] === 'undefined') {
-                                        res.status(500);
-                                      }
-
-                                      resultSend.call.apply(
-                                        resultSend,
-                                        [res].concat(args)
-                                      );
-                                    };
-
-                                    try {
-                                      return route.handler(req, res, {
-                                        sendRequest: _this6.sendRequest,
-                                        CommandBodyObject: _command['default'],
-                                        ResponseBodyObject: _response['default']
-                                      });
-                                    } catch (e) {
-                                      return next(e);
-                                    }
-                                  });
-                                }
-                              ],
-                              _toConsumableArray(route.postMiddleware || [])
-                            )
-                          );
-                        });
-
-                      _this6.log('Starting HTTP server(s)...', 'log');
-
-                      if (_typeof(httpSettings.ssl) === 'object') {
-                        return (
-                          _this6.httpsServer.push(
-                            _https['default']
-                              .createServer(httpSettings.ssl, expressApp)
-                              .listen(
-                                httpSettings.port,
-                                httpSettings.host || '0.0.0.0'
-                              )
-                          ) && resolve()
-                        );
-                      }
-
-                      return (
-                        _this6.httpServer.push(
-                          _http['default']
-                            .createServer(expressApp)
-                            .listen(
-                              httpSettings.port,
-                              httpSettings.host || '0.0.0.0'
-                            )
-                        ) && resolve()
-                      );
-                    }
-
-                    return resolve();
-                  } catch (e) {
-                    return reject(Error(e));
-                  }
-                });
-              })
-            )
-          : new Promise(function (resolve) {
-              _this6.log(
-                'No HTTP(s) servers defined. Starting services only...'
+          var d = ''.concat((0, _path.resolve)(b), '.js'),
+            e = { operations: require(d), resolvedPath: d };
+          switch (!0) {
+            case 'undefined' == typeof a:
+              throw new Error(
+                'The name of the microservice is not defined! '.concat(a)
               );
-
-              return resolve();
-            });
-      }
-    },
-    {
-      key: 'startServices',
-      value: function startServices() {
-        var _this7 = this;
-
-        var serviceInfo =
-          arguments.length > 0 && arguments[0] !== undefined
-            ? arguments[0]
-            : void 0;
-        var customInstances =
-          arguments.length > 1 && arguments[1] !== undefined
-            ? arguments[1]
-            : void 0;
-        var servicesInfo = serviceInfo || this.serviceInfo;
-        return new Promise(function (resolve, reject) {
-          if (Object.keys(servicesInfo)) {
-            return Promise.all(
-              (0, _lodash.shuffle)(
-                Object.keys(servicesInfo).reduce(function (acc, serviceName) {
-                  var instances =
-                    customInstances ||
-                    _this7.serviceOptions[serviceName].instances;
-                  var processList = [];
-
-                  while (instances > 0) {
-                    processList.push(serviceName);
-                    instances -= 1;
-                  }
-
-                  return acc.concat.apply(acc, processList);
-                }, [])
-              ).map(function (name) {
-                return new Promise(function (resolveLocal, rejectLocal) {
-                  return _this7.initService(name, function (result) {
-                    return result === true
-                      ? resolveLocal(true)
-                      : rejectLocal(
-                          Error(
-                            'Unable to start microservice! MORE INFO: '.concat(
-                              JSON.stringify(result, null, 2)
-                            )
-                          )
-                        );
-                  });
-                });
-              })
-            )
-              .then(function () {
-                return resolve();
-              })
-              ['catch'](function (e) {
-                return reject(e);
-              });
+            case 'undefined' == typeof e.operations ||
+              !(0, _fs.existsSync)(e.resolvedPath):
+              throw new Error(
+                'The operations path of the microservice is not defined or cannot be found! PATH: '.concat(
+                  e.resolvedPath
+                )
+              );
+            case 'object' !== _typeof(e.operations) ||
+              !Object.keys(e.operations).length:
+              throw new Error(
+                'No operations found. Expecting an exported object with atleast one key! PATH: '.concat(
+                  e.resolvedPath
+                )
+              );
+            case Object.prototype.hasOwnProperty.call(this.serviceInfo, a):
+              throw new Error(
+                'The microservice '.concat(a, ' has already been defined.')
+              );
+            default:
+              return (
+                (this.serviceOptions[a] = _objectSpread(
+                  _objectSpread({}, _options.defaultServiceOptions),
+                  c
+                )),
+                (this.serviceInfo[a] = d),
+                !0
+              );
           }
+        }
+      },
+      {
+        key: 'initGateway',
+        value: function initGateway() {
+          var a = this;
+          return (
+            this.log(
+              'Risen.JS Micro Service Framework: '.concat(_package.version),
+              'log',
+              !0
+            ),
+            new Promise(function (b, c) {
+              return (0, _isPortFree['default'])(a.settings.apiGatewayPort)
+                .then(function () {
+                  return (
+                    a.log('Starting service core...', 'log', !0),
+                    (a.externalInterfaces.apiGateway = (0, _net.createListener)(
+                      a.settings.apiGatewayPort
+                    )),
+                    a.externalInterfaces.apiGateway
+                      ? a.log('Service core started!', 'log', !0) || b(!0)
+                      : a.log(
+                          'Unable to start gateway, exiting!',
+                          'error',
+                          !0
+                        ) || c(Error('Unable to start gateway, exiting!'))
+                  );
+                })
+                ['catch'](function (b) {
+                  return (
+                    a.log(
+                      'Gateway port not free or unknown error has occurred. INFO: '.concat(
+                        JSON.stringify(b, null, 2)
+                      ),
+                      'log'
+                    ),
+                    c(
+                      Error(
+                        'Gateway port not free or unknown error has occurred. INFO: '.concat(
+                          JSON.stringify(b, null, 2)
+                        )
+                      )
+                    )
+                  );
+                });
+            })
+          );
+        }
+      },
+      {
+        key: 'bindGateway',
+        value: function bindGateway() {
+          var a = this;
+          return new Promise(function (b) {
+            return (
+              a.externalInterfaces.apiGateway.on('COM_REQUEST', function (
+                b,
+                c
+              ) {
+                a.log(
+                  '['.concat(
+                    a.conId,
+                    '] Service core connection request recieved'
+                  ),
+                  'log'
+                ),
+                  Object.prototype.hasOwnProperty.call(
+                    a.eventHandlers,
+                    'onConRequest'
+                  ) && a.eventHandlers.onConRequest(c),
+                  c
+                    ? a.processComRequest(c, b, a.conId)
+                    : a.processComError(c, b, a.conId),
+                  a.log(
+                    '['.concat(
+                      a.conId,
+                      '] Service core connection request processed'
+                    )
+                  ),
+                  (a.conId += 1);
+              }),
+              a.externalInterfaces.apiGateway.on('COM_CLOSE', function (b) {
+                a.log(
+                  '['.concat(
+                    a.conId,
+                    '] Service core connection close requested'
+                  )
+                ),
+                  Object.prototype.hasOwnProperty.call(
+                    a.eventHandlers,
+                    'onConClose'
+                  ) && a.eventHandlers.onConClose(),
+                  b.conn.destroy(),
+                  a.log(
+                    '['.concat(
+                      a.conId,
+                      '] Service core connection successfully closed'
+                    )
+                  ),
+                  (a.conId += 1);
+              }),
+              a.externalInterfaces.apiGateway.on('KILL', function () {
+                process.exit();
+              }),
+              b()
+            );
+          });
+        }
+      },
+      {
+        key: 'startHttpServer',
+        value: function startHttpServer() {
+          var a = this;
+          return Array.isArray(this.settings.http)
+            ? Promise.all(
+                this.settings.http.map(function (b) {
+                  return new Promise(function (c, d) {
+                    try {
+                      if (b) {
+                        var e = (0, _express['default'])();
+                        return (
+                          b.beforeStart(e),
+                          b['static'].forEach(function (a) {
+                            e.use(_express['default']['static'](a));
+                          }),
+                          b.harden && (0, _options.hardenServer)(e),
+                          b.middlewares.forEach(function (a) {
+                            return e.use(a);
+                          }),
+                          b.routes
+                            .filter(function (b) {
+                              return (
+                                !![
+                                  'put',
+                                  'post',
+                                  'get',
+                                  'delete',
+                                  'patch'
+                                ].includes(b.method.toLowerCase()) ||
+                                (a.log(
+                                  'This route has an unknown method, skipping: '.concat(
+                                    JSON.stringify(b, null, 2)
+                                  ),
+                                  'warn'
+                                ),
+                                !1)
+                              );
+                            })
+                            .forEach(function (b) {
+                              return e[b.method.toLowerCase()].apply(
+                                e,
+                                [b.uri].concat(
+                                  _toConsumableArray(b.preMiddleware || []),
+                                  [
+                                    function (c, d, f) {
+                                      var g = d.send,
+                                        h = (0, _uuid.v4)(),
+                                        i = (function (a, b) {
+                                          return function (a) {
+                                            b === h &&
+                                              (_options.eventList.forEach(
+                                                function (a) {
+                                                  return process.removeListener(
+                                                    a,
+                                                    i
+                                                  );
+                                                }
+                                              ),
+                                              f(a));
+                                          };
+                                        })(d, h);
+                                      _options.eventList.forEach(function (a) {
+                                        return process.on(a, i);
+                                      }),
+                                        setImmediate(function () {
+                                          d.send = function () {
+                                            _options.eventList.forEach(
+                                              function (a) {
+                                                return process.removeListener(
+                                                  a,
+                                                  i
+                                                );
+                                              }
+                                            );
+                                            for (
+                                              var a = arguments.length,
+                                                b = Array(a),
+                                                c = 0;
+                                              c < a;
+                                              c++
+                                            )
+                                              b[c] = arguments[c];
+                                            'undefined' == typeof b[0] &&
+                                              d.status(500),
+                                              g.call.apply(g, [d].concat(b));
+                                          };
+                                          try {
+                                            return b.handler(c, d, f, {
+                                              request: a.request,
+                                              requestChain: a.requestChain,
+                                              getCommandBody: function getCommandBody() {
+                                                return new _command[
+                                                  'default'
+                                                ]();
+                                              },
+                                              getResponseObject: function getResponseObject() {
+                                                return new _response[
+                                                  'default'
+                                                ]();
+                                              }
+                                            });
+                                          } catch (a) {
+                                            return f(a);
+                                          }
+                                        });
+                                    }
+                                  ],
+                                  _toConsumableArray(b.postMiddleware || [])
+                                )
+                              );
+                            }),
+                          a.log('Starting HTTP server(s)...', 'log'),
+                          'object' === _typeof(b.ssl)
+                            ? a.httpsServer.push(
+                                _https['default']
+                                  .createServer(b.ssl, e)
+                                  .listen(b.port, b.host || '0.0.0.0')
+                              ) && c()
+                            : a.httpServer.push(
+                                _http['default']
+                                  .createServer(e)
+                                  .listen(b.port, b.host || '0.0.0.0')
+                              ) && c()
+                        );
+                      }
+                      return c();
+                    } catch (a) {
+                      return d(Error(a));
+                    }
+                  });
+                })
+              )
+            : new Promise(function (b) {
+                return (
+                  a.log(
+                    'No HTTP(s) servers defined. Starting services only...'
+                  ),
+                  b()
+                );
+              });
+        }
+      },
+      {
+        key: 'startServices',
+        value: function startServices() {
+          var a = this,
+            b =
+              0 < arguments.length && void 0 !== arguments[0]
+                ? arguments[0]
+                : void 0,
+            c =
+              1 < arguments.length && void 0 !== arguments[1]
+                ? arguments[1]
+                : void 0,
+            d = b || this.serviceInfo;
+          return new Promise(function (b, f) {
+            return Object.keys(d)
+              ? Promise.all(
+                  (0, _lodash.shuffle)(
+                    Object.keys(d).reduce(function (b, d) {
+                      for (
+                        var e = c || a.serviceOptions[d].instances, f = [];
+                        0 < e;
 
-          return reject(Error('No microservices defined!'));
-        });
+                      )
+                        f.push(d), (e -= 1);
+                      return b.concat.apply(b, f);
+                    }, [])
+                  ).map(function (b) {
+                    return new Promise(function (c, d) {
+                      return a.initService(b, function (a) {
+                        return !0 === a
+                          ? c(!0)
+                          : d(
+                              Error(
+                                'Unable to start microservice! MORE INFO: '.concat(
+                                  JSON.stringify(a, null, 2)
+                                )
+                              )
+                            );
+                      });
+                    });
+                  })
+                )
+                  .then(function () {
+                    return b();
+                  })
+                  ['catch'](function (a) {
+                    return f(a);
+                  })
+              : f(Error('No microservices defined!'));
+          });
+        }
       }
-    }
-  ]);
-
-  return Risen;
+    ]),
+    b
+  );
 })(_lib['default']);
-
 exports.Risen = Risen;

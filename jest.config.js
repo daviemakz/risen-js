@@ -12,7 +12,7 @@ module.exports = {
   // browser: false,
 
   // The directory where Jest should store its cached dependency information
-  // cacheDirectory: "/tmp/jest_rs",
+  // cacheDirectory: "/src/jest_rs",
 
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
@@ -23,6 +23,7 @@ module.exports = {
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
     'src/**/*.{js,ts}',
+    '!**/src/dev/**',
     '!**/src/lib/server/**',
     '!**/src/lib/runtime.js'
   ],
@@ -108,7 +109,7 @@ module.exports = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ['<rootDir>/__tests__/.setup.js'],
+  // setupFiles: ['<rootDir>/__tests__/.setup.js'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
@@ -127,6 +128,7 @@ module.exports = {
 
   // The glob patterns Jest uses to detect test files
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
+  //  testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [

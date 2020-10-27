@@ -10,10 +10,10 @@ import {
   validateCoreOperations,
   validateOptions,
   validateServiceOptions
-} from '../../src/lib/validate';
+} from '../tmp/lib/validate';
 
 // Test suite
-describe('src/lib/validate', () => {
+describe('tmp/lib/validate', () => {
   describe('validateRouteOptions()', () => {
     const getOptions = (omitList, overwriteProps) =>
       omit(

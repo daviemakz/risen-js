@@ -207,6 +207,12 @@ export const validateServiceOptions = (serviceOption) => {
         'The service options "instances" option is not valid, it must be an number above 1'
       );
     }
+    case Object.prototype.hasOwnProperty.call(serviceOption, 'babelConfig') &&
+      typeof serviceOption.babelConfig !== 'object': {
+      throw new Error(
+        'The service options "babelConfig" option is not valid, it must be an object containing babel configuration'
+      );
+    }
     default: {
       return true;
     }

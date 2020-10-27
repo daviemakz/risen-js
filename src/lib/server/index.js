@@ -14,10 +14,12 @@ import { createListener } from '../net';
 import ServiceCommon from '../common';
 
 // Load Templates
-import ResponseBodyObject from '../template/response';
+import ResponseBody from '../template/response';
 
 // Load base methods
 import { echoData, redirectFailed, noDataRecieved } from './baseMethods';
+import { requestOperations } from '../core/request';
+import { buildResponseFunctions } from '../util';
 
 // Standard functions
 const standardFunctions = [
@@ -55,11 +57,13 @@ class MicroServer extends ServiceCommon {
 
     // Set verbose to enviromental variable
     process.env.verbose = this.settings.verbose;
+
     // Bind methods
     [
+      'assignRequestFunctions',
+      'assignProcessListeners',
+      'assignFunctions',
       'processRequest',
-      'assignProcessListers',
-      'assignOperations',
       'bindService',
       'initServer'
     ].forEach((func) => {
@@ -69,11 +73,12 @@ class MicroServer extends ServiceCommon {
     // Start process management
     setInterval(processManagement, 1000);
 
-    // Initalise Micro service
+    // Initalise micro service
     (async () => {
       try {
-        await this.assignOperations();
-        await this.assignProcessListers();
+        await this.assignRequestFunctions();
+        await this.assignFunctions();
+        await this.assignProcessListeners();
         await this.initServer();
         await this.bindService();
         await this.executeInitialFunctions('operations');
@@ -83,27 +88,44 @@ class MicroServer extends ServiceCommon {
       }
     })();
 
+    // Operation scope
+    this.operationScope = {
+      request: this.request,
+      requestChain: this.requestChain,
+      sendRequest: this.sendRequest,
+      destroyConnection: this.destroyConnection,
+      operations: this.operations,
+      localStorage: {}
+    };
+
     // Return the instance
     return this;
   }
 
   // Assign process functions
-  assignOperations() {
+  assignRequestFunctions() {
     return new Promise((resolve) => {
-      // Operation scope
-      const operationScope = {
-        sendRequest: this.sendRequest,
-        destroyConnection: this.destroyConnection,
-        operations: this.operations,
-        localStorage: {}
-      };
+      // Assign request operations
+      Object.entries({
+        ...requestOperations
+      }).forEach(([name, func]) => {
+        this[name] = func.bind(this);
+      });
+      // Resolve promise
+      return resolve();
+    });
+  }
+
+  // Assign process functions
+  assignFunctions() {
+    return new Promise((resolve) => {
       // Assigned operations to service
       Object.entries(require(process.env.operations)).forEach(([name, op]) => {
-        this.operations[name] = op.bind(operationScope);
+        this.operations[name] = op.bind(this.operationScope);
       });
       // Assign standard functions
       standardFunctions.forEach(({ name, func }) => {
-        this.operations[name] = func.bind(operationScope);
+        this.operations[name] = func.bind(this.operationScope);
       });
       // Resolve promise
       return resolve();
@@ -111,35 +133,34 @@ class MicroServer extends ServiceCommon {
   }
 
   // Assign process listners
-  assignProcessListers() {
+  assignProcessListeners() {
     return new Promise((resolve) => {
       // onExit
       process.on('exit', (code) => {
         // Invoke Template(s)
-        const responseObject = new ResponseBodyObject();
+        const responseObject = new ResponseBody();
         // Build Response Object [status - transport]
-        responseObject.status.transport = {
+        responseObject.setTransportStatus({
           code: 5006,
           message: `Micro service process exited unexpectedly. CODE: ${code}`
-        };
+        });
         // Build Response Object [status - transport]
-        responseObject.status.command = {
+        responseObject.setCommandStatus({
           code: 500,
           message: 'Command not executed, transport failure'
-        };
+        });
         // Build Response Object [ResBody - Error Details]
-        responseObject.resultBody.errData = {
+        responseObject.setErrData({
           entity: 'Unknown error',
           action: `Micro service process exited unexpectedly. CODE: ${code}`,
-          errorType: 'ERROR',
           originalData: null
-        };
+        });
         // Close Each Instance Of Connection
-        Object.values(this.connectionIndex).forEach((socket) => {
+        Object.values(this.connectionIndex).forEach((serviceCoreSocket) => {
           // Reply To message
-          socket.reply(responseObject);
-          // Close Socket
-          socket.conn.destroy();
+          serviceCoreSocket.reply(responseObject);
+          // Close serviceCoreSocket
+          serviceCoreSocket.conn.destroy();
         });
       });
       // Resolve the promise
@@ -161,12 +182,12 @@ class MicroServer extends ServiceCommon {
           this.interface = createListener(parseInt(process.env.port, 10));
           // Check the status of the gateway
           if (!this.interface) {
-            // Console Log
-            this.log('Unable to start Micro service!', 'log');
+            // Console log
+            this.log('Unable to start micro service!', 'log');
             // Return
-            return reject(Error('Unable to start Micro service!'));
+            return reject(Error('Unable to start micro service!'));
           }
-          // Console Log
+          // Console log
           this.log('Service started successfully!', 'log');
           // Return
           return resolve(true);
@@ -207,18 +228,18 @@ class MicroServer extends ServiceCommon {
   bindService() {
     return new Promise((resolve) => {
       // Socket Communication Request
-      this.interface.on('SERVICE_REQUEST', (socket, data) => {
+      this.interface.on('SERVICE_REQUEST', (serviceCoreSocket, data) => {
         // Confirm Connection
         this.log(`[${this.conId}] Micro service connection request received`);
         // Add To Connection Index
         this.connectionIndex = {
-          [this.conId]: socket
+          [this.conId]: serviceCoreSocket
         };
         // Process Communication Request
         if (data) {
-          this.processRequest(socket, data);
+          this.processRequest(serviceCoreSocket, data);
         } else {
-          this.noDataRecieved(socket, data);
+          this.operations.noDataRecieved(serviceCoreSocket, data);
         }
         // Process Connection
         this.log(`[${this.conId}] Micro service connection request processed!`);
@@ -228,14 +249,14 @@ class MicroServer extends ServiceCommon {
       });
 
       // Socket Communication Request
-      this.interface.on('SERVICE_KILL', (socket) => {
+      this.interface.on('SERVICE_KILL', (serviceCoreSocket) => {
         // Invoke Template(s)
-        const responseObject = new ResponseBodyObject();
+        const responseObject = new ResponseBody();
         // Confirm Connection
         this.log(`[${this.conId}] Micro service connection request received`);
         // Add To Connection Index
         this.connectionIndex = {
-          [this.conId]: socket
+          [this.conId]: serviceCoreSocket
         };
         // Process Connection
         this.log(
@@ -243,20 +264,19 @@ class MicroServer extends ServiceCommon {
         );
         // Return
         this.conId += 1;
+
         // Build Response Object [status - transport]
-        responseObject.status.transport = {
+        responseObject.setTransportStatus({
           code: 2000,
           message: 'Micro service process has exited!'
-        };
+        });
         // Build Response Object [status - transport]
-        responseObject.status.command = {
-          code: 500,
+        responseObject.setCommandStatus({
+          code: 200,
           message: 'Command completed successfully'
-        };
-        // Build Response Object [ResBody - Error Details]
-        responseObject.resultBody.errData = {};
+        });
         // Reply to socket
-        socket.reply(responseObject);
+        serviceCoreSocket.reply(responseObject);
         // Process kill
         return process.exit();
       });
@@ -267,15 +287,21 @@ class MicroServer extends ServiceCommon {
   }
 
   // Process internal request
-  processRequest(socket, requestObj) {
+  processRequest(serviceCoreSocket, command) {
     // Get Parameters
-    const commandData = requestObj.data;
+    const { data } = command;
     // Get Destination
-    const { funcName } = commandData;
+    const { functionName } = data;
+    // Build methods
+    const helperMethods = buildResponseFunctions(
+      serviceCoreSocket,
+      command,
+      this.operationScope
+    );
     // Direct Request To Correct Function
-    return Object.prototype.hasOwnProperty.call(this.operations, funcName)
-      ? this.operations[funcName](socket, commandData)
-      : this.redirectFailed(socket, requestObj);
+    return Object.prototype.hasOwnProperty.call(this.operations, functionName)
+      ? this.operations[functionName](helperMethods)
+      : this.operations.redirectFailed(helperMethods);
   }
 }
 

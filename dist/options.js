@@ -1,229 +1,186 @@
 'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-exports.defaultInstanceOptions = exports.eventList = exports.defaultServiceOptions = exports.buildHttpOptions = exports.buildSecureOptions = exports.hardenServer = void 0;
-
-var _fs = require('fs');
-
-var _path = require('path');
-
-var _helmet = _interopRequireDefault(require('helmet'));
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
+Object.defineProperty(exports, '__esModule', { value: !0 }),
+  (exports.defaultInstanceOptions = exports.eventList = exports.defaultServiceOptions = exports.buildHttpOptions = exports.buildSecureOptions = exports.hardenServer = void 0);
+var _fs = require('fs'),
+  _path = require('path'),
+  _helmet = _interopRequireDefault(require('helmet'));
+function _interopRequireDefault(a) {
+  return a && a.__esModule ? a : { default: a };
 }
-
-function _slicedToArray(arr, i) {
+function _slicedToArray(a, b) {
   return (
-    _arrayWithHoles(arr) ||
-    _iterableToArrayLimit(arr, i) ||
-    _unsupportedIterableToArray(arr, i) ||
+    _arrayWithHoles(a) ||
+    _iterableToArrayLimit(a, b) ||
+    _unsupportedIterableToArray(a, b) ||
     _nonIterableRest()
   );
 }
-
 function _nonIterableRest() {
   throw new TypeError(
     'Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.'
   );
 }
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === 'string') return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === 'Object' && o.constructor) n = o.constructor.name;
-  if (n === 'Map' || n === 'Set') return Array.from(o);
-  if (n === 'Arguments' || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
-    return _arrayLikeToArray(o, minLen);
-}
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
+function _unsupportedIterableToArray(a, b) {
+  if (a) {
+    if ('string' == typeof a) return _arrayLikeToArray(a, b);
+    var c = Object.prototype.toString.call(a).slice(8, -1);
+    return (
+      'Object' === c && a.constructor && (c = a.constructor.name),
+      'Map' === c || 'Set' === c
+        ? Array.from(a)
+        : 'Arguments' === c ||
+          /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(c)
+        ? _arrayLikeToArray(a, b)
+        : void 0
+    );
   }
-  return arr2;
 }
-
-function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === 'undefined' || !(Symbol.iterator in Object(arr)))
-    return;
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-  try {
-    for (
-      var _i = arr[Symbol.iterator](), _s;
-      !(_n = (_s = _i.next()).done);
-      _n = true
-    ) {
-      _arr.push(_s.value);
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
+function _arrayLikeToArray(a, b) {
+  (null == b || b > a.length) && (b = a.length);
+  for (var c = 0, d = Array(b); c < b; c++) d[c] = a[c];
+  return d;
+}
+function _iterableToArrayLimit(a, b) {
+  if ('undefined' != typeof Symbol && Symbol.iterator in Object(a)) {
+    var c = [],
+      d = !0,
+      e = !1,
+      f = void 0;
     try {
-      if (!_n && _i['return'] != null) _i['return']();
+      for (
+        var g, h = a[Symbol.iterator]();
+        !(d = (g = h.next()).done) && (c.push(g.value), !(b && c.length === b));
+        d = !0
+      );
+    } catch (a) {
+      (e = !0), (f = a);
     } finally {
-      if (_d) throw _e;
+      try {
+        d || null == h['return'] || h['return']();
+      } finally {
+        if (e) throw f;
+      }
     }
+    return c;
   }
-  return _arr;
 }
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
+function _arrayWithHoles(a) {
+  if (Array.isArray(a)) return a;
 }
-
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
+function ownKeys(a, b) {
+  var c = Object.keys(a);
   if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly)
-      symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-    keys.push.apply(keys, symbols);
+    var d = Object.getOwnPropertySymbols(a);
+    b &&
+      (d = d.filter(function (b) {
+        return Object.getOwnPropertyDescriptor(a, b).enumerable;
+      })),
+      c.push.apply(c, d);
   }
-  return keys;
+  return c;
 }
-
-function _objectSpread(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(
-          target,
-          key,
-          Object.getOwnPropertyDescriptor(source, key)
-        );
-      });
-    }
-  }
-  return target;
-}
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-
-function _typeof(obj) {
-  '@babel/helpers - typeof';
-  if (typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol') {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj &&
-        typeof Symbol === 'function' &&
-        obj.constructor === Symbol &&
-        obj !== Symbol.prototype
-        ? 'symbol'
-        : typeof obj;
-    };
-  }
-  return _typeof(obj);
-}
-
-var hardenServer = function hardenServer(expressApp) {
-  return expressApp.use((0, _helmet['default'])());
-};
-
-exports.hardenServer = hardenServer;
-
-var buildSecureOptions = function buildSecureOptions(ssl) {
-  try {
-    return _typeof(ssl) === 'object'
-      ? Object.entries(
-          _objectSpread(
-            {
-              key: void 0,
-              cert: void 0,
-              ca: void 0
-            },
-            ssl
-          )
-        )
-          .filter(function (_ref) {
-            var _ref2 = _slicedToArray(_ref, 2),
-              filePath = _ref2[1];
-
-            return filePath;
+function _objectSpread(a) {
+  for (var b, c = 1; c < arguments.length; c++)
+    (b = null == arguments[c] ? {} : arguments[c]),
+      c % 2
+        ? ownKeys(Object(b), !0).forEach(function (c) {
+            _defineProperty(a, c, b[c]);
           })
-          .map(function (_ref3) {
-            var _ref4 = _slicedToArray(_ref3, 2),
-              optionKey = _ref4[0],
-              filePath = _ref4[1];
-
+        : Object.getOwnPropertyDescriptors
+        ? Object.defineProperties(a, Object.getOwnPropertyDescriptors(b))
+        : ownKeys(Object(b)).forEach(function (c) {
+            Object.defineProperty(a, c, Object.getOwnPropertyDescriptor(b, c));
+          });
+  return a;
+}
+function _defineProperty(a, b, c) {
+  return (
+    b in a
+      ? Object.defineProperty(a, b, {
+          value: c,
+          enumerable: !0,
+          configurable: !0,
+          writable: !0
+        })
+      : (a[b] = c),
+    a
+  );
+}
+function _typeof(a) {
+  '@babel/helpers - typeof';
+  return (
+    (_typeof =
+      'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
+        ? function (a) {
+            return typeof a;
+          }
+        : function (a) {
+            return a &&
+              'function' == typeof Symbol &&
+              a.constructor === Symbol &&
+              a !== Symbol.prototype
+              ? 'symbol'
+              : typeof a;
+          }),
+    _typeof(a)
+  );
+}
+var hardenServer = function (a) {
+  return a.use((0, _helmet['default'])());
+};
+exports.hardenServer = hardenServer;
+var buildSecureOptions = function (a) {
+  try {
+    return 'object' === _typeof(a)
+      ? Object.entries(
+          _objectSpread({ key: void 0, cert: void 0, ca: void 0 }, a)
+        )
+          .filter(function (a) {
+            var b = _slicedToArray(a, 2),
+              c = b[1];
+            return c;
+          })
+          .map(function (a) {
+            var b = _slicedToArray(a, 2),
+              c = b[0],
+              d = b[1];
             return _defineProperty(
               {},
-              optionKey,
-              (0, _fs.readFileSync)((0, _path.resolve)(filePath)).toString()
+              c,
+              (0, _fs.readFileSync)((0, _path.resolve)(d)).toString()
             );
           })
-          .reduce(function (acc, x) {
-            return Object.assign(acc, x);
+          .reduce(function (a, b) {
+            return Object.assign(a, b);
           }, {})
-      : ssl;
-  } catch (e) {
-    throw new Error(e);
+      : a;
+  } catch (a) {
+    throw new Error(a);
   }
 };
-
 exports.buildSecureOptions = buildSecureOptions;
-
-var buildHttpOptions = function buildHttpOptions(options) {
+var buildHttpOptions = function (a) {
   return {
-    port: Object.prototype.hasOwnProperty.call(options, 'port')
-      ? options.port
-      : 8888,
-    ssl: buildSecureOptions(options.ssl),
-    harden: Object.prototype.hasOwnProperty.call(options, 'harden')
-      ? options.harden
-      : true,
-    beforeStart: Object.prototype.hasOwnProperty.call(options, 'beforeStart')
-      ? options.beforeStart
-      : function (express) {
-          return express;
+    port: Object.prototype.hasOwnProperty.call(a, 'port') ? a.port : 8888,
+    ssl: buildSecureOptions(a.ssl),
+    harden: !Object.prototype.hasOwnProperty.call(a, 'harden') || a.harden,
+    beforeStart: Object.prototype.hasOwnProperty.call(a, 'beforeStart')
+      ? a.beforeStart
+      : function (a) {
+          return a;
         },
-    middlewares: Object.prototype.hasOwnProperty.call(options, 'middlewares')
-      ? options.middlewares
+    middlewares: Object.prototype.hasOwnProperty.call(a, 'middlewares')
+      ? a.middlewares
       : [],
-    static: Object.prototype.hasOwnProperty.call(options, 'static')
-      ? options['static']
+    static: Object.prototype.hasOwnProperty.call(a, 'static')
+      ? a['static']
       : [],
-    routes: Object.prototype.hasOwnProperty.call(options, 'routes')
-      ? options.routes
-      : []
+    routes: Object.prototype.hasOwnProperty.call(a, 'routes') ? a.routes : []
   };
 };
-
 exports.buildHttpOptions = buildHttpOptions;
 var defaultServiceOptions = {
+  babelConfig: {},
   loadBalancing: 'roundRobin',
   runOnStart: [],
   instances: 1
@@ -233,15 +190,15 @@ var eventList = ['uncaughtException', 'unhandledRejection'];
 exports.eventList = eventList;
 var defaultInstanceOptions = {
   mode: 'server',
-  http: false,
+  http: !1,
   databaseNames: ['_defaultTable'],
-  verbose: true,
+  verbose: !0,
   maxBuffer: 50,
   logPath: void 0,
   restartTimeout: 50,
-  connectionTimeout: 1000,
-  msConnectionTimeout: 10000,
-  msConnectionRetryLimit: 1000,
+  connectionTimeout: 1e3,
+  msConnectionTimeout: 1e4,
+  msConnectionRetryLimit: 1e3,
   apiGatewayPort: 8080,
   portRangeStart: 1024,
   portRangeFinish: 65535,

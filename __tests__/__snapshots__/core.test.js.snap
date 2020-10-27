@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tmp/lib/core getRandomElements() to match snapshot 1`] = `true`;
+
+exports[`tmp/lib/core uniqueArray() to match snapshot 1`] = `
+Array [
+  1,
+  2,
+  3,
+  4,
+  5,
+]
+`;

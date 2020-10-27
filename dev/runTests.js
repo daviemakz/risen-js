@@ -10,18 +10,30 @@ import { run } from 'jest';
 /* eslint-disable-next-line */
 import jestConfigBase from '../../jest.config.js';
 
-process.env.NODE_ENV = 'test';
-
 // Wrapper to run the function programatically
 const executeTests = (jestConfig, args) => {
   // Run the tests for the Risen.JS
   console.log(`Starting full test suite for Risen.JS....`);
 
   // For CLI arguments
+  const processArgs =
+    Object.entries(require('minimist')(process.argv.slice(2)))
+      .map(([cliParam, cliValue]) => {
+        if (cliParam !== '_') {
+          return cliValue ? `--${cliParam}=${cliValue}` : `--${cliParam}`;
+        }
+        return void 0;
+      })
+      .filter((arg) => arg) || [];
+
   const argv = [];
 
+  // Add CLI arguments
+  processArgs.forEach((arg) => {
+    argv.push(arg);
+  });
+
   // Add config argument
-  argv.push('--bail');
   argv.push('--no-coverage');
   argv.push('--config', JSON.stringify(jestConfig));
   argv.push(

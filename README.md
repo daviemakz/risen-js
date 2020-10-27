@@ -3,7 +3,6 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_shield)
 
 [![NPM](https://nodei.co/npm/risen-js.png?compact=true)](https://www.npmjs.com/package/risen-js)
-
 [![Build Status](https://travis-ci.org/daviemakz/risen-js.svg?branch=master)](https://travis-ci.org/daviemakz/risen-js)
 [![Downloads](https://img.shields.io/npm/dm/risen-js.svg)](https://www.npmjs.com/package/risen-js)
 [![dependencies Status](https://david-dm.org/daviemakz/risen-js/status.svg)](https://david-dm.org/daviemakz/risen-js)
@@ -742,7 +741,7 @@ This is the operation which provides access to persistent storage for a running 
 ```
 {
   destination: 'serviceCore',
-  funcName: 'end',
+  funcName: 'storage',
   body: {
     method: 'set' // See a full list by visiting the above link
     table: '_defaultTable', // Make sure you have defined the table in the initial configuration otherwise you will get an error
@@ -815,6 +814,9 @@ Below are the status codes which service core will append to your response objec
 
 ### Command
 
+- 400 - Command executed but an error occurred while processing the request.
+- 401 - Command executed but an error occurred while attempting storage operation.
+- 402 - Command executed but an error occurred while attempting to change instances.
 - 500 - Command not executed, transport failure or no data received.
 - 501 - Command not executed, internal redirection failure.
 - 502 - Command not executed, no data received by service.
@@ -838,41 +840,49 @@ Run the following commands to test the module:
 
 - Add a development mode to the package which allows everything to be tested while developing. [DONE]
 
-- Add methods to response object to allow self setting of data. (Getter & Setters).
+- Add methods to response object to allow self setting of data. [DONE]
 
-- Add cleaner method other than `sendRequest()` modelled around express.
+- Add cleaner method other than `sendRequest()` modelled around express. [DONE]
 
-- Add method to allow chaining of requests between multiple micro services.
+- Add method to allow chaining of requests between multiple micro services. [DONE]
 
-- Reuse HTTP connection from express server.
+- Add cleaner method for sending responses while in the micro service. [DONE]
 
-- Add full spectrum tests to support development environment & replace integration test with this.
-
-- Add pre-made example described in the `README.md`.
+- Reuse HTTP connection from express server. [PARTIALLY DONE]
 
 - Update relevant NPM modules & clean up unused packages. [DONE]
 
 - Single file configuration with on execution bundling into self contained code. [NOT DONE]
 
-- Customisable babel transpilation from configuration.
+- Customisable babel transpilation from configuration. [DONE]
 
-- Allow connection to services via HTTPS.
+- Allow connection to services via HTTPS. [NOT DONE]
 
-- Allow service connections outside of localhost: server:port.
+- Add full spectrum tests to support development environment & replace integration test with this. [DONE]
 
-- Reformat service messages and document schema.
+- Fix the JEST test command. [DONE]
+
+- Allow service connections outside of localhost: server:port. (clarify this, rename variables, already there)
+
+- Optimise and reuse connections between micro services and service core.
+
+- Optimise and reuse connections between express server(s) and service core.
 
 - Implement CLI version of launching script.
 
-- Increase code coverage to 90+.
+- Create GitHub docs website to formalise documentation and a way to update them in the pipeline.
 
-- Add a logo to the project.
+- Reformat service messages and document schema.
 
-- Create GitHub docs website to formalise documentation.
+- Add pre-made example described in the `README.md`.
 
 - Update `README.md` with a more slimmed down version.
 
 - Add 'development section' to `README.md`.
+
+- Add a logo to the project.
+
+- Bump version...icing!
 
 ## Contributing
 

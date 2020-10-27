@@ -1,8 +1,9 @@
-__tests__
-coverage
+ coverage
 dist
 tmp
 yarn.lock
 .DS_Store
 *.pem
 *.crt
+*.csr
+*.key

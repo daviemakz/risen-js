@@ -2,9 +2,6 @@
 
 import 'regenerator-runtime';
 
-// Load Templates
-import ResponseBodyObject from '../template/response';
-
 // Get a unique array
 export function uniqueArray(arrArg) {
   return arrArg.filter((elem, pos, arr) => arr.indexOf(elem) === pos);
@@ -67,7 +64,7 @@ export function stopService(name, instances) {
               'log'
             );
             // Send kill process message
-            this.serviceData[name].socket[index].request(
+            this.serviceData[name].clientSocket[index].request(
               'SERVICE_KILL',
               void 0,
               (res) => {
@@ -75,7 +72,7 @@ export function stopService(name, instances) {
                   `Service core has recieved acknowledgement of kill command from: ${name}/port:${ports[elIndex]}`,
                   'log'
                 );
-                if (res.status.command.code === 500) {
+                if (res.status.command.code === 200) {
                   resolve(true);
                 } else {
                   reject(Error(false));
@@ -93,130 +90,126 @@ export function stopService(name, instances) {
 }
 
 // End the framework, turn it off
-export function end(socket) {
-  // Invoke Template(s)
-  const resObject = new ResponseBodyObject();
-  // Build Response Object [status - transport]
-  resObject.status.transport.responseSource = process.env.name;
-  // Set base options
-  const baseResponse = {
-    error: null,
-    details: {}
-  };
-  // Assign message
-  resObject.resultBody.resData = Object.assign(baseResponse, {
-    status: true,
-    message: 'Shutting down micro service framework.',
-    details: {}
+export function end({ sendSuccess }) {
+  // Set the success
+  sendSuccess({
+    result: {
+      error: null,
+      details: {},
+      isSuccess: true,
+      message: 'Shutting down micro service framework.'
+    }
   });
-  // Respond To Source
-  socket.reply(resObject);
   // Kill process
   return setTimeout(() => process.exit(), 1000);
 }
 
 // Store persistent data
-export function storage(socket, data) {
-  // Invoke Template(s)
-  const resObject = new ResponseBodyObject();
-  // Build Response Object [status - transport]
-  resObject.status.transport.responseSource = process.env.name;
-  // Perform operations
+export function storage({ data, sendError, sendSuccess }) {
+  const { table, method, args } = data.body;
   return setImmediate(() =>
-    this.databaseOperation(
-      data.body.table,
-      data.body.method,
-      data.body.args,
-      (status, result, error) => {
-        // Assign function result
-        if (status) {
-          resObject.resultBody.resData = {
-            status: true,
-            message: 'The operation completed successfully!',
-            result
-          };
-        } else {
-          resObject.resultBody.resData = {
-            status: false,
-            message: 'The operation failed!',
+    this.databaseOperation(table, method, args, (isSuccess, result, error) => {
+      // Assign function result
+      if (isSuccess) {
+        return sendSuccess({
+          result: {
+            isSuccess,
             result,
-            error
-          };
-          resObject.resultBody.errData = error;
-        }
-        // Return
-        return socket.reply(resObject);
+            message: 'The operation completed successfully!'
+          }
+        });
       }
-    )
+      return sendError({
+        result: {
+          isSuccess,
+          result,
+          error,
+          message: 'The operation failed!'
+        },
+        code: 401,
+        message:
+          'Command executed but an error occurred while attempting storage operation.'
+      });
+    })
   );
 }
 
 // Change the number of running instances
-export async function changeInstances(socket, data) {
-  // Invoke Template(s)
-  const resObject = new ResponseBodyObject();
-  // Base response
+export async function changeInstances({ data, sendError, sendSuccess }) {
+  const { name, instances } = data.body;
   const baseResponse = {
     error: null,
     details: {}
   };
-  // Build Response Object [status - transport]
-  resObject.status.transport.responseSource = process.env.name;
+
   // Check if the service has already been defined
-  if (!Object.keys(this.serviceInfo).includes(data.body.name)) {
-    // Build Response Object [ResBody - command Details]
-    resObject.resultBody.errData = Object.assign(baseResponse, {
-      status: false,
-      message: `Service "${data.body.name}" was not found!`
+  if (!Object.keys(this.serviceInfo).includes(name)) {
+    sendError({
+      result: Object.assign(baseResponse, {
+        isSuccess: false,
+        message: `Service "${name}" was not found!`
+      })
     });
-  } else if (
-    typeof data.body.instances !== 'number' ||
-    data.body.instances === 0
-  ) {
-    resObject.resultBody.errData = Object.assign(baseResponse, {
-      status: false,
-      message: '"instance" property must be a number which is not 0!'
+  } else if (typeof instances !== 'number' || instances === 0) {
+    sendError({
+      result: Object.assign(baseResponse, {
+        isSuccess: false,
+        message: '"instance" property must be a number which is not 0!'
+      })
     });
   } else {
     // Base response object
-    const previousPorts = [].concat(...this.serviceData[data.body.name].port);
+    const previousPorts = [].concat(...this.serviceData[name].port);
+
     // Get result
     const result =
-      data.body.instances > 0
+      instances > 0
         ? await startService.call(
             this,
-            { [data.body.name]: this.serviceInfo[data.body.name] },
-            data.body.instances
+            { [name]: this.serviceInfo[name] },
+            instances
           )
-        : await stopService.call(this, data.body.name, data.body.instances);
+        : await stopService.call(this, name, instances);
+
     // Get next ports
-    const nextPorts = this.serviceData[data.body.name].port;
+    const nextPorts = this.serviceData[name].port;
+
     // Assign response object
     if (typeof result === 'undefined') {
-      resObject.resultBody.resData = Object.assign(baseResponse, {
-        status: true,
-        message: 'Services were modified successfully!',
-        details: {
-          name: data.body.name,
-          previousPorts,
-          nextPorts
-        }
+      sendSuccess({
+        result: Object.assign(baseResponse, {
+          isSuccess: true,
+          message: 'Services were modified successfully!',
+          details: {
+            instances: nextPorts.length,
+            name,
+            previousPorts,
+            nextPorts
+          }
+        })
       });
     } else {
-      resObject.resultBody.errData = Object.assign(baseResponse, {
-        status: false,
-        message: 'Services modification failed!',
-        details: {
-          name: data.body.name,
-          previousPorts,
-          nextPorts
-        }
+      sendError({
+        result: Object.assign(baseResponse, {
+          isSuccess: false,
+          message: 'Services modification failed!',
+          details: {
+            instances: nextPorts.length,
+            name,
+            previousPorts,
+            nextPorts
+          }
+        }),
+        code: 402,
+        message:
+          'Command executed but an error occurred while attempting to change instances'
       });
     }
   }
-  // Respond To Source
-  return socket.reply(resObject);
 }
+
+// Export request functions
+export * from './request';
 
 // Export functions to be consumed
 export default {

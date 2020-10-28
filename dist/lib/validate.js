@@ -1,4 +1,5 @@
 'use strict';
+var _validator = require('validator');
 Object.defineProperty(exports, '__esModule', { value: !0 }),
   (exports.validateServiceOptions = exports.validateOptions = exports.validateCoreOperations = exports.validateHttpOptions = exports.validateRouteOptions = void 0);
 function _slicedToArray(a, b) {
@@ -204,10 +205,17 @@ var validateOptions = function (a) {
       throw new Error(
         'The "msConnectionRetryLimit" option is not valid, it must be a number'
       );
-    case Object.prototype.hasOwnProperty.call(a, 'apiGatewayPort') &&
-      'number' != typeof a.apiGatewayPort:
+    case Object.prototype.hasOwnProperty.call(a, 'address') &&
+      'number' != typeof a.address &&
+      !(0, _validator.isURL)(a.address, {
+        protocols: ['http', 'https'],
+        require_tld: !1,
+        require_protocol: !1,
+        require_host: !1,
+        require_valid_protocol: !0
+      }):
       throw new Error(
-        'The "apiGatewayPort" option is not valid, it must be a number'
+        'The "address" option is not valid, it must be a valid network address'
       );
     case Object.prototype.hasOwnProperty.call(a, 'portRangeStart') &&
       'number' != typeof a.portRangeStart:

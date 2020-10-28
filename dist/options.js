@@ -199,7 +199,7 @@ var defaultInstanceOptions = {
   connectionTimeout: 1e3,
   msConnectionTimeout: 1e4,
   msConnectionRetryLimit: 1e3,
-  apiGatewayPort: 8080,
+  address: 8080,
   portRangeStart: 1024,
   portRangeFinish: 65535,
   coreOperations: {},

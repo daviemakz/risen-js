@@ -296,12 +296,12 @@ export class Risen extends ServiceCore {
 
     // Return
     return new Promise((resolve, reject) =>
-      isPortFree(this.settings.apiGatewayPort)
+      isPortFree(this.settings.address)
         .then(() => {
           this.log('Starting service core...', 'log', true);
           // Initialise interface, invoke port listener
           this.externalInterfaces.apiGateway = createListener(
-            this.settings.apiGatewayPort
+            this.settings.address
           );
           // Check the status of the gateway
           if (!this.externalInterfaces.apiGateway) {

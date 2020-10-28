@@ -25,7 +25,7 @@ export function sendRequest(
   data,
   destination,
   keepAlive = false,
-  options = { port: this.settings.apiGatewayPort, connectionId: this.conId },
+  options = { address: this.settings.address, connectionId: this.conId },
   socket = void 0,
   callback = () => void 0
 ) {
@@ -33,7 +33,7 @@ export function sendRequest(
   let connectionAttempts = 0;
 
   // Invoke Network Interface
-  const portEmitter = socket || createSpeaker(options.port);
+  const portEmitter = socket || createSpeaker(options.address);
 
   // Build message Body
   const resBody = {
@@ -210,7 +210,7 @@ export function requestChain(commandList, callback) {
         destination,
         functionName,
         body,
-        serviceCorePort,
+        address,
         generateBody,
         generateCommand
       },
@@ -235,7 +235,7 @@ export function requestChain(commandList, callback) {
                 destination,
                 functionName,
                 body: resolvedBody,
-                serviceCorePort
+                address
               };
 
         // Send message to the micro server
@@ -296,7 +296,7 @@ export function request(
     body = null,
     destination = void 0,
     functionName = '',
-    serviceCorePort = void 0,
+    address = void 0,
     keepAlive = false,
     socket = void 0
   },
@@ -319,7 +319,7 @@ export function request(
         command,
         destination,
         keepAlive,
-        serviceCorePort ? { port: serviceCorePort, connectionId } : void 0,
+        address ? { address, connectionId } : void 0,
         socket,
         (response, resBody, currentSocket) => {
           // Add missing functions methods since we cannot serialise them

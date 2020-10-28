@@ -640,12 +640,12 @@ var Risen = (function (a) {
               !0
             ),
             new Promise(function (b, c) {
-              return (0, _isPortFree['default'])(a.settings.apiGatewayPort)
+              return (0, _isPortFree['default'])(a.settings.address)
                 .then(function () {
                   return (
                     a.log('Starting service core...', 'log', !0),
                     (a.externalInterfaces.apiGateway = (0, _net.createListener)(
-                      a.settings.apiGatewayPort
+                      a.settings.address
                     )),
                     a.externalInterfaces.apiGateway
                       ? a.log('Service core started!', 'log', !0) || b(!0)

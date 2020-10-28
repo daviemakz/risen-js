@@ -273,12 +273,12 @@ describe('tmp/lib/validate', () => {
         )
       );
     });
-    test('throw new error: apiGatewayPort is incorrect', () => {
+    test('throw new error: address is incorrect', () => {
       expect(() => {
-        validateOptions(getOptions([], { apiGatewayPort: 'modeNotValid' }));
+        validateOptions(getOptions([], { address: 'localhost:8080:5786' }));
       }).toThrow(
         new Error(
-          'The "apiGatewayPort" option is not valid, it must be a number'
+          'The "address" option is not valid, it must be a valid network address'
         )
       );
     });

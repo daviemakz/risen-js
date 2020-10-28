@@ -46,12 +46,10 @@
     "postversion": "git push",
     "prettier:fix": "yarn prettier --write \"**/*.{js,jsx,ts,tsx,html}\"",
     "start:process": "cross-env NODE_ENV=development VERBOSE=true webpack --mode development --watch",
-    "start:process:test": "cross-env NODE_ENV=test node ./tmp/dev/index.js",
+    "start:process:test": "cross-env NODE_ENV=test webpack --mode development && node ./tmp/dev/index.js",
     "test": "(yarn build:src) && (yarn build:dev) && (yarn start:process:test)",
     "test:ci": "(yarn build:src) && (yarn build:dev) && (yarn start:process:test --runInBand) && (yarn lint:check)",
-    "test:noCov": "(yarn build:src) && (yarn build:dev) && (yarn start:process:test  --no-coverage --verbose)",
     "test:update": "(yarn build:src) && (yarn build:dev) && (yarn start:process:test -u)",
-    "test:watch": "(yarn build:src) && (yarn build:dev) && (yarn start:process:test  --watch)",
     "watch": "(yarn watch:src) & (yarn watch:dev)",
     "watch:dev": "(yarn build:dev --watch)",
     "watch:src": "(yarn build:src --watch)"
@@ -167,6 +165,7 @@
     "quick.db": "^7.0.0-b21",
     "regenerator-runtime": "^0.13.7",
     "sleep-async": "^1.0.5",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "validator": "^13.1.17"
   }
 }

@@ -107,14 +107,14 @@ function sendRequest(a, b) {
     e =
       3 < arguments.length && arguments[3] !== void 0
         ? arguments[3]
-        : { port: this.settings.apiGatewayPort, connectionId: this.conId },
+        : { address: this.settings.address, connectionId: this.conId },
     f = 4 < arguments.length && arguments[4] !== void 0 ? arguments[4] : void 0,
     g =
       5 < arguments.length && arguments[5] !== void 0
         ? arguments[5]
         : function () {},
     h = 0,
-    i = f || (0, _net.createSpeaker)(e.port),
+    i = f || (0, _net.createSpeaker)(e.address),
     j = { data: a, destination: b, callback: g, keepAlive: d },
     k = function () {
       if (0 === Object.values(i.sockets).length) {
@@ -261,7 +261,7 @@ function requestChain(a, b) {
       var g = a.destination,
         h = a.functionName,
         i = a.body,
-        j = a.serviceCorePort,
+        j = a.address,
         k = a.generateBody,
         l = a.generateCommand;
       return function () {
@@ -271,12 +271,7 @@ function requestChain(a, b) {
             p =
               'function' == typeof l
                 ? l(i, d)
-                : {
-                    destination: g,
-                    functionName: h,
-                    body: o,
-                    serviceCorePort: j
-                  };
+                : { destination: g, functionName: h, body: o, address: j };
           try {
             c.request(
               Object.assign(
@@ -327,7 +322,7 @@ function request(a, b) {
     g = void 0 === f ? void 0 : f,
     h = a.functionName,
     i = void 0 === h ? '' : h,
-    j = a.serviceCorePort,
+    j = a.address,
     k = void 0 === j ? void 0 : j,
     l = a.keepAlive,
     m = a.socket,
@@ -341,7 +336,7 @@ function request(a, b) {
         f,
         g,
         void 0 !== l && l,
-        k ? { port: k, connectionId: h } : void 0,
+        k ? { address: k, connectionId: h } : void 0,
         n,
         function (c, d, e) {
           var f = Object.assign(new _response['default'](), c);

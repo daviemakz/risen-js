@@ -1,5 +1,7 @@
 'use strict';
 
+import { isURL } from 'validator';
+
 export const validateRouteOptions = (route) => {
   switch (true) {
     case !['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(
@@ -143,10 +145,17 @@ export const validateOptions = (options) => {
         'The "msConnectionRetryLimit" option is not valid, it must be a number'
       );
     }
-    case Object.prototype.hasOwnProperty.call(options, 'apiGatewayPort') &&
-      typeof options.apiGatewayPort !== 'number': {
+    case Object.prototype.hasOwnProperty.call(options, 'address') &&
+      typeof options.address !== 'number' &&
+      !isURL(options.address, {
+        protocols: ['http', 'https'],
+        require_tld: false,
+        require_protocol: false,
+        require_host: false,
+        require_valid_protocol: true
+      }): {
       throw new Error(
-        'The "apiGatewayPort" option is not valid, it must be a number'
+        'The "address" option is not valid, it must be a valid network address'
       );
     }
     case Object.prototype.hasOwnProperty.call(options, 'portRangeStart') &&

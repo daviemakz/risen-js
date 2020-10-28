@@ -5,10 +5,25 @@
 
 // Import NPM modules
 import { run } from 'jest';
+import { Risen } from '..';
 
 // Import system components
 /* eslint-disable-next-line */
 import jestConfigBase from '../../jest.config.js';
+
+const endTests = () => {
+  return new Risen({
+    mode: 'client',
+    verbose: false
+  }).request(
+    {
+      body: null,
+      destination: 'serviceCore',
+      functionName: 'end'
+    },
+    () => void 0
+  );
+};
 
 // Wrapper to run the function programatically
 const executeTests = (jestConfig, args) => {
@@ -53,12 +68,14 @@ const executeTests = (jestConfig, args) => {
       console.log(
         `Completed test suite for Risen.JS, check JEST for test results!`
       );
+      return endTests();
     },
     (err) => {
       console.error(
         `Failed test suite for Risen.JS. An unexpected error has occurred!`
       );
       console.error(err);
+      return endTests();
     }
   );
 };

@@ -271,7 +271,7 @@ var validateServiceOptions = function (a) {
         'The service options "instances" option is not valid, it must be an number above 1'
       );
     case Object.prototype.hasOwnProperty.call(a, 'babelConfig') &&
-      'object' !== _typeof(a.babelConfig):
+      ('object' !== _typeof(a.babelConfig) || null === a.babelConfig):
       throw new Error(
         'The service options "babelConfig" option is not valid, it must be an object containing babel configuration'
       );

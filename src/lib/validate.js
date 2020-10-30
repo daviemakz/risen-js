@@ -217,7 +217,8 @@ export const validateServiceOptions = (serviceOption) => {
       );
     }
     case Object.prototype.hasOwnProperty.call(serviceOption, 'babelConfig') &&
-      typeof serviceOption.babelConfig !== 'object': {
+      (typeof serviceOption.babelConfig !== 'object' ||
+        serviceOption.babelConfig === null): {
       throw new Error(
         'The service options "babelConfig" option is not valid, it must be an object containing babel configuration'
       );

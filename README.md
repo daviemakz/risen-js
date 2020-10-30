@@ -862,7 +862,7 @@ Run the following commands to test the module:
 
 - Fix the JEST test command. [DONE]
 
-- Allow service connections outside of localhost: server:port. (clarify this, rename variables, already there)
+- Allow service connections outside of localhost: server:port. (clarify this, rename variables, already there) [DONE]
 
 - Optimise and reuse connections between micro services and service core.
 

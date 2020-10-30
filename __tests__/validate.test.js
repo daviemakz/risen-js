@@ -362,5 +362,14 @@ describe('tmp/lib/validate', () => {
         )
       );
     });
+    test('throw new error: instances is incorrect', () => {
+      expect(() => {
+        validateServiceOptions(getOptions([], { babelConfig: null }));
+      }).toThrow(
+        new Error(
+          'The service options "babelConfig" option is not valid, it must be an object containing babel configuration'
+        )
+      );
+    });
   });
 });

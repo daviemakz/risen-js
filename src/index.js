@@ -12,14 +12,13 @@ import express from 'express';
 import { existsSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { resolve } from 'path';
-
 import { shuffle } from 'lodash';
 
 // Load package.json
 import { version } from '../package.json';
 
 // Load network components
-import { createListener } from './lib/net';
+import { createListener, createSpeakerReconnector } from './lib/net';
 
 // Load core operations
 import serviceCoreOperations from './lib/core';
@@ -178,6 +177,7 @@ export class Risen extends ServiceCore {
                 callback();
                 return void 0;
               } catch (e) {
+                this.log(e, 'error');
                 this.log(
                   `A fatal error has occurred when starting the framework. Process cannot continue, exiting...`,
                   'error'
@@ -251,8 +251,17 @@ export class Risen extends ServiceCore {
     }
 
     // Resolve the absolute file path and build service data object
-    const resolvedPath = `${resolve(servicePath)}.js`;
-    const serviceData = { operations: require(resolvedPath), resolvedPath };
+    const resolvedPath = `${resolve(servicePath)}`;
+    let serviceData;
+
+    // Load the file and transpile if its needed
+    (() => {
+      delete require.cache[require.resolve('./loader')];
+      serviceData = {
+        operations: require('./loader')(resolvedPath, options),
+        resolvedPath
+      };
+    })();
 
     // Check that the server doesnt already exist
     switch (true) {
@@ -293,7 +302,6 @@ export class Risen extends ServiceCore {
   initGateway() {
     // Initial message
     this.log(`Risen.JS Micro Service Framework: ${version}`, 'log', true);
-
     // Return
     return new Promise((resolve, reject) =>
       isPortFree(this.settings.address)
@@ -403,123 +411,122 @@ export class Risen extends ServiceCore {
     // Return promise
     return Array.isArray(this.settings.http)
       ? Promise.all(
-          this.settings.http.map(
-            (httpSettings) =>
-              new Promise((resolve, reject) => {
-                try {
-                  // Check if the HTTP server should be started or not
-                  if (httpSettings) {
-                    // Build express instance
-                    const expressApp = express();
-                    // Allow access to the express instance
-                    httpSettings.beforeStart(expressApp);
-                    // Assign static path resources if defined
-                    httpSettings.static.forEach((path) => {
-                      expressApp.use(express.static(path));
-                    });
-                    // Harden http server if hardening is defined
-                    if (httpSettings.harden) {
-                      hardenServer(expressApp);
-                    }
-                    // Apply middlewares to express
-                    httpSettings.middlewares.forEach((middleware) =>
-                      expressApp.use(middleware)
-                    );
-                    // Assign routes
-                    httpSettings.routes
-                      .filter((route) => {
-                        if (
-                          ['put', 'post', 'get', 'delete', 'patch'].includes(
-                            route.method.toLowerCase()
-                          )
-                        ) {
-                          return true;
-                        }
-                        this.log(
-                          `This route has an unknown method, skipping: ${JSON.stringify(
-                            route,
-                            null,
-                            2
-                          )}`,
-                          'warn'
-                        );
-                        return false;
-                      })
-                      .forEach((route) =>
-                        expressApp[route.method.toLowerCase()](
-                          route.uri,
-                          ...(route.preMiddleware || []),
-                          (req, res, next) => {
-                            // Scope request
-                            const resultSend = res.send;
-                            const requestId = uuidv4();
-                            // Error handling functions and request identification
-                            const handleException = ((res, requestIdScoped) => (
-                              err
-                            ) => {
-                              if (requestIdScoped === requestId) {
-                                // Remove error listerners
-                                eventList.forEach((event) =>
-                                  process.removeListener(event, handleException)
-                                );
-                                // Send to next pre middleware
-                                next(err);
-                              }
-                            })(res, requestId);
-                            // Add process listeners
-                            eventList.forEach((event) =>
-                              process.on(event, handleException)
-                            );
-                            // Set timeout
-                            setImmediate(() => {
-                              // Modify send to remove error handler for this request once its done
-                              res.send = (...args) => {
-                                // Remove error listerners
-                                eventList.forEach((event) =>
-                                  process.removeListener(event, handleException)
-                                );
-                                // If an empty response assume process has crashed
-                                // If you truly want nothing returned use null instead
-                                if (typeof args[0] === 'undefined') {
-                                  res.status(500);
-                                }
-                                // Send request to actual send instance
-                                resultSend.call(res, ...args);
-                              };
-                              // Perform action
-                              try {
-                                return route.handler(req, res, next, {
-                                  request: this.request,
-                                  requestChain: this.requestChain,
-                                  getCommandBody: () => new CommandBody(),
-                                  getResponseObject: () => new ResponseBody()
-                                });
-                              } catch (e) {
-                                return next(e);
-                              }
-                            });
-                          },
-                          ...(route.postMiddleware || [])
+          this.settings.http.map((httpSettings) => {
+            // This will be reused by the express server for sending data to the service core
+            const socket = createSpeakerReconnector(this.settings.address);
+            return new Promise((resolve, reject) => {
+              try {
+                // Check if the HTTP server should be started or not
+                if (httpSettings) {
+                  // Build express instance
+                  const expressApp = express();
+                  // Allow access to the express instance
+                  httpSettings.beforeStart(expressApp);
+                  // Assign static path resources if defined
+                  httpSettings.static.forEach((path) => {
+                    expressApp.use(express.static(path));
+                  });
+                  // Harden http server if hardening is defined
+                  if (httpSettings.harden) {
+                    hardenServer(expressApp);
+                  }
+                  // Apply middlewares to express
+                  httpSettings.middlewares.forEach((middleware) =>
+                    expressApp.use(middleware)
+                  );
+                  // Assign routes
+                  httpSettings.routes
+                    .filter((route) => {
+                      if (
+                        ['put', 'post', 'get', 'delete', 'patch'].includes(
+                          route.method.toLowerCase()
                         )
+                      ) {
+                        return true;
+                      }
+                      this.log(
+                        `This route has an unknown method, skipping: ${JSON.stringify(
+                          route,
+                          null,
+                          2
+                        )}`,
+                        'warn'
                       );
-                    this.log('Starting HTTP server(s)...', 'log');
-                    // Start HTTP(s) server
-                    if (typeof httpSettings.ssl === 'object') {
-                      return (
-                        this.httpsServer.push(
-                          https
-                            .createServer(httpSettings.ssl, expressApp)
-                            .listen(
-                              httpSettings.port,
-                              httpSettings.host || '0.0.0.0'
-                            )
-                        ) && resolve()
-                      );
-                    }
+                      return false;
+                    })
+                    .forEach((route) =>
+                      expressApp[route.method.toLowerCase()](
+                        route.uri,
+                        ...(route.preMiddleware || []),
+                        (req, res, next) => {
+                          // Scope request
+                          const resultSend = res.send;
+                          const requestId = uuidv4();
+                          // Error handling functions and request identification
+                          const handleException = ((res, requestIdScoped) => (
+                            err
+                          ) => {
+                            if (requestIdScoped === requestId) {
+                              // Remove error listerners
+                              eventList.forEach((event) =>
+                                process.removeListener(event, handleException)
+                              );
+                              // Send to next pre middleware
+                              next(err);
+                            }
+                          })(res, requestId);
+                          // Add process listeners
+                          eventList.forEach((event) =>
+                            process.on(event, handleException)
+                          );
+                          // Set timeout
+                          setImmediate(() => {
+                            // Modify send to remove error handler for this request once its done
+                            res.send = (...args) => {
+                              // Remove error listerners
+                              eventList.forEach((event) =>
+                                process.removeListener(event, handleException)
+                              );
+                              // If an empty response assume process has crashed
+                              // If you truly want nothing returned use null instead
+                              if (typeof args[0] === 'undefined') {
+                                res.status(500);
+                              }
+                              // Send request to actual send instance
+                              resultSend.call(res, ...args);
+                            };
+                            // Perform action
+                            try {
+                              return route.handler(req, res, next, {
+                                request: (command, callback) =>
+                                  this.request(
+                                    Object.assign(command, { socket }),
+                                    callback
+                                  ),
+                                requestChain: (commandList, callback) =>
+                                  this.requestChain(
+                                    commandList,
+                                    callback,
+                                    socket
+                                  ),
+                                getCommandBody: () => new CommandBody(),
+                                getResponseObject: () => new ResponseBody()
+                              });
+                            } catch (e) {
+                              return next(e);
+                            }
+                          });
+                        },
+                        ...(route.postMiddleware || [])
+                      )
+                    );
+                  this.log('Starting HTTP server(s)...', 'log');
+                  // Start HTTP(s) server
+                  if (typeof httpSettings.ssl === 'object') {
                     return (
-                      this.httpServer.push(
-                        http
-                          .createServer(expressApp)
+                      this.httpsServer.push(
+                        https
+                          .createServer(httpSettings.ssl, expressApp)
                           .listen(
                             httpSettings.port,
                             httpSettings.host || '0.0.0.0'
@@ -527,12 +534,23 @@ export class Risen extends ServiceCore {
                       ) && resolve()
                     );
                   }
-                  return resolve();
-                } catch (e) {
-                  return reject(Error(e));
+                  return (
+                    this.httpServer.push(
+                      http
+                        .createServer(expressApp)
+                        .listen(
+                          httpSettings.port,
+                          httpSettings.host || '0.0.0.0'
+                        )
+                    ) && resolve()
+                  );
                 }
-              })
-          )
+                return resolve();
+              } catch (e) {
+                return reject(Error(e));
+              }
+            });
+          })
         )
       : new Promise((resolve) => {
           this.log('No HTTP(s) servers defined. Starting services only...');

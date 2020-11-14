@@ -1,12 +1,10 @@
 # Risen.JS - Simple, Fast & Scalable Micro Services Framework
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_shield)
-
 [![NPM](https://nodei.co/npm/risen-js.png?compact=true)](https://www.npmjs.com/package/risen-js)
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_shield)
 [![Build Status](https://travis-ci.org/daviemakz/risen-js.svg?branch=master)](https://travis-ci.org/daviemakz/risen-js)
 [![Downloads](https://img.shields.io/npm/dm/risen-js.svg)](https://www.npmjs.com/package/risen-js)
-[![dependencies Status](https://david-dm.org/daviemakz/risen-js/status.svg)](https://david-dm.org/daviemakz/risen-js)
-[![devDependencies Status](https://david-dm.org/daviemakz/risen-js/dev-status.svg)](https://david-dm.org/daviemakz/risen-js?type=dev)
 
 Risen.JS is a framework for building efficient, scalable non-blocking Node.JS server-side applications. It uses ES6+ JavaScript and combines elements of OOP (Object Oriented Programming) and FP (Functional Programming).
 
@@ -16,7 +14,7 @@ Risen.JS provides a level of abstraction above these frameworks, but also expose
 
 Because the "services" you will create run as Node.JS processes, this means you can build micro services utilising the tens of thousands of NPM packages which currently exist and are added every day. Simply put anything you can do in Node.JS, you can build a micro service to do for you.
 
-From inserting and retrieving data from a separate external database (e.g. Redis) to a service which converts images. It’s even possible to use this framework alongside [server-side rendering](https://reactjs.org/docs/react-dom-server.html) in , the possibilities are endless!
+From inserting and retrieving data from a separate external database (e.g. Redis) to a service which converts images. It’s even possible to use this framework alongside [server-side rendering](https://reactjs.org/docs/react-dom-server.html) in, the possibilities are endless!
 
 Click [here](https://medium.com/@daviemakz/a-simple-way-to-deploy-react-multi-threaded-server-side-rendering-with-risen-js-eba4db97407) to read a Medium article on Risen.JS!
 
@@ -82,13 +80,13 @@ yarn add @babel/register @babel/core@^7.0.0-0 @babel/preset-react @babel/preset-
 
 _NOTE: We are using babel to transpile JSX on the micro service as we are using SSR (server-side-rendering) in this example. You wont need it in most cases._
 
-3. Create the file which will contain the functions which your micro service will have:
+4. Create the file which will contain the functions which your micro service will have:
 
 ```
 touch calculator.js
 ```
 
-4. Paste the following into this file.
+5. Paste the following into this file.
 
 ```
 'use strict';
@@ -100,13 +98,13 @@ require('@babel/register')({
 module.exports = require('./App');
 ```
 
-5. Create the file which will contain the server configuration you are going to execute:
+6. Create the file which will contain the server configuration you are going to execute:
 
 ```
 touch server.js
 ```
 
-6. Paste the following code into the file you've just created:
+7. Paste the following code into the file you've just created:
 
 ```
 'use strict';
@@ -175,13 +173,13 @@ RisenInstance.defineService('primeCalculator', primeNumberServiceOperations, {
 RisenInstance.startServer();
 ```
 
-7. Create the file which will contain the server you are going to execute:
+8. Create the file which will contain the server you are going to execute:
 
 ```
 touch App.jsx
 ```
 
-8. Paste the following code into the file you've just created. This is to make the React.JS server side rendering work and demonstrate the true capabilities of the package:
+9. Paste the following code into the file you've just created. This is to make the React.JS server side rendering work and demonstrate the true capabilities of the package:
 
 ```
 'use strict';
@@ -864,11 +862,13 @@ Run the following commands to test the module:
 
 - Allow service connections outside of localhost: server:port. (clarify this, rename variables, already there) [DONE]
 
-- Optimise and reuse connections between micro services and service core.
+- Optimise and reuse connections between micro services and service core. [DONE]
 
-- Optimise and reuse connections between express server(s) and service core.
+- Optimise and reuse connections between express server(s) and service core. [DONE]
 
-- Implement CLI version of launching script.
+- Implement CLI version of launching script. [FUTURE RELEASE]
+
+- Add test for a transpiled service to test babelConfig
 
 - Create GitHub docs website to formalise documentation and a way to update them in the pipeline.
 

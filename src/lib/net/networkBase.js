@@ -2,32 +2,42 @@
 
 /* eslint-disable */
 
-// Declare variables
 let networkBase;
 
-// Messenger base
+export const getHostByAddress = (address) => {
+  if (typeof address === 'number') {
+    return null;
+  }
+  if (typeof address === 'string') {
+    return address.split(':')[0];
+  }
+  return void 0;
+};
+
+export const getPortByAddress = (address) => {
+  if (typeof address === 'number') {
+    return address;
+  }
+  if (typeof address === 'string') {
+    return address.split(':')[1];
+  }
+  return void 0;
+};
+
+export const getAddressFormatted = (host, port) => {
+  if (host !== null) {
+    return `${host}:${port}`;
+  } else {
+    return `localhost:${port}`;
+  }
+};
+
 networkBase = (function () {
   function networkBase() {
     this.savedBuffer = '';
   }
-  networkBase.prototype.getHostByAddress = (address) => {
-    if (typeof address === 'number') {
-      return null;
-    }
-    if (typeof address === 'string') {
-      return address.split(':')[0];
-    }
-    return void 0;
-  };
-  networkBase.prototype.getPortByAddress = (address) => {
-    if (typeof address === 'number') {
-      return address;
-    }
-    if (typeof address === 'string') {
-      return address.split(':')[1];
-    }
-    return void 0;
-  };
+  networkBase.prototype.getHostByAddress = getHostByAddress;
+  networkBase.prototype.getPortByAddress = getPortByAddress;
   networkBase.prototype.prepareJsonToSend = (json) =>
     `${JSON.stringify(json)}\0`;
 
@@ -44,5 +54,4 @@ networkBase = (function () {
   return networkBase;
 })();
 
-// EXPORTS
 export default networkBase;

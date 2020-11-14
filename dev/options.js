@@ -64,5 +64,5 @@ export const frameworkOptions = {
   http: [httpOptions1, httpOptions2],
   runOnStart: ['saveNumber'],
   verbose: verboseMode,
-  LOG_PATH
+  logPath: LOG_PATH
 };

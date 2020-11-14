@@ -8,7 +8,7 @@ import isPortFree from 'is-port-free';
 import isRunning from 'is-running';
 
 // Load network components
-import { createListener } from '../net';
+import { createListener, createSpeakerReconnector } from '../net';
 
 // Loading libraries
 import ServiceCommon from '../common';
@@ -19,7 +19,8 @@ import ResponseBody from '../template/response';
 // Load base methods
 import { echoData, redirectFailed, noDataRecieved } from './baseMethods';
 import { requestOperations } from '../core/request';
-import { buildResponseFunctions } from '../util';
+import { parseAddress } from '../util';
+import { eventList } from '../../options';
 
 // Standard functions
 const standardFunctions = [
@@ -44,7 +45,8 @@ class MicroServer extends ServiceCommon {
     // Connection tracking number
     this.conId = 0;
     // Set interface object
-    this.interface = void 0;
+    this.listnerInterface = void 0;
+    this.speakerInterface = void 0;
     this.connectionIndex = {};
     // Save operations object
     this.operations = {};
@@ -65,7 +67,8 @@ class MicroServer extends ServiceCommon {
       'assignFunctions',
       'processRequest',
       'bindService',
-      'initServer'
+      'initListener',
+      'initSpeaker'
     ].forEach((func) => {
       this[func] = this[func].bind(this);
     });
@@ -79,7 +82,8 @@ class MicroServer extends ServiceCommon {
         await this.assignRequestFunctions();
         await this.assignFunctions();
         await this.assignProcessListeners();
-        await this.initServer();
+        await this.initListener();
+        await this.initSpeaker();
         await this.bindService();
         await this.executeInitialFunctions('operations');
         return void 0;
@@ -97,6 +101,9 @@ class MicroServer extends ServiceCommon {
       operations: this.operations,
       localStorage: {}
     };
+
+    // Parse the addres
+    this.microServerAddress = parseAddress(process.env.port);
 
     // Return the instance
     return this;
@@ -121,7 +128,14 @@ class MicroServer extends ServiceCommon {
     return new Promise((resolve) => {
       // Assigned operations to service
       Object.entries(require(process.env.operations)).forEach(([name, op]) => {
-        this.operations[name] = op.bind(this.operationScope);
+        // Support loading ESM transpiled modules
+        if (name === 'default' && typeof op === 'object') {
+          Object.entries(op).forEach(([nameEsm, opEsm]) => {
+            this.operations[nameEsm] = opEsm.bind(this.operationScope);
+          });
+        } else {
+          this.operations[name] = op.bind(this.operationScope);
+        }
       });
       // Assign standard functions
       standardFunctions.forEach(({ name, func }) => {
@@ -134,101 +148,139 @@ class MicroServer extends ServiceCommon {
 
   // Assign process listners
   assignProcessListeners() {
-    return new Promise((resolve) => {
-      // onExit
-      process.on('exit', (code) => {
-        // Invoke Template(s)
-        const responseObject = new ResponseBody();
-        // Build Response Object [status - transport]
-        responseObject.setTransportStatus({
-          code: 5006,
-          message: `Micro service process exited unexpectedly. CODE: ${code}`
-        });
-        // Build Response Object [status - transport]
-        responseObject.setCommandStatus({
-          code: 500,
-          message: 'Command not executed, transport failure'
-        });
-        // Build Response Object [ResBody - Error Details]
-        responseObject.setErrData({
-          entity: 'Unknown error',
-          action: `Micro service process exited unexpectedly. CODE: ${code}`,
-          originalData: null
-        });
-        // Close Each Instance Of Connection
-        Object.values(this.connectionIndex).forEach((serviceCoreSocket) => {
-          // Reply To message
-          serviceCoreSocket.reply(responseObject);
-          // Close serviceCoreSocket
-          serviceCoreSocket.conn.destroy();
-        });
+    const handleError = (code) => {
+      // Invoke Template(s)
+      const responseObject = new ResponseBody();
+      // Set the response source
+      responseObject.setResponseSource();
+      // Set transport status
+      responseObject.setTransportStatus({
+        code: 5006,
+        message: `Micro service process exited unexpectedly. CODE: ${code}`
       });
+      // Set command status
+      responseObject.setCommandStatus({
+        code: 500,
+        message: 'Command not executed, transport failure'
+      });
+      // Set error data
+      responseObject.setErrData({
+        entity: 'Unknown error',
+        action: `Micro service process exited unexpectedly. CODE: ${code}`,
+        originalData: null
+      });
+      // Close all open connections
+      Object.values(this.connectionIndex).forEach((serviceCoreSocket) => {
+        // Reply To message
+        serviceCoreSocket.reply(responseObject);
+        // Close serviceCoreSocket
+        serviceCoreSocket.conn.destroy();
+      });
+    };
+    return new Promise((resolve) => {
+      eventList.forEach((event) => {
+        process.on(event, handleError);
+      });
+      // onExit
+      process.on('exit', handleError);
       // Resolve the promise
       return resolve();
     });
   }
 
-  // Initialise Micro service
-  initServer() {
+  // Initialise micro service listner port
+  initListener() {
+    // Generic function to initialise the connection
+    const startConnection = (resolve, reject) => {
+      this.log(
+        `Starting service on address: ${this.microServerAddress}`,
+        'log'
+      );
+      // Initialise interface
+      this.listnerInterface = createListener(this.microServerAddress);
+      // Check the status of the gateway
+      if (!this.listnerInterface) {
+        // Console log
+        this.log('Unable to start micro service!', 'log');
+        // Return
+        return reject(Error('Unable to start micro service!'));
+      }
+      // Console log
+      this.log('Service started successfully!', 'log');
+      // Return
+      return resolve(true);
+    };
     // Return
-    return new Promise((resolve, reject) =>
-      isPortFree(parseInt(process.env.port, 10))
-        .then(() => {
-          this.log(
-            `Starting service on port: ${parseInt(process.env.port, 10)}`,
-            'log'
-          );
-          // Initialise interface
-          this.interface = createListener(parseInt(process.env.port, 10));
-          // Check the status of the gateway
-          if (!this.interface) {
-            // Console log
-            this.log('Unable to start micro service!', 'log');
-            // Return
-            return reject(Error('Unable to start micro service!'));
-          }
-          // Console log
-          this.log('Service started successfully!', 'log');
-          // Return
-          return resolve(true);
-        })
-        .catch((e) => {
-          this.log(e, 'error');
+    return new Promise((resolve, reject) => {
+      if (typeof this.microServerAddress === 'number') {
+        isPortFree(this.microServerAddress)
+          .then(startConnection(resolve, reject))
+          .catch((e) => {
+            this.log(e, 'error');
 
-          this.log(
-            `Service port "${parseInt(
-              process.env.port,
-              10
-            )}" not free or unknown error has occurred. MORE INFO: ${JSON.stringify(
-              e,
-              null,
-              2
-            )}`,
-            'error'
-          );
-
-          // Reject
-          return reject(
-            Error(
-              `Service port "${parseInt(
-                process.env.port,
-                10
-              )}" not free or unknown error has occurred. MORE INFO: ${JSON.stringify(
+            this.log(
+              `Service port "${
+                this.microServerAddress
+              }" not free or unknown error has occurred. MORE INFO: ${JSON.stringify(
                 e,
                 null,
                 2
-              )}`
-            )
-          );
-        })
-    );
+              )}`,
+              'error'
+            );
+
+            // Reject
+            return reject(
+              Error(
+                `Service port "${
+                  this.microServerAddress
+                }" not free or unknown error has occurred. MORE INFO: ${JSON.stringify(
+                  e,
+                  null,
+                  2
+                )}`
+              )
+            );
+          });
+      } else {
+        startConnection(resolve, reject);
+      }
+    });
+  }
+
+  // Initialise speaker micro service
+  initSpeaker() {
+    // Return
+    return new Promise((resolve) => {
+      this.log(
+        `Connecting to service core on address: ${parseAddress(
+          this.settings.address
+        )}`,
+        'log'
+      );
+      // Initialise interface
+      this.speakerInterface = createSpeakerReconnector(
+        parseAddress(this.settings.address)
+      );
+      // Check the status of the gateway
+      if (!this.speakerInterface) {
+        // Console log
+        this.log(
+          'Unable to connect to service core! Process will attempt to connect manually next time!',
+          'log'
+        );
+      }
+
+      // Return
+      return resolve(true);
+    });
   }
 
   // Bind listners to server
   bindService() {
     return new Promise((resolve) => {
       // Socket Communication Request
-      this.interface.on('SERVICE_REQUEST', (serviceCoreSocket, data) => {
+      this.listnerInterface.on('SERVICE_REQUEST', (serviceCoreSocket, data) => {
         // Confirm Connection
         this.log(`[${this.conId}] Micro service connection request received`);
         // Add To Connection Index
@@ -249,7 +301,7 @@ class MicroServer extends ServiceCommon {
       });
 
       // Socket Communication Request
-      this.interface.on('SERVICE_KILL', (serviceCoreSocket) => {
+      this.listnerInterface.on('SERVICE_KILL', (serviceCoreSocket) => {
         // Invoke Template(s)
         const responseObject = new ResponseBody();
         // Confirm Connection
@@ -264,7 +316,8 @@ class MicroServer extends ServiceCommon {
         );
         // Return
         this.conId += 1;
-
+        // Set the response source
+        responseObject.setResponseSource();
         // Build Response Object [status - transport]
         responseObject.setTransportStatus({
           code: 2000,
@@ -277,6 +330,10 @@ class MicroServer extends ServiceCommon {
         });
         // Reply to socket
         serviceCoreSocket.reply(responseObject);
+        // Remove speaker socket
+        if (this?.speakerInterface) {
+          this?.speakerInterface?.conn.destroy();
+        }
         // Process kill
         return process.exit();
       });
@@ -293,7 +350,7 @@ class MicroServer extends ServiceCommon {
     // Get Destination
     const { functionName } = data;
     // Build methods
-    const helperMethods = buildResponseFunctions(
+    const helperMethods = this.buildResponseFunctions(
       serviceCoreSocket,
       command,
       this.operationScope

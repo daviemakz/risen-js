@@ -87,7 +87,7 @@ describe('handling transport errors', () => {
             body: { arguments: [1, 2, 3, 4, 5] }
           },
           destination: 'serviceCore',
-          keepAlive: false
+          keepAlive: true
         }
       });
     });
@@ -136,7 +136,7 @@ describe('handling transport errors', () => {
             body: { arguments: [1, 2, 3, 4, 5] }
           },
           destination: 'nonExistantService',
-          keepAlive: false
+          keepAlive: true
         }
       });
     });

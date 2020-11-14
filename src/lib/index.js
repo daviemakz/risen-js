@@ -16,7 +16,6 @@ import { createSpeakerReconnector } from './net';
 // Load utils
 import {
   findAFreePort,
-  buildResponseFunctions,
   handleOnData,
   randomScheduling,
   handleReplyToSocket
@@ -175,7 +174,7 @@ class ServiceCore extends ServiceCommon {
             ] = exec(
               `${process.execPath} ${__dirname}/server/entry.js`,
               {
-                maxBuffer: 1024 * this.settings.maxBuffer,
+                maxBuffer: 1024 * 1024 * this.settings.maxBuffer,
                 env: {
                   parentPid: process.pid,
                   verbose: process.env.verbose,
@@ -399,8 +398,8 @@ class ServiceCore extends ServiceCommon {
   async microServerCommunication(
     recData,
     clientSocket,
-    microServiceInfo,
-    conId
+    microServiceInfo
+    // conId
   ) {
     // Check Socket Readiness...
     if (microServiceInfo.status === 0) {
@@ -408,30 +407,19 @@ class ServiceCore extends ServiceCommon {
     }
 
     // Get socket information
-    const [socket, index] = await this.getMicroServiceSocket(
+    const [socket] = await this.getMicroServiceSocket(
       recData.destination,
       microServiceInfo.socketList
     );
-
-    // Add to connection count for socket
-    this.serviceData[recData.destination].connectionCount[index] += 1;
 
     // Send to socket
     return socket.request('SERVICE_REQUEST', recData, (res) => {
       // Send Micro Service Response To Source
       clientSocket.reply(res);
-      // Close Socket If Keep Alive Not Set
-      if (recData.keepAlive === false) {
-        clientSocket.conn.destroy();
-      }
       // Show message in console
       if (recData.keepAlive === false) {
-        this.log(`[${conId}] Service core has closed the connection!`, 'log');
-      } else {
-        this.log(
-          `[${conId}] Service core has not closed this connection, this socket can be reused or manually closed via socket.conn.destroy()`,
-          'log'
-        );
+        // this.log(`[${conId}] Service core has closed the connection!`, 'log');
+        // clientSocket.conn.destroy();
       }
       // Return
       return 'connectionReady';
@@ -526,31 +514,41 @@ class ServiceCore extends ServiceCommon {
 
   // Get socket depending on queue type
   resolveMicroServiceSocket(name, socketList) {
+    let socketResult;
     // Get socket for service
     switch (true) {
       case typeof this.serviceOptions[name].loadBalancing === 'function': {
         // Must return [socket, index]
-        return this.serviceOptions[name].loadBalancing(socketList);
+        socketResult = this.serviceOptions[name].loadBalancing(socketList);
+        break;
       }
       case this.serviceOptions[name].loadBalancing === 'roundRobin': {
         // Queuing: roundRobin
         const socketIndex = this.serviceData[name].connectionCount.indexOf(
           Math.min(...this.serviceData[name].connectionCount)
         );
-        return [socketList[socketIndex], socketIndex];
+        socketResult = [socketList[socketIndex], socketIndex];
+        break;
       }
       case this.serviceOptions[name].loadBalancing === 'random': {
         // Queuing: random
-        return randomScheduling(socketList);
+        socketResult = randomScheduling(socketList);
+        break;
       }
       default: {
         this.log(
           `Load balancing strategy for ${name} is incorrect. Defaulting to "random" strategy...`,
           'warn'
         );
-        return randomScheduling(socketList);
+        socketResult = randomScheduling(socketList);
+        break;
       }
     }
+    // Add to connection count for socket
+    this.serviceData[name].connectionCount[socketResult[1]] += 1;
+
+    // Return socket data
+    return socketResult;
   }
 
   // Function unknown
@@ -619,7 +617,7 @@ class ServiceCore extends ServiceCommon {
         // Return
         return setImmediate(() => {
           // Build methods
-          const helperMethods = buildResponseFunctions(
+          const helperMethods = this.buildResponseFunctions(
             clientSocket,
             command,
             this.operationScope

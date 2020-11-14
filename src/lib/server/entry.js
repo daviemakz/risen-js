@@ -1,11 +1,10 @@
 'use strict';
 
-const deepMerge = require('deepmerge');
-
-const { rcConfig } = require('../../../babel.config.base');
-
 const { babelConfig } = JSON.parse(process.env.options);
 
-require('@babel/register')(deepMerge(rcConfig, babelConfig));
+// Transpile the code if you need to
+if (Object.keys(babelConfig).length) {
+  require('@babel/register')(babelConfig);
+}
 
 module.exports = require('./index');

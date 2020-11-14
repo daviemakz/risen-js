@@ -24,25 +24,25 @@ process.on('unhandledRejection', (err) => {
 const RisenInstance = new Risen(frameworkOptions);
 
 // Define the devServer
-RisenInstance.defineService('devService', './tmp/dev/devService', {
+RisenInstance.defineService('devService', './tmp/dev/devService.js', {
   runOnStart: [],
   instances: 1
 });
 
 // Define the numbersService
-RisenInstance.defineService('numbersService', './tmp/dev/numbersService', {
+RisenInstance.defineService('numbersService', './tmp/dev/numbersService.js', {
   runOnStart: [],
   instances: 4
 });
 
 // Define the storageService
-RisenInstance.defineService('storageService', './tmp/dev/storageService', {
+RisenInstance.defineService('storageService', './tmp/dev/storageService.js', {
   runOnStart: [],
   instances: 1
 });
 
 // Define the instanceService
-RisenInstance.defineService('instanceService', './tmp/dev/instanceService', {
+RisenInstance.defineService('instanceService', './tmp/dev/instanceService.js', {
   runOnStart: [],
   instances: 1
 });
@@ -50,7 +50,7 @@ RisenInstance.defineService('instanceService', './tmp/dev/instanceService', {
 // Define the runOnStartService
 RisenInstance.defineService(
   'runOnStartService',
-  './tmp/dev/runOnStartService',
+  './tmp/dev/runOnStartService.js',
   {
     runOnStart: ['initialiseData'],
     instances: 1

@@ -14,6 +14,9 @@ class ServiceCommon {
       this[func] = this[func].bind(this);
     });
 
+    // Bind response builder function
+    this.buildResponseFunctions = buildResponseFunctions.bind(this);
+
     // Return instance
     return this;
   }
@@ -45,7 +48,11 @@ class ServiceCommon {
     };
 
     // Build helper methods
-    const helperMethods = buildResponseFunctions(void 0, {}, operationScope);
+    const helperMethods = this.buildResponseFunctions(
+      void 0,
+      {},
+      operationScope
+    );
 
     return new Promise((resolve, reject) => {
       try {

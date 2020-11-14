@@ -24,7 +24,7 @@ const executeCallback = ({ responseData, resBody, portEmitter }) => {
 export function sendRequest(
   data,
   destination,
-  keepAlive = false,
+  keepAlive = true,
   options = { address: this.settings.address, connectionId: this.conId },
   socket = void 0,
   callback = () => void 0
@@ -90,7 +90,10 @@ export function sendRequest(
     }
 
     // Send Data To Destination
-    this.log('Socket initialized. sending data...', 'log');
+    this.log(
+      `[${options.connectionId}] Sending data to: ${resBody?.destination}`,
+      'log'
+    );
 
     // Com request
     return portEmitter.request('COM_REQUEST', resBody, (responseData) => {
@@ -198,72 +201,67 @@ export function sendRequest(
 }
 
 // Allows you to send multiple requests to a micro server
-export function requestChain(commandList, callback) {
+export function requestChain(
+  commandList,
+  callback,
+  socket = this?.speakerInterface
+) {
   // To store the responses from the micro services
   const responses = [];
-  let socket = void 0;
 
   // Map the command list object and assign parameters
   const functionCommandList = commandList.map(
-    (
-      {
-        destination,
-        functionName,
-        body,
-        address,
-        generateBody,
-        generateCommand
-      },
-      position,
-      commandsArray
-    ) => () =>
-      new Promise((resolve, reject) => {
-        // Is this the last element
-        const isThisTheLastCommand = commandsArray.length === position + 1;
+    ({
+      destination,
+      functionName,
+      body,
+      address,
+      generateBody,
+      generateCommand
+    }) =>
+      // position,
+      // commandsArray
+      () =>
+        new Promise((resolve, reject) => {
+          // Allows you to generate a body
+          const resolvedBody =
+            typeof generateBody === 'function'
+              ? generateBody(body, responses)
+              : body;
 
-        // Allows you to generate a body
-        const resolvedBody =
-          typeof generateBody === 'function'
-            ? generateBody(body, responses)
-            : body;
+          // Allows you to generate a whole command object
+          const resolvedCommand =
+            typeof generateCommand === 'function'
+              ? generateCommand(body, responses)
+              : {
+                  destination,
+                  functionName,
+                  body: resolvedBody,
+                  address
+                };
 
-        // Allows you to generate a whole command object
-        const resolvedCommand =
-          typeof generateCommand === 'function'
-            ? generateCommand(body, responses)
-            : {
-                destination,
-                functionName,
-                body: resolvedBody,
-                address
-              };
-
-        // Send message to the micro server
-        try {
-          this.request(
-            Object.assign(resolvedCommand, {
-              socket,
-              ...(isThisTheLastCommand
-                ? { keepAlive: false }
-                : { keepAlive: true })
-            }), // Reuse if the socket is defined
-            (response, resBody, currentSocket) => {
-              // Assign socket for reuse
-              socket = currentSocket;
-              // Push the result to the response array
-              responses.push(response);
-              // Resolve the result
-              resolve(response);
-            }
-          );
-        } catch (e) {
-          this.log(
-            `An error occurred in the request chain while communicating with a micro service: ${e}`,
-            'error'
-          );
-          reject(e);
-        }
-      })
+          // Send message to the micro server
+          try {
+            this.request(
+              Object.assign(resolvedCommand, {
+                socket,
+                keepAlive: true
+              }), // Reuse if the socket is defined
+              (response) => {
+                // Push the result to the response array
+                responses.push(response);
+                // Resolve the result
+                resolve(response);
+              }
+            );
+          } catch (e) {
+            this.log(
+              `An error occurred in the request chain while communicating with a micro service: ${e}`,
+              'error'
+            );
+            reject(e);
+          }
+        })
   );
 
   // Execute the promise to allow chaining
@@ -297,16 +295,21 @@ export function request(
     destination = void 0,
     functionName = '',
     address = void 0,
-    keepAlive = false,
-    socket = void 0
+    keepAlive = true,
+    socket = this?.speakerInterface // Reuse service core port
   },
   callback
 ) {
   return new Promise((resolve, reject) => {
     // Initialise the command object
     const command = new CommandBody();
-
     const connectionId = this.conId;
+
+    // Set the command source
+    command.setCommandSource();
+
+    // Set the connection id
+    command.setConnectionId(connectionId);
 
     // Assign the data to the command body
     command.setDestination(destination);

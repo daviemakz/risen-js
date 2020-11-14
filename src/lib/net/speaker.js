@@ -6,7 +6,7 @@
 import net from 'net';
 
 // Load libs
-import networkBase from './networkBase';
+import networkBase, { getAddressFormatted } from './networkBase';
 
 // Declare variables
 import { ERR_REQ_REFUSED, MAX_WAITERS } from './constants';
@@ -60,7 +60,12 @@ const Speaker = (function (_super) {
     socket.setMaxListeners(Infinity);
     socket.connect(port, host, () => {
       process.env.verbose === 'true' &&
-        console.log(`Successfully connected on port: ${port}`);
+        console.log(
+          `Successfully connected to address: ${getAddressFormatted(
+            host,
+            port
+          )}`
+        );
       return _this.sockets.push(socket);
     });
     socket.on('data', (data) => {

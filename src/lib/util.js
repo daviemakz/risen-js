@@ -19,7 +19,13 @@ export function buildResponseFunctions(socket, command, scope) {
     responseObject.success({ data: result, code, message });
     // Show status message
     this.log(
-      `[${conId}] Service successfully processed command (${data.functionName}) from ${name}/port:${port}/id:${instanceId}`,
+      `[${conId}] Service successfully processed command (${
+        data.functionName
+      }) from ${
+        instanceId === null
+          ? `${name}/address:${this.settings.address}` // Service core
+          : `${name}/port:${port}/id:${instanceId}` // Micro service
+      }`,
       'log'
     );
     // Respond To Source
@@ -33,7 +39,13 @@ export function buildResponseFunctions(socket, command, scope) {
     responseObject.error({ data: result, code, message });
     // Show status message
     this.log(
-      `[${conId}] Service failed to process the command (${data.functionName}) from ${name}/port:${port}/id:${instanceId}`,
+      `[${conId}] Service failed to process the command (${
+        data.functionName
+      }) from ${
+        instanceId === null
+          ? `${name}/address:${this.settings.address}` // Service core
+          : `${name}/port:${port}/id:${instanceId}` // Micro service
+      }`,
       'log'
     );
     // Respond To Source

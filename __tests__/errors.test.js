@@ -1,5 +1,7 @@
 'use strict';
 
+import { unset } from 'lodash';
+
 import { Risen } from '../tmp';
 
 describe('handling transport errors', () => {
@@ -77,6 +79,7 @@ describe('handling transport errors', () => {
     });
 
     test('error data is expected', () => {
+      unset(output.error, 'originalData.data.source');
       expect(output.error).toEqual({
         entity: 'Service core',
         action: 'Service redirection',
@@ -84,7 +87,10 @@ describe('handling transport errors', () => {
           data: {
             destination: 'serviceCore',
             functionName: 'nonExistantService',
-            body: { arguments: [1, 2, 3, 4, 5] }
+            body: {
+              arguments: [1, 2, 3, 4, 5]
+            },
+            conId: 0
           },
           destination: 'serviceCore',
           keepAlive: true
@@ -126,6 +132,7 @@ describe('handling transport errors', () => {
     });
 
     test('error data is expected', () => {
+      unset(output.error, 'originalData.data.source');
       expect(output.error).toEqual({
         entity: 'Service core',
         action: 'Service redirection',
@@ -133,7 +140,8 @@ describe('handling transport errors', () => {
           data: {
             destination: 'nonExistantService',
             functionName: 'randomFunction',
-            body: { arguments: [1, 2, 3, 4, 5] }
+            body: { arguments: [1, 2, 3, 4, 5] },
+            conId: 0
           },
           destination: 'nonExistantService',
           keepAlive: true

@@ -174,7 +174,7 @@ describe('tmp/lib/core', () => {
       });
 
       describe('check that all responses succeeded', () => {
-        Array.from(Array(7)).forEach((_, index) => {
+        Array.from(Array(6)).forEach((_, index) => {
           test(`http status code is 200 for process ${index + 1}`, () => {
             expect(output.data[index].command.code).toEqual(200);
           });

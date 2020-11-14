@@ -173,7 +173,7 @@ const changeInstances = {
   uri: '/change-instances',
   handler: async (req, res, next, { requestChain }) => {
     const { addInstances } = req.body;
-    const data = await requestChain([
+    await requestChain([
       {
         body: {
           name: 'instanceService',
@@ -181,7 +181,14 @@ const changeInstances = {
         },
         destination: 'serviceCore',
         functionName: 'changeInstances'
-      },
+      }
+    ]);
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+
+    const data = await requestChain([
       {
         body: null,
         destination: 'instanceService',
@@ -213,6 +220,7 @@ const changeInstances = {
         functionName: 'respond'
       }
     ]);
+
     res.send(data);
     return data;
   }

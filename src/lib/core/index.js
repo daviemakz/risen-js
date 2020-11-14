@@ -173,6 +173,7 @@ export async function changeInstances({ data, sendError, sendSuccess }) {
 
     // Get next ports
     const nextPorts = this.serviceData[name].port;
+    const instanceIds = this.serviceData[name].instanceId;
 
     // Assign response object
     if (typeof result === 'undefined') {
@@ -182,6 +183,7 @@ export async function changeInstances({ data, sendError, sendSuccess }) {
           message: 'Services were modified successfully!',
           details: {
             instances: nextPorts.length,
+            instanceIds,
             name,
             previousPorts,
             nextPorts
@@ -195,6 +197,7 @@ export async function changeInstances({ data, sendError, sendSuccess }) {
           message: 'Services modification failed!',
           details: {
             instances: nextPorts.length,
+            instanceIds,
             name,
             previousPorts,
             nextPorts

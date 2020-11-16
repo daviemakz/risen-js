@@ -10,6 +10,7 @@ const verboseMode = process.env.VERBOSE === 'true';
 
 // Define http options
 const httpOptions1 = {
+  host: 'localhost',
   port: 12000,
   ssl: SSL_OPTIONS,
   harden: true,
@@ -25,6 +26,7 @@ const httpOptions1 = {
 };
 
 const httpOptions2 = {
+  host: 'localhost',
   port: 12001,
   ssl: false,
   harden: true,
@@ -58,6 +60,7 @@ const coreOperations = {
 
 /* eslint-disable-next-line */
 export const frameworkOptions = {
+  address: 'localhost:8080',
   coreOperations,
   databaseNames: ['_defaultDatabase'],
   mode: 'server',

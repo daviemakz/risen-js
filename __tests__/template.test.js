@@ -6,6 +6,23 @@ import ResponseTemplate from '../tmp/lib/template/response';
 
 describe('tmp/lib/validate', () => {
   describe('CommandTemplate()', () => {
+    describe('setCommandSource()', () => {
+      let commandBody;
+      beforeEach(() => {
+        commandBody = new CommandTemplate();
+      });
+      test('can set a response source', () => {
+        const value = {
+          name: 'exampleService',
+          pid: 224233,
+          address: 'localhost:1024',
+          instanceId: 'EDEAB7B2-06D8-4BB9-A373-ED10B1656F3D'
+        };
+        commandBody.setCommandSource(value);
+        expect(commandBody.source).toEqual(value);
+      });
+    });
+
     describe('setDestination()', () => {
       let commandBody;
       beforeEach(() => {
@@ -66,7 +83,7 @@ describe('tmp/lib/validate', () => {
           name: 'exampleService',
           pid: 224233,
           instanceId: 'EDEAB7B2-06D8-4BB9-A373-ED10B1656F3D',
-          port: 1024
+          address: 'localhost:1024'
         };
         responseBody.setResponseSource(value);
         expect(responseBody.status.transport.responseSource).toEqual(value);

@@ -6,6 +6,7 @@ import 'regenerator-runtime';
 // Load NPM Required
 import isPortFree from 'is-port-free';
 import isRunning from 'is-running';
+import { isNumeric } from 'validator';
 
 // Load network components
 import { createListener, createSpeakerReconnector } from '../net';
@@ -19,7 +20,6 @@ import ResponseBody from '../template/response';
 // Load base methods
 import { echoData, redirectFailed, noDataRecieved } from './baseMethods';
 import { requestOperations } from '../core/request';
-import { parseAddress } from '../util';
 import { eventList } from '../../options';
 
 // Standard functions
@@ -103,7 +103,9 @@ class MicroServer extends ServiceCommon {
     };
 
     // Parse the addres
-    this.microServerAddress = parseAddress(process.env.port);
+    this.microServerAddress = isNumeric(process.env.address)
+      ? parseInt(process.env.address, 10)
+      : process.env.address;
 
     // Return the instance
     return this;
@@ -210,6 +212,7 @@ class MicroServer extends ServiceCommon {
       // Return
       return resolve(true);
     };
+
     // Return
     return new Promise((resolve, reject) => {
       if (typeof this.microServerAddress === 'number') {
@@ -253,15 +256,11 @@ class MicroServer extends ServiceCommon {
     // Return
     return new Promise((resolve) => {
       this.log(
-        `Connecting to service core on address: ${parseAddress(
-          this.settings.address
-        )}`,
+        `Connecting to service core on address: ${this.settings.address}`,
         'log'
       );
       // Initialise interface
-      this.speakerInterface = createSpeakerReconnector(
-        parseAddress(this.settings.address)
-      );
+      this.speakerInterface = createSpeakerReconnector(this.settings.address);
       // Check the status of the gateway
       if (!this.speakerInterface) {
         // Console log

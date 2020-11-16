@@ -88,7 +88,7 @@ const SpeakerReconnector = (function (_super) {
       }
       return _results;
     });
-    socket.on('error', () => {});
+    socket.on('error', (err) => {});
     return socket.on('close', () => {
       if (
         !(typeof process.env.exitedProcessPorts === 'string'

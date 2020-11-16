@@ -21,3 +21,5 @@ export function createSpeakerReconnector(...rest) {
   const addresses = rest.length >= 1 ? [].slice.call(rest, 0) : [];
   return new SpeakerReconnector(addresses);
 }
+
+export * from './networkBase';

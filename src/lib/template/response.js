@@ -1,9 +1,14 @@
 'use strict';
 
+import { inRange } from 'lodash';
+
 const isSuccess = (self) => {
   return (
-    (self?.status?.transport?.code ?? self?.transport?.code) === 2000 &&
-    (self?.status?.command?.code ?? self?.command?.code) === 200
+    inRange(
+      self?.status?.transport?.code ?? self?.transport?.code,
+      2000,
+      2999
+    ) && inRange(self?.status?.command?.code ?? self?.command?.code, 200, 299)
   );
 };
 
@@ -25,17 +30,17 @@ function getResponseBody() {
       errData: null
     },
     setResponseSource(
-      { name, pid, instanceId, port } = {
+      { name, pid, instanceId, address } = {
         name: process.env.name,
         pid: process.pid,
         instanceId: process.env.instanceId,
-        port: parseInt(process.env.port, 10)
+        address: process.env.address
       }
     ) {
       this.status.transport.responseSource = {
         name,
         pid,
-        port,
+        address,
         instanceId
       };
     },

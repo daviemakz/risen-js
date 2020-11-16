@@ -34,13 +34,16 @@ export const buildSecureOptions = (ssl) => {
 };
 
 export const buildHttpOptions = (options) => ({
+  host: Object.prototype.hasOwnProperty.call(options, 'host')
+    ? options.host
+    : 'localhost',
   port: Object.prototype.hasOwnProperty.call(options, 'port')
     ? options.port
     : 8888,
   ssl: buildSecureOptions(options.ssl),
   harden: Object.prototype.hasOwnProperty.call(options, 'harden')
     ? options.harden
-    : true,
+    : false,
   beforeStart: Object.prototype.hasOwnProperty.call(options, 'beforeStart')
     ? options.beforeStart
     : (express) => express,

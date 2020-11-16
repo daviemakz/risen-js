@@ -866,15 +866,13 @@ Run the following commands to test the module:
 
 - Optimise and reuse connections between express server(s) and service core. [DONE]
 
-- Implement CLI version of launching script. [FUTURE RELEASE]
-
 - Add test for a transpiled service to test babelConfig
 
 - Create GitHub docs website to formalise documentation and a way to update them in the pipeline.
 
-- Reformat service messages and document schema.
+- Reformat service messages [DONE]
 
-- Add pre-made example described in the `README.md`.
+- Add pre-made example and add this into the `README.md`.
 
 - Update `README.md` with a more slimmed down version.
 
@@ -883,6 +881,10 @@ Run the following commands to test the module:
 - Add a logo to the project.
 
 - Bump version...icing!
+
+## Version 3
+
+- Implement CLI version of launching script with `--init` functionality.
 
 ## Contributing
 

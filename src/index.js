@@ -141,7 +141,8 @@ export class Risen extends ServiceCore {
       requestChain: this.requestChain,
       sendRequest: this.sendRequest,
       destroyConnection: this.destroyConnection,
-      operations: this.coreOperations
+      operations: this.coreOperations,
+      localStorage: {}
     };
 
     // Initalise micro service

@@ -11,7 +11,7 @@ import { dirname } from 'path';
 import ResponseBody from './template/response';
 
 // Load network components
-import { createSpeakerReconnector } from './net';
+import { createSpeakerReconnector, getHostByAddress } from './net';
 
 // Load utils
 import {
@@ -166,6 +166,8 @@ class ServiceCore extends ServiceCommon {
             }
             // Check that the retrieving a port was successful
             this.addServerToTracking(name, port, instanceId);
+            // Get host of service core
+            const host = getHostByAddress(this.settings.address);
             // Reset error status
             this.serviceData[name].error = false;
             // Assign process to instance
@@ -174,13 +176,13 @@ class ServiceCore extends ServiceCommon {
             ] = exec(
               `${process.execPath} ${__dirname}/server/entry.js`,
               {
-                maxBuffer: 1024 * 1024 * this.settings.maxBuffer,
+                maxBuffer: 1024 * this.settings.maxBuffer,
                 env: {
                   parentPid: process.pid,
                   verbose: process.env.verbose,
                   name,
                   instanceId,
-                  port,
+                  address: host !== null ? `${host}:${port}` : port,
                   service: true,
                   operations: this.serviceInfo[name],
                   settings: JSON.stringify(this.settings),
@@ -302,9 +304,12 @@ class ServiceCore extends ServiceCommon {
   initiateMicroServerConnection(port, callback) {
     // Get Variables
     let connectionAttempts = 0;
-    const { msConnectionTimeout } = this.settings;
+    const { msConnectionTimeout, address } = this.settings;
+    // Ensure the address is qualified
+    const host = getHostByAddress(address);
+    const resolvedAddress = host !== null ? `${host}:${port}` : port;
     // Invoke the port emitter
-    const portEmitter = createSpeakerReconnector(port);
+    const portEmitter = createSpeakerReconnector(resolvedAddress);
     // Check Socket Is Ready & Execute
     const startMicroServiceConnection = () => {
       // Check If Socket Initialized Then Continue...
@@ -320,11 +325,14 @@ class ServiceCore extends ServiceCommon {
         // Return Error Object
         portEmitter.error = 'Socket initialization timeout...';
         // Notification
-        return this.log(`Socket initialization timeout. PORT: ${port}`, 'log');
+        return this.log(
+          `Socket initialization timeout to: ${resolvedAddress}`,
+          'log'
+        );
       }
       // Send Data To Destination
       this.log(
-        `Service core successfully initialized socket on port: ${port}`,
+        `Service core successfully initialized socket on address: ${resolvedAddress}`,
         'log'
       );
       // Return Object Speaker
@@ -336,6 +344,10 @@ class ServiceCore extends ServiceCommon {
 
   // Initiate a connection to a microservice
   initConnectionToService(name, port, callback) {
+    // Ensure the address is qualified
+    const { address } = this.settings;
+    const host = getHostByAddress(address);
+    const resolvedAddress = host !== null ? `${host}:${port}` : port;
     // Initiate micro service connection
     return this.initiateMicroServerConnection(port, (socket) => {
       // Show status
@@ -350,7 +362,7 @@ class ServiceCore extends ServiceCommon {
         );
       }
       this.log(
-        `Service core has successfully connected to micro service: ${port}`
+        `Service core has successfully connected to micro service: ${resolvedAddress}`
       );
       // Set status
       this.serviceData[name].status = true;
@@ -409,7 +421,8 @@ class ServiceCore extends ServiceCommon {
     // Get socket information
     const [socket] = await this.getMicroServiceSocket(
       recData.destination,
-      microServiceInfo.socketList
+      microServiceInfo.socketList,
+      recData
     );
 
     // Send to socket
@@ -492,12 +505,12 @@ class ServiceCore extends ServiceCommon {
   }
 
   // Resolve the micro service socket and index
-  getMicroServiceSocket(name, socketList) {
+  getMicroServiceSocket(name, socketList, command) {
     return new Promise((resolve) => {
       let socketData;
       // Allows us to retry getting the socket
       const getSocket = () => {
-        socketData = this.resolveMicroServiceSocket(name, socketList);
+        socketData = this.resolveMicroServiceSocket(name, socketList, command);
         const [socket, index] = socketData;
         // If the socket exists resolve the promise else try again
         if (socket) {
@@ -513,13 +526,16 @@ class ServiceCore extends ServiceCommon {
   }
 
   // Get socket depending on queue type
-  resolveMicroServiceSocket(name, socketList) {
+  resolveMicroServiceSocket(name, socketList, command) {
     let socketResult;
     // Get socket for service
     switch (true) {
       case typeof this.serviceOptions[name].loadBalancing === 'function': {
         // Must return [socket, index]
-        socketResult = this.serviceOptions[name].loadBalancing(socketList);
+        socketResult = this.serviceOptions[name].loadBalancing(
+          socketList,
+          command
+        );
         break;
       }
       case this.serviceOptions[name].loadBalancing === 'roundRobin': {

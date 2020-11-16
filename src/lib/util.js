@@ -5,6 +5,8 @@ import getFreePort from 'find-free-port';
 // Load Templates
 import ResponseBody from './template/response';
 
+import { getHostByAddress } from './net';
+
 // Wrap the socker and data to allow easier responses to requests
 export function buildResponseFunctions(socket, command, scope) {
   // Destructure the request object
@@ -14,7 +16,7 @@ export function buildResponseFunctions(socket, command, scope) {
   // When the command is successful
   const sendSuccess = ({ result = null, code, message }) => {
     const { source, conId } = command.data;
-    const { name, port, instanceId } = source;
+    const { name, address, instanceId } = source;
     // Set response object to successfully
     responseObject.success({ data: result, code, message });
     // Show status message
@@ -23,8 +25,8 @@ export function buildResponseFunctions(socket, command, scope) {
         data.functionName
       }) from ${
         instanceId === null
-          ? `${name}/address:${this.settings.address}` // Service core
-          : `${name}/port:${port}/id:${instanceId}` // Micro service
+          ? `${name}/${this.settings.address}` // Service core
+          : `${name}/${address}/id:${instanceId}` // Micro service
       }`,
       'log'
     );
@@ -62,13 +64,7 @@ export function buildResponseFunctions(socket, command, scope) {
 
 // Parse the address, depending on what it is
 export const parseAddress = (address) => {
-  let addr = address;
-  try {
-    addr = parseInt(address, 10);
-  } catch (e) {
-    this.log(`Address is not a port but a full URI: ${addr}`);
-  }
-  return addr;
+  return address;
 };
 
 export const executePromisesInOrder = (funcs) =>
@@ -113,9 +109,13 @@ export const handleReplyToSocket = (
 };
 
 export const handleOnData = (self, port, instanceId) => (name, type, data) => {
+  const { address } = self.settings;
+  // Ensure the address is qualified
+  const host = getHostByAddress(address);
+  const resolvedAddress = host !== null ? `${host}:${port}` : port;
   // Build text
   const logOutput = processStdio(
-    `${name}/port:${port}/id:${instanceId}`,
+    `${name}/${resolvedAddress}/instanceId:${instanceId}`,
     type,
     data
   );

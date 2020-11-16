@@ -28,7 +28,7 @@ export const getAddressFormatted = (host, port) => {
   if (host !== null) {
     return `${host}:${port}`;
   } else {
-    return `localhost:${port}`;
+    return `${port}`;
   }
 };
 

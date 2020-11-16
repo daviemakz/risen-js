@@ -2,6 +2,8 @@
 
 import 'regenerator-runtime';
 
+import { inRange } from 'lodash';
+
 // Get a unique array
 export function uniqueArray(arrArg) {
   return arrArg.filter((elem, pos, arr) => arr.indexOf(elem) === pos);
@@ -72,7 +74,8 @@ export function stopService(name, instances) {
                   `Service core has recieved acknowledgement of kill command from: ${name}/port:${ports[elIndex]}`,
                   'log'
                 );
-                if (res.status.command.code === 200) {
+
+                if (inRange(res.status.command.code, 200, 299)) {
                   resolve(true);
                 } else {
                   reject(Error(false));

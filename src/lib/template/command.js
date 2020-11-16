@@ -27,19 +27,19 @@ function getCommandBody() {
       this.conId = id;
     },
     setCommandSource(
-      { name, pid, instanceId, port } = {
+      { name, pid, instanceId, address } = {
         name: process.env.name || 'serviceCore',
         pid: process.pid,
         instanceId: process.env.instanceId || null,
-        port: process.env.port
-          ? parseInt(process.env.port, 10)
+        address: process.env.address
+          ? process.env.address
           : this?.settings?.address
       }
     ) {
       this.source = {
         name,
         pid,
-        port,
+        address,
         instanceId
       };
     }

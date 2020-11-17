@@ -5,12 +5,25 @@
 
 // Import NPM modules
 import { run } from 'jest';
+import { Risen } from '..';
 
 // Import system components
 /* eslint-disable-next-line */
 import jestConfigBase from '../../jest.config.js';
 
-const endTests = () => void 0;
+const endTests = () => {
+  return new Risen({
+    mode: 'client',
+    verbose: false
+  }).request(
+    {
+      body: null,
+      destination: 'serviceCore',
+      functionName: 'end'
+    },
+    () => void 0
+  );
+};
 
 // Wrapper to run the function programatically
 const executeTests = (jestConfig, args) => {

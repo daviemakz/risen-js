@@ -78,7 +78,7 @@ export const defaultInstanceOptions = {
   connectionTimeout: 1000,
   msConnectionTimeout: 10000,
   msConnectionRetryLimit: 1000,
-  address: 8080,
+  address: 'localhost:8080',
   portRangeStart: 1024,
   portRangeFinish: 65535,
   coreOperations: {},

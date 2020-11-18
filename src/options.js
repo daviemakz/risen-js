@@ -43,7 +43,7 @@ export const buildHttpOptions = (options) => ({
   ssl: buildSecureOptions(options.ssl),
   harden: Object.prototype.hasOwnProperty.call(options, 'harden')
     ? options.harden
-    : false,
+    : true,
   beforeStart: Object.prototype.hasOwnProperty.call(options, 'beforeStart')
     ? options.beforeStart
     : (express) => express,

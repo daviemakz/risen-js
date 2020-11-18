@@ -521,9 +521,15 @@ export class Risen extends ServiceCore {
                         ...(route.postMiddleware || [])
                       )
                     );
-                  this.log('Starting HTTP server(s)...', 'log');
                   // Start HTTP(s) server
                   if (typeof httpSettings.ssl === 'object') {
+                    this.log(
+                      `Starting HTTP Express server on: ${
+                        httpSettings.host || '0.0.0.0'
+                      }:${httpSettings.port}`,
+                      'log'
+                    );
+
                     return (
                       this.httpsServer.push(
                         https
@@ -535,6 +541,12 @@ export class Risen extends ServiceCore {
                       ) && resolve()
                     );
                   }
+                  this.log(
+                    `Starting HTTPS Express server on: ${
+                      httpSettings.host || '0.0.0.0'
+                    }:${httpSettings.port}`,
+                    'log'
+                  );
                   return (
                     this.httpServer.push(
                       http

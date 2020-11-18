@@ -32,6 +32,12 @@ const rcConfigMinify = {
   plugins
 };
 
+const rcConfigDev = {
+  comments: false,
+  presets,
+  plugins
+};
+
 const rcConfigTest = {
   comments: false,
   presets,
@@ -42,6 +48,7 @@ const rcConfigTest = {
 module.exports = {
   presets,
   plugins,
+  rcConfigDev,
   rcConfigMinify,
   rcConfigTest
 };

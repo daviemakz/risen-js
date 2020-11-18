@@ -47,10 +47,10 @@ export function sendRequest(
   const sendToSocket = () => {
     // Check If Socket Initialized Then Continue...
     if (Object.values(portEmitter.sockets).length === 0) {
+      // Wait For Socket & Try Again...
+      this.log('Service core socket has not yet initialized...', 'log');
       // Wait & Retry (including timeout)
       if (connectionAttempts <= this.settings.connectionTimeout) {
-        // Wait For Socket & Try Again...
-        this.log('Service core socket has not yet initialized...', 'log');
         return setTimeout(() => {
           sendToSocket();
           connectionAttempts += 1;

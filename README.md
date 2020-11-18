@@ -5,6 +5,9 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_shield)
 [![Build Status](https://travis-ci.org/daviemakz/risen-js.svg?branch=master)](https://travis-ci.org/daviemakz/risen-js)
 [![Downloads](https://img.shields.io/npm/dm/risen-js.svg)](https://www.npmjs.com/package/risen-js)
+![GitHub issues](https://img.shields.io/github/issues/daviemakz/risen-js)
+![NPM](https://img.shields.io/npm/l/risen-js)
+![npm](https://img.shields.io/npm/v/risen-js)
 
 Risen.JS is a framework for building efficient, scalable non-blocking Node.JS server-side applications. It uses ES6+ JavaScript and combines elements of OOP (Object Oriented Programming) and FP (Functional Programming).
 

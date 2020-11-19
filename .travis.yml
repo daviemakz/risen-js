@@ -12,8 +12,6 @@ jobs:
       name: 'install submodules'
       script: ./ci/init-docs.sh
     - stage: test
-      name: 'integration tests'
-      script: ./ci/test.sh
     - stage: publish
       name: 'documentation'
       script: ./ci/deploy-docs.sh

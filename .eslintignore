@@ -2,6 +2,7 @@ demo
 coverage
 dist
 tmp
+docs
 yarn.lock
 .DS_Store
 *.pem

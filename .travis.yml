@@ -8,18 +8,18 @@ script: echo "Running tests against $(node -v) ..."
 
 jobs:
   include:
-    - stage: initialise
-      name: 'install submodules'
+    - stage: install
+      name: 'submodules'
       script: ./ci/init-docs.sh
     - stage: test
     - stage: publish
       name: 'documentation'
       script: ./ci/deploy-docs.sh
     - script: ./ci/deploy-package.sh
-      name: 'package'
+      name: 'npm'
 
 stages:
-  - initialise
+  - install
   - test
   - name: publish
     if: branch = master

@@ -3,3 +3,22 @@ node_js:
   - '10'
   - '12'
   - 'lts/*'
+
+script: echo "Running tests against $(node -v) ..."
+
+jobs:
+  include:
+    - stage: initialise
+      script: ./ci/init-docs
+    - stage: test
+      script: ./ci/test
+    - stage: publish
+      name: 'Documentation'
+      script: ./ci/deploy-docs
+    - script: ./ci/deploy-package
+      name: 'NPM Package'
+
+stages:
+  - test
+  - name: publish
+    if: branch = master

@@ -1,8 +1,12 @@
 __resources__
 __tests__
+demo
+docs
+ci
 dev
 src
 tmp
+SECURITY.md
 .github
 .DS_Store
 .eslintignore

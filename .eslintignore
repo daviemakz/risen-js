@@ -9,3 +9,4 @@ yarn.lock
 *.crt
 *.csr
 *.key
+*.sh

@@ -879,8 +879,8 @@ Run the following commands to test the module:
 - Create CircleCI pipelines for:
 
 1. Testing
-2. Building & Publishing Documentation
-3. Publishing Package On Version Change
+2. Building & Publishing Documentation [Depends on 1]
+3. Publishing Package On Version Change [Depends on 1]
 
 - Update `README.md` with the following:
 
@@ -894,9 +894,7 @@ Run the following commands to test the module:
 ## Version 2.1
 
 - Make final package changes:
-
-- Refactor net functions
-- Experiment with fork mode
+- Refactor net functions []
 - Implement CLI version of launching script with `--init` & `--config` functionality.
 
 ## Contributing

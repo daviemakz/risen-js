@@ -9,16 +9,19 @@ script: echo "Running tests against $(node -v) ..."
 jobs:
   include:
     - stage: initialise
+      name: 'install submodules'
       script: ./ci/init-docs
     - stage: test
+      name: 'integration tests'
       script: ./ci/test
     - stage: publish
-      name: 'Documentation'
+      name: 'documentation'
       script: ./ci/deploy-docs
     - script: ./ci/deploy-package
-      name: 'NPM Package'
+      name: 'package'
 
 stages:
+  - initialise
   - test
   - name: publish
     if: branch = master

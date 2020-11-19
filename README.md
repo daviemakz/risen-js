@@ -870,25 +870,34 @@ Run the following commands to test the module:
 
 - Optimise and reuse connections between express server(s) and service core. [DONE]
 
-- Add test for a transpiled service to test babelConfig
+- Add test for a transpiled service to test babelConfig [DONE]
 
-- Create GitHub docs website to formalise documentation and a way to update them in the pipeline.
+- Create GitHub docs website to formalise documentation and a way to update them in the pipeline. [DONE]
 
 - Reformat service messages [DONE]
 
-- Add pre-made example and add this into the `README.md`.
+- Create CircleCI pipelines for:
 
-- Update `README.md` with a more slimmed down version.
+1. Testing
+2. Building & Publishing Documentation
+3. Publishing Package On Version Change
 
-- Add 'development section' to `README.md`.
+- Update `README.md` with the following:
 
-- Add a logo to the project.
+1. Add pre-made example and add this into the `README.md`.
+2. Update `README.md` with a more slimmed down version.
+3. Add 'development section' to `README.md`.
+4. Add a logo to the project.
 
 - Bump version...icing!
 
-## Version 3
+## Version 2.1
 
-- Implement CLI version of launching script with `--init` functionality.
+- Make final package changes:
+
+- Refactor net functions
+- Experiment with fork mode
+- Implement CLI version of launching script with `--init` & `--config` functionality.
 
 ## Contributing
 

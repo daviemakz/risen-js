@@ -9,7 +9,7 @@ script: echo "Running pipeline against $(node -v) ..."
 jobs:
   include:
     - stage: test
-    - stage: deploy
+    - stage: publish
       name: 'documentation'
       script:
         - cd docs
@@ -26,5 +26,5 @@ jobs:
 
 stages:
   - test
-  - name: deploy
+  - name: publish
     if: branch = master

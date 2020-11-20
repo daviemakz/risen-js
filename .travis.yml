@@ -1,14 +1,14 @@
 language: node_js
-node_js:
-  - '10'
-  - '12'
-  - 'lts/*'
 
 script: echo "Running pipeline against $(node -v) ..."
 
 jobs:
   include:
     - stage: test
+      node_js:
+        - '10'
+        - '12'
+        - 'lts/*'
       script:
         - yarn test
     - stage: publish

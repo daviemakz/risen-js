@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Philosophy · Risen.JS</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## Why Risen.JS?"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Philosophy · Risen.JS"/><meta property="og:type" content="website"/><meta property="og:url" content="https://daviemakz.github.io/risen-js/"/><meta property="og:description" content="## Why Risen.JS?"/><meta property="og:image" content="https://daviemakz.github.io/risen-js/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://daviemakz.github.io/risen-js/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/risen-js/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/risen-js/js/scrollSpy.js"></script><link rel="stylesheet" href="/risen-js/css/main.css"/><script src="/risen-js/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/risen-js/"><img class="logo" src="/risen-js/img/favicon.ico" alt="Risen.JS"/><h2 class="headerTitleWithLogo">Risen.JS</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/risen-js/docs/quickstart" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/risen-js/docs/settingup" target="_self">Tutorial</a></li><li class="siteNavGroupActive"><a href="/risen-js/docs/apirisen" target="_self">API</a></li><li class=""><a href="/risen-js/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Introduction</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/quickstart">Quickstart</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/overview">Overview</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/risen-js/docs/philosophy">Philosophy</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/security">Security</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/terminology">Terminology</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Tutorial</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/settingup">Setting Up</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/initialiseproject">Initialise Project</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/defineprimeservice">Prime Service</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/definerenderservice">Render Service</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/configureframework">Configure Framework</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/viewresults">See Results</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/apirisen">Constructor</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiinstance">Instance</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiservices">Services</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiglobalmethods">Global Methods</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apidatastructure">Data Structure</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apicodes">Codes</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Philosophy</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="why-risenjs"></a><a href="#why-risenjs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Why Risen.JS?</h2>
+<p>There is a lot of Node.JS-based microservice frameworks out there and some of them are very powerful, however generally speaking they are quite complicated and require a significant amount of knowledge outside of JavaScript to utilize effectively or securely (especially in a production environment).</p>
+<h2><a class="anchor" aria-hidden="true" id="guiding-principles"></a><a href="#guiding-principles" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Guiding Principles</h2>
+<p>This package was created to handle a lot of the complexity involved in deploying robust and dependable microservices.</p>
+<p>Its also designed to use the latest ECMA code</p>
+<p>These are the key principles which led to the design of this package:</p>
+<ul>
+<li>The framework should allow the latest JavaScript features to be used with built-in transpiler support via <a href="https://babeljs.io/">Babel</a></li>
+<li>The framework should not require extensive knowledge outside of JavaScript</li>
+<li>The framework should allow you to define multiple &quot;services&quot; designed to handle multiple workloads</li>
+<li>The framework should allow RESTful API communication to multiple HTTP and HTTP(s) <a href="http://expressjs.com">Express</a> instances concurrently</li>
+<li>The framework should allow Node.JS based communication between instances of Risen.JS concurrently</li>
+<li>The framework should allow the number of discrete &quot;services&quot; to be scaled depending on load &amp; support multiple load balance strategies</li>
+<li>The framework should allow the instancing of &quot;services&quot; for better load balancing and higher throughput</li>
+<li>The framework should allow microservices to communicate with any other service and share data</li>
+<li>The framework should have built-in persistent storage which can be utilized by any of the &quot;services&quot;</li>
+<li>The framework should be OS agnostic and run on all well-known platforms</li>
+<li>The framework should be fast, secure, scalable, and efficient</li>
+<li>The framework should handle errors seamlessly and not crash due to an error in a &quot;service&quot;</li>
+<li>The framework should restart failed services automatically and allow changing of the number of instances during runtime</li>
+<li>The framework should handle all communication, ports, and routing and allow extensive hardening and configuration</li>
+</ul>
+<p>From these broad set of principles, Risen.JS was created as a result.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/risen-js/docs/overview"><span class="arrow-prev">← </span><span>Overview</span></a><a class="docs-next button" href="/risen-js/docs/security"><span>Security</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#why-risenjs">Why Risen.JS?</a></li><li><a href="#guiding-principles">Guiding Principles</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><div><h5>Topics</h5><a href="/risen-js/docs/quickstart">Quickstart</a><a href="/risen-js/docs/overview">Overview</a><a href="/risen-js/docs/philosophy">Philosophy</a><a href="/risen-js/docs/security">Security</a><a href="/risen-js/docs/terminology">Terminology</a></div><div><h5>Community</h5><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js">Code Repository</a><a href="https://github.com/daviemakz/risen-js/issues" target="_blank" rel="noreferrer noopener">Issues</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js/pulls">Pull Requests</a><a rel="noreferrer noopener" target="_blank" href="https://stackoverflow.com/search?q=risen-js">Stack Overflow</a></div><div><h5>Links</h5><a rel="noreferrer noopener" target="_blank" href="https://www.npmjs.com/package/risen-js">NPM</a><a rel="noreferrer noopener" target="_blank" href="https://travis-ci.org/daviemakz/risen-js">Build Status</a><a rel="noreferrer noopener" target="_blank" href="https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js/">Licence Status</a><a rel="noreferrer noopener" target="_blank" href="https://libraries.io/github/daviemakz/risen-js">Dependencies</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/daviemakz/risen-js?style=social"/></a></div></section><a href="https://opensource.facebook.com/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/risen-js/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 - 2020 David Makuni</section></footer></div></body></html>

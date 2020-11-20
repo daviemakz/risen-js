@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configure Framework · Risen.JS</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## Create File"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Configure Framework · Risen.JS"/><meta property="og:type" content="website"/><meta property="og:url" content="https://daviemakz.github.io/risen-js/"/><meta property="og:description" content="## Create File"/><meta property="og:image" content="https://daviemakz.github.io/risen-js/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://daviemakz.github.io/risen-js/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/risen-js/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/risen-js/js/scrollSpy.js"></script><link rel="stylesheet" href="/risen-js/css/main.css"/><script src="/risen-js/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/risen-js/"><img class="logo" src="/risen-js/img/favicon.ico" alt="Risen.JS"/><h2 class="headerTitleWithLogo">Risen.JS</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/risen-js/docs/quickstart" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/risen-js/docs/settingup" target="_self">Tutorial</a></li><li class="siteNavGroupActive"><a href="/risen-js/docs/apirisen" target="_self">API</a></li><li class=""><a href="/risen-js/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Tutorial</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/quickstart">Quickstart</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/philosophy">Philosophy</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/security">Security</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/terminology">Terminology</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Tutorial</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/settingup">Setting Up</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/initialiseproject">Initialise Project</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/defineprimeservice">Prime Service</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/definerenderservice">Render Service</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/risen-js/docs/configureframework">Configure Framework</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/viewresults">See Results</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/apirisen">Constructor</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiinstance">Instance</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiservices">Services</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiglobalmethods">Global Methods</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apidatastructure">Data Structure</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apicodes">Codes</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Configure Framework</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="create-file"></a><a href="#create-file" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create File</h2>
+<p>Create the file which will contain all the configuration for Risen.JS framework:</p>
+<pre><code class="hljs"><span class="hljs-keyword">touch</span> <span class="hljs-built_in">index</span>.js
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="add-configuration"></a><a href="#add-configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add Configuration</h2>
+<p>This is the file which will configure our framework and bring everything together. Paste this into the <code>index.js</code> file you've just created:</p>
+<pre><code class="hljs"><span class="hljs-keyword">const</span> { Risen } = <span class="hljs-built_in">require</span>(<span class="hljs-string">"risen-js"</span>);
+<span class="hljs-keyword">const</span> bodyParser = <span class="hljs-built_in">require</span>(<span class="hljs-string">"body-parser"</span>);
+<span class="hljs-keyword">const</span> compression = <span class="hljs-built_in">require</span>(<span class="hljs-string">"compression"</span>);
+
+<span class="hljs-keyword">const</span> defaultPrimeNumber = <span class="hljs-number">25</span>;
+
+<span class="hljs-keyword">const</span> routes = [
+  {
+    method: <span class="hljs-string">"GET"</span>,
+    uri: <span class="hljs-string">"/"</span>,
+    handler: <span class="hljs-keyword">async</span> (req, res, next, { request }) =&gt; {
+      <span class="hljs-keyword">const</span> body = req.query;
+      <span class="hljs-comment">// Check that a query parameter is there, if not we will redirect</span>
+      <span class="hljs-comment">// to the default prime number defined above.</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Object</span>.prototype.hasOwnProperty.call(body, <span class="hljs-string">"prime"</span>)) {
+        <span class="hljs-keyword">return</span> request(
+          {
+            body,
+            destination: <span class="hljs-string">"render"</span>,
+            functionName: <span class="hljs-string">"renderPage"</span>
+          },
+          <span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> res.send(data.response)
+        );
+      }
+      <span class="hljs-keyword">return</span> res.redirect(<span class="hljs-string">`/?prime=<span class="hljs-subst">${defaultPrimeNumber}</span>`</span>);
+    }
+  }
+];
+
+<span class="hljs-comment">// Our single express server, we can have multiple listening on any ports</span>
+<span class="hljs-keyword">const</span> httpServer = {
+  localhost: <span class="hljs-string">"localhost"</span>,
+  port: <span class="hljs-number">8080</span>,
+  ssl: <span class="hljs-literal">false</span>,
+  harden: <span class="hljs-literal">true</span>,
+  middlewares: [compression(), bodyParser.json()],
+  <span class="hljs-keyword">static</span>: [],
+  routes
+};
+
+<span class="hljs-comment">// Define the framework options for Risen.JS</span>
+<span class="hljs-keyword">const</span> frameworkOptions = {
+  databaseNames: [<span class="hljs-string">"_defaultDatabase"</span>],
+  mode: <span class="hljs-string">"server"</span>,
+  http: [httpServer],
+  runOnStart: [],
+  verbose: <span class="hljs-literal">true</span>,
+  logPath: <span class="hljs-string">"./risen.log"</span>,
+  address: <span class="hljs-string">"localhost:8081"</span>
+};
+
+<span class="hljs-comment">// Initialise instance</span>
+<span class="hljs-keyword">const</span> RisenInstance = <span class="hljs-keyword">new</span> Risen(frameworkOptions);
+
+<span class="hljs-comment">// Define the "prime" service, with the path to its "operations" file</span>
+RisenInstance.defineService(<span class="hljs-string">"prime"</span>, <span class="hljs-string">"./services/prime/index.js"</span>, {
+  instances: <span class="hljs-number">4</span> <span class="hljs-comment">// We will start 4 identical instances of the prime service</span>
+});
+
+<span class="hljs-comment">// Define the "render", with the path to its "operations" file and</span>
+<span class="hljs-comment">// specifying a babel configuration. This will prompt Risen.JS to</span>
+<span class="hljs-comment">// transpile it before starting the function.</span>
+RisenInstance.defineService(<span class="hljs-string">"render"</span>, <span class="hljs-string">"./services/render/index.jsx"</span>, {
+  babelConfig: {
+    presets: [<span class="hljs-string">"@babel/preset-env"</span>, <span class="hljs-string">"@babel/preset-react"</span>]
+  },
+  instances: <span class="hljs-number">2</span> <span class="hljs-comment">// We will start two instances of the render service</span>
+});
+
+<span class="hljs-comment">// Start the server framework</span>
+RisenInstance.startServer();
+</code></pre>
+<blockquote>
+<p>We'll save explaining in detail what these options mean. There is a detailed description of the Risen.JS framework in the API Reference.</p>
+</blockquote>
+<h2><a class="anchor" aria-hidden="true" id="summary"></a><a href="#summary" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Summary</h2>
+<p>The folder structure should have so far should look like this:</p>
+<pre><code class="hljs">├── <span class="hljs-keyword">index</span>.js // Risen.JS <span class="hljs-keyword">configuration</span> file
+├── package.json
+├── services
+│   ├── prime
+│   │   └── <span class="hljs-keyword">index</span>.js // "prime" service operations file
+│   └── render
+│       └── <span class="hljs-keyword">index</span>.jsx // "render" service operations file
+└── yarn.<span class="hljs-keyword">lock</span> | package.json
+</code></pre>
+<p>And there we are, in around <strong>200 lines</strong> we have created a microservice application with two services, <code>prime</code> which will do computationally expensive work, while <code>render</code> will focus on generating HTML content for your browser.</p>
+<p>The great thing is we are splitting the workload across multiple <code>prime</code> services and both services are speaking to each other to fulfill a singular task. This is the philosophy of this framework, simple, fast, and efficient!</p>
+<p>Go to the next steps to see the results!</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/risen-js/docs/definerenderservice"><span class="arrow-prev">← </span><span>Render Service</span></a><a class="docs-next button" href="/risen-js/docs/viewresults"><span>See Results</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#create-file">Create File</a></li><li><a href="#add-configuration">Add Configuration</a></li><li><a href="#summary">Summary</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><div><h5>Topics</h5><a href="/risen-js/docs/quickstart">Quickstart</a><a href="/risen-js/docs/overview">Overview</a><a href="/risen-js/docs/philosophy">Philosophy</a><a href="/risen-js/docs/security">Security</a><a href="/risen-js/docs/terminology">Terminology</a></div><div><h5>Community</h5><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js">Code Repository</a><a href="https://github.com/daviemakz/risen-js/issues" target="_blank" rel="noreferrer noopener">Issues</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js/pulls">Pull Requests</a><a rel="noreferrer noopener" target="_blank" href="https://stackoverflow.com/search?q=risen-js">Stack Overflow</a></div><div><h5>Links</h5><a rel="noreferrer noopener" target="_blank" href="https://www.npmjs.com/package/risen-js">NPM</a><a rel="noreferrer noopener" target="_blank" href="https://travis-ci.org/daviemakz/risen-js">Build Status</a><a rel="noreferrer noopener" target="_blank" href="https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js/">Licence Status</a><a rel="noreferrer noopener" target="_blank" href="https://libraries.io/github/daviemakz/risen-js">Dependencies</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/daviemakz/risen-js?style=social"/></a></div></section><a href="https://opensource.facebook.com/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/risen-js/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 - 2020 David Makuni</section></footer></div></body></html>

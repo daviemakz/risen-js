@@ -1,0 +1,167 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Instance · Risen.JS</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## The `RisenInstance` class"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Instance · Risen.JS"/><meta property="og:type" content="website"/><meta property="og:url" content="https://daviemakz.github.io/risen-js/"/><meta property="og:description" content="## The `RisenInstance` class"/><meta property="og:image" content="https://daviemakz.github.io/risen-js/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://daviemakz.github.io/risen-js/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/risen-js/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/risen-js/js/scrollSpy.js"></script><link rel="stylesheet" href="/risen-js/css/main.css"/><script src="/risen-js/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/risen-js/"><img class="logo" src="/risen-js/img/favicon.ico" alt="Risen.JS"/><h2 class="headerTitleWithLogo">Risen.JS</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/risen-js/docs/quickstart" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/risen-js/docs/settingup" target="_self">Tutorial</a></li><li class="siteNavGroupActive"><a href="/risen-js/docs/apirisen" target="_self">API</a></li><li class=""><a href="/risen-js/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/quickstart">Quickstart</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/philosophy">Philosophy</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/security">Security</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/terminology">Terminology</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Tutorial</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/settingup">Setting Up</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/initialiseproject">Initialise Project</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/defineprimeservice">Prime Service</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/definerenderservice">Render Service</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/configureframework">Configure Framework</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/viewresults">See Results</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/apirisen">Constructor</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/risen-js/docs/apiinstance">Instance</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiservices">Services</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiglobalmethods">Global Methods</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apidatastructure">Data Structure</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apicodes">Codes</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Instance</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="the-riseninstance-class"></a><a href="#the-riseninstance-class" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>The <code>RisenInstance</code> class</h2>
+<pre><code class="hljs"><span class="hljs-keyword">const</span> risenInstance = <span class="hljs-keyword">new</span> Risen(...);
+</code></pre>
+<p>Once you have initialized your <code>Risen</code> class the result is a <code>RisenInstance</code>, which is an instance of the <code>Risen</code> class.</p>
+<h3><a class="anchor" aria-hidden="true" id="defineservice"></a><a href="#defineservice" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>defineService</code></h3>
+<p>This method allows you to define a service that will can then be started by Risen.JS.</p>
+<pre><code class="hljs">risenInstance.define<span class="hljs-constructor">Service(<span class="hljs-params">serviceName</span>, <span class="hljs-params">serviceDefinitionPath</span>, <span class="hljs-params">options</span>)</span>;
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="example"></a><a href="#example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>example</h4>
+<pre><code class="hljs"><span class="hljs-selector-tag">risenInstance</span><span class="hljs-selector-class">.defineService</span>(<span class="hljs-string">'render'</span>, <span class="hljs-string">'./services/render.js'</span>, {
+  <span class="hljs-attribute">babelConfig</span>: {},
+  <span class="hljs-attribute">instances</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attribute">loadBalancing</span>: <span class="hljs-string">'roundRobin'</span>,
+  <span class="hljs-attribute">runOnStart</span>: []
+});
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="parameters"></a><a href="#parameters" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>parameters</h4>
+<ul>
+<li><code>serviceName [string]</code> - This is the name of your service. It's what you will use to send data to instances of this service.</li>
+<li><code>serviceDefinitionPath [string]</code> - This can be a relative path or an absolute path of your service definition file.</li>
+<li><code>options [object]</code> - The options of the service.</li>
+</ul>
+<h5><a class="anchor" aria-hidden="true" id="servicename"></a><a href="#servicename" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>serviceName</h5>
+<p>This must be a string and unique to all other services otherwise you will get an error.</p>
+<h5><a class="anchor" aria-hidden="true" id="servicedefinitionpath"></a><a href="#servicedefinitionpath" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>serviceDefinitionPath</h5>
+<p>This can be a relative path or an absolute path. This file should contain a service definition containing a default export of an object with a collection of functions. Please visit the <a href="/risen-js/docs/apiservices#example-service">Services</a> section to get details on what this file should contain.</p>
+<h5><a class="anchor" aria-hidden="true" id="options"></a><a href="#options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>options</h5>
+<p>The file which configures your service.</p>
+<h6><a class="anchor" aria-hidden="true" id="default"></a><a href="#default" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>default</h6>
+<pre><code class="hljs">{
+  <span class="hljs-attribute">babelConfig</span>: {},
+  <span class="hljs-attribute">loadBalancing</span>: <span class="hljs-string">'roundRobin'</span>,
+  <span class="hljs-attribute">runOnStart</span>: [],
+  <span class="hljs-attribute">instances</span>: <span class="hljs-number">1</span>
+}
+</code></pre>
+<blockquote>
+<p>Instance count can be changed after runtime via the service core operation <code>changeInstances</code>.</p>
+</blockquote>
+<h6><a class="anchor" aria-hidden="true" id="description"></a><a href="#description" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>description</h6>
+<ul>
+<li><code>babelConfig [object]</code> - If defined this should be a babel <a href="https://babeljs.io/docs/en/configuration">configuration</a> and Risen.JS will transpile the service definition before starting the service.</li>
+<li><code>loadBalancing [string]</code> - What is the load balancing strategy for this service. See the <a href="#loadbalancing">section</a> for more information.</li>
+<li><code>runOnStart [array]</code> An array containing the names of functions you want to execute when the service instance starts. These should be in your service definition file.</li>
+<li><code>instances [number]</code> - This defines how many instances of the service should the service core start.</li>
+</ul>
+<blockquote>
+<p>If you include <code>babelConfig</code> ensure you have installed your presets and plugins relative to the Risen.JS configuration file. If not you will get an error on startup.</p>
+</blockquote>
+<h5><a class="anchor" aria-hidden="true" id="loadbalancing"></a><a href="#loadbalancing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>loadBalancing</h5>
+<p>This setting can be set to:</p>
+<ul>
+<li>random</li>
+<li>roundRobin</li>
+<li>a custom function</li>
+</ul>
+<h6><a class="anchor" aria-hidden="true" id="_random_"></a><a href="#_random_" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><em>random</em></h6>
+<p>This randomly assigns requests to service instances.</p>
+<h6><a class="anchor" aria-hidden="true" id="_roundrobin_"></a><a href="#_roundrobin_" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><em>roundRobin</em></h6>
+<p>Round-robin is one of the algorithms employed by process and network schedulers in computing.</p>
+<p>In our context it means requests are sent to each service instance in equal portions and circular order, handling all processes without priority (also known as cyclic executive).</p>
+<h6><a class="anchor" aria-hidden="true" id="_custom-function_"></a><a href="#_custom-function_" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><em>custom function</em></h6>
+<p>Here you can completely control how requests are sent to your service instances. For this you need to pass a function with the signature:</p>
+<pre><code class="hljs">{
+  loadBalancing: (<span class="hljs-name">socketList</span>, command) =&gt; {
+     return socketList[<span class="hljs-number">0</span>]
+  }
+}
+</code></pre>
+<p>Notice you receive the <a href="/risen-js/docs/apidatastructure#command-object">command object</a> which is what will be sent to the service instance. You can use this to route requests to different service instances depending on this if you like.</p>
+<p>You then have to return one of the elements in the array, each one representing a service instance.</p>
+<blockquote>
+<p>If you set this to a custom function you will receive a list of sockets. You must return one of those sockets synchronously.</p>
+</blockquote>
+<h5><a class="anchor" aria-hidden="true" id="runonstart"></a><a href="#runonstart" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>runOnStart</h5>
+<p>If you wanted a persistent action to execute on an instance of a service, like polling for example, you would likely use <code>runOnStart</code> and set up some kind of recursive polling.</p>
+<h3><a class="anchor" aria-hidden="true" id="startserver"></a><a href="#startserver" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>startServer</code></h3>
+<p>After you have configured your server you use this method to start the server. This method does nothing if you are in the <code>client</code> mode.</p>
+<p>Ensure you have finished the configuration before starting the Risen.JS framework.</p>
+<h4><a class="anchor" aria-hidden="true" id="example-1"></a><a href="#example-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>example</h4>
+<pre><code class="hljs">risenInstance.startServer()<span class="hljs-comment">;</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="parameters-1"></a><a href="#parameters-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>parameters</h4>
+<p><em>n/a</em></p>
+<h3><a class="anchor" aria-hidden="true" id="log"></a><a href="#log" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>log</code></h3>
+<p>This method allows you to log anything to the log file (if it's defined) and the <code>stdout</code>.</p>
+<h4><a class="anchor" aria-hidden="true" id="example-2"></a><a href="#example-2" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>example</h4>
+<pre><code class="hljs">risenInstance.<span class="hljs-built_in">log</span>(message, level, <span class="hljs-keyword">override</span>);
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="parameters-2"></a><a href="#parameters-2" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>parameters</h4>
+<ul>
+<li><code>message [string]</code> - This is the content you want to log.</li>
+<li><code>level [string]</code> - This refers to the type of the log.</li>
+<li><code>override [boolean]</code> - Whether to ignore the <code>verbose:false</code> option if its been set.</li>
+</ul>
+<h5><a class="anchor" aria-hidden="true" id="message"></a><a href="#message" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>message</h5>
+<p>This must be a format compatible with the <code>console</code> object.</p>
+<h5><a class="anchor" aria-hidden="true" id="level"></a><a href="#level" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>level</h5>
+<p>This is the level of the log and valid string options are:</p>
+<ul>
+<li>log</li>
+<li>warn</li>
+<li>error</li>
+</ul>
+<h5><a class="anchor" aria-hidden="true" id="override"></a><a href="#override" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>override</h5>
+<p>If you have <code>verbose: false</code> set in the framework options you need to set this to true otherwise your log will be ignored</p>
+<h3><a class="anchor" aria-hidden="true" id="request"></a><a href="#request" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>request</code></h3>
+<p>For information on the arguments on this method please visit the <a href="/risen-js/docs/apiglobalmethods#request">request</a> section.</p>
+<h3><a class="anchor" aria-hidden="true" id="requestchain"></a><a href="#requestchain" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>requestChain</code></h3>
+<p>For information on the arguments on this method please visit the <a href="/risen-js/docs/apiglobalmethods#requestchain">requestChain</a> section.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/risen-js/docs/apirisen"><span class="arrow-prev">← </span><span>Constructor</span></a><a class="docs-next button" href="/risen-js/docs/apiservices"><span>Services</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#the-riseninstance-class">The <code>RisenInstance</code> class</a><ul class="toc-headings"><li><a href="#defineservice"><code>defineService</code></a></li><li><a href="#startserver"><code>startServer</code></a></li><li><a href="#log"><code>log</code></a></li><li><a href="#request"><code>request</code></a></li><li><a href="#requestchain"><code>requestChain</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><div><h5>Topics</h5><a href="/risen-js/docs/quickstart">Quickstart</a><a href="/risen-js/docs/overview">Overview</a><a href="/risen-js/docs/philosophy">Philosophy</a><a href="/risen-js/docs/security">Security</a><a href="/risen-js/docs/terminology">Terminology</a></div><div><h5>Community</h5><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js">Code Repository</a><a href="https://github.com/daviemakz/risen-js/issues" target="_blank" rel="noreferrer noopener">Issues</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js/pulls">Pull Requests</a><a rel="noreferrer noopener" target="_blank" href="https://stackoverflow.com/search?q=risen-js">Stack Overflow</a></div><div><h5>Links</h5><a rel="noreferrer noopener" target="_blank" href="https://www.npmjs.com/package/risen-js">NPM</a><a rel="noreferrer noopener" target="_blank" href="https://travis-ci.org/daviemakz/risen-js">Build Status</a><a rel="noreferrer noopener" target="_blank" href="https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js/">Licence Status</a><a rel="noreferrer noopener" target="_blank" href="https://libraries.io/github/daviemakz/risen-js">Dependencies</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/daviemakz/risen-js?style=social"/></a></div></section><a href="https://opensource.facebook.com/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/risen-js/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 - 2020 David Makuni</section></footer></div></body></html>

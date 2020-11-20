@@ -1,0 +1,356 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Constructor · Risen.JS</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## The `Risen` class"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Constructor · Risen.JS"/><meta property="og:type" content="website"/><meta property="og:url" content="https://daviemakz.github.io/risen-js/"/><meta property="og:description" content="## The `Risen` class"/><meta property="og:image" content="https://daviemakz.github.io/risen-js/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://daviemakz.github.io/risen-js/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/risen-js/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/risen-js/js/scrollSpy.js"></script><link rel="stylesheet" href="/risen-js/css/main.css"/><script src="/risen-js/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/risen-js/"><img class="logo" src="/risen-js/img/favicon.ico" alt="Risen.JS"/><h2 class="headerTitleWithLogo">Risen.JS</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/risen-js/docs/quickstart" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/risen-js/docs/settingup" target="_self">Tutorial</a></li><li class="siteNavGroupActive siteNavItemActive"><a href="/risen-js/docs/apirisen" target="_self">API</a></li><li class=""><a href="/risen-js/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/quickstart">Quickstart</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/philosophy">Philosophy</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/security">Security</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/terminology">Terminology</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Tutorial</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/settingup">Setting Up</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/initialiseproject">Initialise Project</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/defineprimeservice">Prime Service</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/definerenderservice">Render Service</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/configureframework">Configure Framework</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/viewresults">See Results</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/risen-js/docs/apirisen">Constructor</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiinstance">Instance</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiservices">Services</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiglobalmethods">Global Methods</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apidatastructure">Data Structure</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apicodes">Codes</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Constructor</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="the-risen-class"></a><a href="#the-risen-class" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>The <code>Risen</code> class</h2>
+<pre><code class="hljs"> <span class="hljs-keyword">new</span> <span class="hljs-constructor">Risen(<span class="hljs-params">options</span>)</span>;
+</code></pre>
+<p>The <code>options</code> arguments represent all the settings that are passed to the constructor <code>Risen</code>. This is used to create and return an instance of Risen.JS which you can then use to build your framework.</p>
+<p>Returns: <code>RisenInstance</code></p>
+<h3><a class="anchor" aria-hidden="true" id="constructor"></a><a href="#constructor" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>constructor</h3>
+<h4><a class="anchor" aria-hidden="true" id="parameters"></a><a href="#parameters" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Parameters</h4>
+<h4><a class="anchor" aria-hidden="true" id="options"></a><a href="#options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>options</h4>
+<h5><a class="anchor" aria-hidden="true" id="default"></a><a href="#default" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>default</h5>
+<pre><code class="hljs"><span class="hljs-string">{</span>
+  <span class="hljs-attr">address:</span> <span class="hljs-string">'localhost:8080'</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">mode:</span> <span class="hljs-string">'server'</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">http:</span> <span class="hljs-literal">false</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">databaseNames:</span> <span class="hljs-string">['_defaultTable'],</span>
+  <span class="hljs-attr">verbose:</span> <span class="hljs-literal">true</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">maxBuffer:</span> <span class="hljs-number">50</span><span class="hljs-string">,</span> <span class="hljs-string">//</span> <span class="hljs-string">in</span> <span class="hljs-string">megabytes</span>
+  <span class="hljs-attr">logPath:</span> <span class="hljs-string">void</span> <span class="hljs-number">0</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">restartTimeout:</span> <span class="hljs-number">50</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">connectionTimeout:</span> <span class="hljs-number">1000</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">msConnectionTimeout:</span> <span class="hljs-number">10000</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">msConnectionRetryLimit:</span> <span class="hljs-number">1000</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">address:</span> <span class="hljs-string">'localhost:8080'</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">portRangeStart:</span> <span class="hljs-number">1024</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">portRangeFinish:</span> <span class="hljs-number">65535</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">coreOperations:</span> <span class="hljs-string">{},</span>
+  <span class="hljs-attr">runOnStart:</span> <span class="hljs-string">[]</span>
+<span class="hljs-string">}</span>
+</code></pre>
+<h5><a class="anchor" aria-hidden="true" id="description"></a><a href="#description" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>description</h5>
+<ul>
+<li><code>address [string|number]</code> - This is the address of the service core where it will listen for new connections. We recommend always including a host otherwise if you specify just a port the service core will bind to <code>0.0.0.0</code>.</li>
+<li><code>mode [string]</code> - This tells which mode the particular Risen.JS instance will operate under. &quot;server&quot; will have the instance run like a server. &quot;client&quot; mode will not start the Risen.JS instance. Both modes give you access to <a href="/risen-js/docs/apiglobalmethods">Global Methods</a>.</li>
+<li><code>http [bool]</code> - Please see <a href="#http-configuration">HTTP Configuration</a> section.<br>
+<code>databaseNames [array]</code> - The number of databases you want in the Risen.JS instance. Once declared you can use the method defined in this section to create/modify/delete data. Please see the <a href="#storage">storage</a> section for more details.</li>
+<li><code>verbose [bool]</code> - Whether to print more verbose logs of what the instance is doing. Note this does not affect what the client will see for security reasons.</li>
+<li><code>maxBuffer [number]</code> - This option specifies the largest number of bytes allowed on stdout or stderr combined. If this value is exceeded, then the service instance is restarted.</li>
+<li><code>logPath [string]</code> - If you want to log to a file what you would see in the console. If you want more information set <code>{ verbose: true }</code>.</li>
+<li><code>restartTimeout [number]</code> - How long to wait before restarting a service instance (in ms).</li>
+<li><code>connectionTimeout [number]</code> - How long to wait while attempting to acquire a connection to the service core before trying again (in ms).</li>
+<li><code>msConnectionTimeout [number]</code> - How the service core should wait while it attempting to connect to a service instance before timing out and returning an error to the source.</li>
+<li><code>msConnectionRetryLimit [number]</code> - How many times the service core should try to acquire a connection to a service instance if the connection is rejected before returning an error to the source.</li>
+<li><code>address [number|string]</code> - The main address where the service core listens to new connections.</li>
+<li><code>portRangeStart [number]</code> - What port the service core should begin while trying to find a free port for a service instance.</li>
+<li><code>portRangeFinish [number]</code> - What port the service core should end its search if it cannot find a free port. At this point, the service core will throw an error.</li>
+<li><code>coreOperations [object]</code> - This follows the same structure as defining operations for services. You can add new functions here which will be available for any instance (including the service core) to use. Please see the <a href="#service-core-operations">Service Core Operations</a> section for the default core operations.</li>
+<li><code>runOnStart [array]</code> - What core operations you want to be executed on start-up to perform a function of your choice. This would be for example where you would put any polling if you were so inclined.</li>
+<li><code>onConRequest [function]</code> - A function that is executed when a connection is received by the service core.</li>
+<li><code>onConClose [function]</code> - A function that is executed when a connection is closed by the service core.</li>
+</ul>
+<blockquote>
+<p>To bind below ports 1024 you need to have privileged access.</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" id="mode"></a><a href="#mode" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mode</code></h3>
+<h4><a class="anchor" aria-hidden="true" id="server"></a><a href="#server" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>server</h4>
+<p>To start the Risen.JS as a server you do:</p>
+<pre><code class="hljs">{
+  <span class="hljs-attribute">mode</span>: server,
+  ...
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="client"></a><a href="#client" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>client</h4>
+<p>You can use the constructor above to also create a client version of Risen.JS.</p>
+<p>This means if you have Risen.JS running elsewhere you can initialize a separate class in <code>client</code> mode and as long as the address on both instances is the same you can send requests to it.</p>
+<p>So assuming you have a Risen.JS server running elsewhere on the address <code>localhost:8081</code> you can:</p>
+<pre><code class="hljs">const risenClient = <span class="hljs-literal">new</span> Risen({
+  address: <span class="hljs-string">'localhost:8081'</span>,
+  mode: <span class="hljs-string">'client'</span>,
+  verbose: <span class="hljs-literal">false</span>
+})
+
+risenClient.request(
+  {
+    body: <span class="hljs-built_in">null</span>,
+    destination: <span class="hljs-string">'exampleService'</span>,
+    functionName: <span class="hljs-string">'echoData'</span>
+  },
+  (<span class="hljs-built_in">data</span>) =&gt; {
+    <span class="hljs-comment">// You would get your data here</span>
+    console.<span class="hljs-keyword">log</span>(<span class="hljs-built_in">data</span>);
+  }
+)
+</code></pre>
+<p>Please go to the <a href="/risen-js/docs/apiglobalmethods">Global Methods</a> section to see what other methods will be available to you.</p>
+<h3><a class="anchor" aria-hidden="true" id="coreoperations"></a><a href="#coreoperations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coreOperations</code></h3>
+<p>Please see the <a href="#service-core-operations">Service Core Operations</a> section for more details on the default service core operations. This object takes the same form as a service definition. It's a collection of functions within an object.</p>
+<p>For example, if you define this in your initial configuration it will be bound to the service core the same way as the default service core operations:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveStartupTime</span>(<span class="hljs-params">{ request }</span>) </span>{
+  <span class="hljs-keyword">return</span> request({
+    <span class="hljs-attr">body</span>: {
+      <span class="hljs-attr">method</span>: <span class="hljs-string">'set'</span>,
+      <span class="hljs-attr">table</span>: <span class="hljs-string">'_appStats'</span>,  <span class="hljs-comment">// Ensure this table is defined when you initialise your Risen.JS instance</span>
+      <span class="hljs-attr">args</span>: [<span class="hljs-string">`lastStartupTime`</span>, <span class="hljs-built_in">Date</span>.now()]
+    },
+    <span class="hljs-attr">destination</span>: <span class="hljs-string">'serviceCore'</span>,
+    <span class="hljs-attr">functionName</span>: <span class="hljs-string">'storage'</span>
+  });
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getServiceData</span>(<span class="hljs-params">{ sendSuccess }</span>) </span>{
+  <span class="hljs-keyword">return</span> sendSuccess({
+    <span class="hljs-attr">result</span>: <span class="hljs-keyword">this</span>.serviceData
+  });
+}
+
+<span class="hljs-keyword">const</span> coreOperations = {
+  saveStartupTime,
+  getServiceData
+};
+
+<span class="hljs-keyword">const</span> risenInstance =  <span class="hljs-keyword">new</span> Risen({
+  coreOperations,
+  <span class="hljs-attr">databaseNames</span>: [<span class="hljs-string">'_appStats'</span>],
+  <span class="hljs-attr">mode</span>: <span class="hljs-string">'server'</span>,
+});
+</code></pre>
+<blockquote>
+<p>All custom functions must be defined with the <code>function</code> keyword not the named arrow function pattern.</p>
+</blockquote>
+<p>In this example if you want to communicate with the service core custom operation you've just defined called <code>getServiceData</code> you would do:</p>
+<pre><code class="hljs">{
+  <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
+  funcName: <span class="hljs-string">'getServiceData'</span>,
+  body: null
+}
+</code></pre>
+<p>You would pass this <a href="/risen-js/docs/apidatastructure#command-object">command object</a> as an argument to the methods described in the <a href="/risen-js/docs/apiglobalmethods">Global Methods</a> section.</p>
+<h3><a class="anchor" aria-hidden="true" id="runonstart"></a><a href="#runonstart" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>runOnStart</code></h3>
+<p>This is a useful feature if you want a service core operation to be executed when the Risen.JS instance is started. You may want to do this too, for example, begin polling a database or perform a single initialization function.</p>
+<p>Looking at the above <a href="#coreoperations">example</a> there is a custom service core operation called <code>saveStartupTime()</code> which saves the time which the Risen.JS framework started up in persistent storage. To run this function on startup you would do:</p>
+<pre><code class="hljs"><span class="hljs-keyword">const</span> risenInstance =  <span class="hljs-keyword">new</span> Risen({
+  coreOperations,
+  databaseNames: [<span class="hljs-string">'_appStats'</span>],
+  mode: <span class="hljs-string">'server'</span>,
+  runOnStart: [<span class="hljs-string">'saveStartupTime'</span>]
+});
+</code></pre>
+<p>This would execute this function when the framework starts. The full parameters of this function are described in the <a href="/risen-js/docs/apiglobalmethods">Global Methods</a> section.</p>
+<h2><a class="anchor" aria-hidden="true" id="http-configuration"></a><a href="#http-configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>HTTP Configuration</h2>
+<p>Risen.JS allows you to define multiple instances of express as well as exposing the express instance itself for deeper configuration. This must be an array of configuration containing HTTP options described below:</p>
+<p>Below HTTP capabilities are disabled and you will need to start a separate Risen.JS instance in <code>client</code> mode &amp; matching <code>address</code> to communicate with the framework:</p>
+<pre><code class="hljs">{
+  <span class="hljs-attribute">http</span>: false
+}
+</code></pre>
+<p>In this case, because we specified an HTTP server we can communicate to the Risen.JS application via this as well as directly with a Risen.JS instance in <code>client</code> mode:</p>
+<pre><code class="hljs"><span class="hljs-string">{</span>
+  <span class="hljs-attr">http:</span> <span class="hljs-string">[</span>
+    <span class="hljs-string">{</span>
+      <span class="hljs-attr">host:</span> <span class="hljs-string">'localhost'</span><span class="hljs-string">,</span>
+      <span class="hljs-attr">port:</span> <span class="hljs-number">8888</span><span class="hljs-string">,</span>
+      <span class="hljs-attr">ssl:</span> <span class="hljs-literal">false</span><span class="hljs-string">,</span>
+      <span class="hljs-attr">harden:</span> <span class="hljs-literal">true</span><span class="hljs-string">,</span>
+      <span class="hljs-attr">beforeStart:</span> <span class="hljs-string">(express)</span> <span class="hljs-string">=&gt;</span> <span class="hljs-string">express,</span>
+      <span class="hljs-attr">middlewares:</span> <span class="hljs-string">[],</span>
+      <span class="hljs-attr">static:</span> <span class="hljs-string">[],</span>
+      <span class="hljs-attr">routes:</span> <span class="hljs-string">[]</span>
+    <span class="hljs-string">}</span>
+  <span class="hljs-string">]</span>
+<span class="hljs-string">}</span>
+</code></pre>
+<blockquote>
+<p>The <code>beforeStart</code> and <code>middlewares</code> are very powerful as they allow you to have full control of the express object before it's used. <code>beforeStart</code> gives you the express instance where you can do what you want with it. The <code>middlewares</code> allow you to add middlewares to express.</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" id="ssl"></a><a href="#ssl" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>ssl</code></h3>
+<p>The framework allows starting an express server via HTTPS. The configuration would look like so in that case:</p>
+<pre><code class="hljs"><span class="hljs-string">{</span>
+  <span class="hljs-attr">http:</span> <span class="hljs-string">[</span>
+    <span class="hljs-string">{</span>
+      <span class="hljs-attr">host:</span> <span class="hljs-string">'localhost'</span><span class="hljs-string">,</span>
+      <span class="hljs-attr">port:</span> <span class="hljs-number">8888</span><span class="hljs-string">,</span>
+      <span class="hljs-attr">ssl:</span> <span class="hljs-string">{</span>
+        <span class="hljs-attr">key:</span> <span class="hljs-string">'&lt;YOUR_PATH&gt;/server.key'</span><span class="hljs-string">,</span>
+        <span class="hljs-attr">cert:</span> <span class="hljs-string">'&lt;YOUR_PATH&gt;/server.crt'</span><span class="hljs-string">,</span>
+        <span class="hljs-attr">ca:</span> <span class="hljs-string">'&lt;YOUR_PATH&gt;/server.pem'</span>
+      <span class="hljs-string">},</span>
+      <span class="hljs-attr">harden:</span> <span class="hljs-literal">true</span><span class="hljs-string">,</span>
+      <span class="hljs-attr">beforeStart:</span> <span class="hljs-string">(express)</span> <span class="hljs-string">=&gt;</span> <span class="hljs-string">express,</span>
+      <span class="hljs-attr">middlewares:</span> <span class="hljs-string">[],</span>
+      <span class="hljs-attr">static:</span> <span class="hljs-string">[],</span>
+      <span class="hljs-attr">routes:</span> <span class="hljs-string">[]</span>
+    <span class="hljs-string">}</span>
+  <span class="hljs-string">]</span>
+<span class="hljs-string">}</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="optionshttp"></a><a href="#optionshttp" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>options.http</h4>
+<h5><a class="anchor" aria-hidden="true" id="example"></a><a href="#example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>example</h5>
+<pre><code class="hljs"><span class="hljs-string">{</span>
+  <span class="hljs-attr">host:</span> <span class="hljs-string">'localhost'</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8888</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">ssl:</span> <span class="hljs-literal">false</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">harden:</span> <span class="hljs-literal">true</span><span class="hljs-string">,</span>
+  <span class="hljs-attr">beforeStart:</span> <span class="hljs-string">(express)</span> <span class="hljs-string">=&gt;</span> <span class="hljs-string">express,</span>
+  <span class="hljs-attr">middlewares:</span> <span class="hljs-string">[],</span>
+  <span class="hljs-attr">static:</span> <span class="hljs-string">[],</span>
+  <span class="hljs-attr">routes:</span> <span class="hljs-string">[]</span>
+<span class="hljs-string">}</span>
+</code></pre>
+<h5><a class="anchor" aria-hidden="true" id="description-1"></a><a href="#description-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>description</h5>
+<ul>
+<li><code>host [string]</code> - The express host to bind on.</li>
+<li><code>port [number]</code> - The express port to listen on.</li>
+<li><code>host [string]</code> - If you want to bind to a specific address. If omitted it will bind to <code>0.0.0.0</code> (all interfaces).</li>
+<li><code>ssl [bool|object]</code> - Whether HTTPS will be enabled. <code>false</code> will run the express server in HTTP and supplying an object (e.g. <code>{ key: '', cert: '', ca: '' }</code>) will switch to HTTPS. The <code>ca</code> property is optional.</li>
+<li><code>harden [bool]</code> - This hardening follows the guidance from this <a href="https://expressjs.com/en/advanced/best-practice-security.html">link</a>.</li>
+<li><code>beforeStart [function]</code> - Allows you access to the express instance before initialization.</li>
+<li><code>middlewares [array]</code> - If you want to apply middleware to your express instance before initialization.</li>
+<li><code>static [array]</code> - Allows you to serve <a href="https://expressjs.com/en/starter/static-files.html">static</a> content, relative to the folder where Risen.JS is executed.</li>
+<li><code>routes [array]</code> - Please see <a href="#routes">Route Alias Configuration</a> on how you map incoming requests to services.</li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="routes"></a><a href="#routes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>routes</code></h3>
+<p>Routes are defined as a collection of objects within an array. Below are the options for each route. You will need to do this for each <code>URI/method</code> combination.</p>
+<h4><a class="anchor" aria-hidden="true" id="optionshttproutes"></a><a href="#optionshttproutes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>options.http.routes[...]</h4>
+<h5><a class="anchor" aria-hidden="true" id="example-1"></a><a href="#example-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>example</h5>
+<p>A typical route object may look like this:</p>
+<pre><code class="hljs">{
+  method: 'GET',
+  uri: '/',
+  preMiddleware: [],
+  postMiddleware: [],
+  handler: (<span class="hljs-name">req</span>, res, next, { request }) =&gt;
+    request(
+      {
+        body: { query: 'xyx' },
+        destination: 'dbService',
+        functionName: 'searchNames'
+      },
+      (<span class="hljs-name">data</span>) =&gt; res.send(<span class="hljs-name">data</span>)<span class="hljs-comment">;</span>
+    )
+}
+</code></pre>
+<p>The <code>handler</code> (or HTTP route handler) property will receive the same parameters you would with a typical <a href="https://expressjs.com/en/guide/routing.html">route</a> in the Express server.</p>
+<p>A fourth parameter is an object which contains methods described in the <a href="/risen-js/docs/apiglobalmethods#parameter-object">Global Methods</a> section of this documentation.</p>
+<blockquote>
+<p>If you are going to be, for example, sending an HTTP body with your request it's advised to add a middleware to the express configuration of the server to help with this such as <code>body-parser</code>. It will make dealing with this data easier at this stage.</p>
+</blockquote>
+<h5><a class="anchor" aria-hidden="true" id="description-2"></a><a href="#description-2" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>description</h5>
+<ul>
+<li><code>method [string]</code> - The method of the URI, case sensitive. Allowed values are <code>&quot;get&quot;|&quot;delete&quot;|&quot;post&quot;|&quot;patch&quot;|&quot;put&quot;</code></li>
+<li><code>URI [string]</code> - The URI in which this route will be mapped.</li>
+<li><code>preMiddleware [array]</code> - Any middleware you want the request to pass through before running your HTTP route handler.</li>
+<li><code>postMiddleware [array]</code> - Any middleware you want the request to pass through after running your HTTP route handler.</li>
+<li><code>handler [function]</code> - This is where you link express with the framework. It’s here where you receive an HTTP request from a client, you then send a command to your chosen service, receive a response from the service, and send the data back to the client via <code>res.send()</code> o.e.</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="service-core-operations"></a><a href="#service-core-operations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Service Core Operations</h2>
+<p>Service core operations work exactly as they do in the services themselves and receive the same parameters.</p>
+<p>The only difference is they are executed in the service core process, so if you are not careful you could block your framework if you do something CPU intensive, stopping further communication.</p>
+<p>You can call these methods from anywhere. Below is the <a href="/risen-js/docs/apidatastructure#command-object">command object</a> you need to pass to one of the methods described in the <a href="/risen-js/docs/apiglobalmethods">Global Methods</a> section:</p>
+<blockquote>
+<p>To access these methods below your destination should always be set to <code>serviceCore</code>. This also applies to any service core custom operations you have defined as well when you initialized the Risen.JS instance.</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" id="end"></a><a href="#end" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>end</code></h3>
+<p>This function shuts down the Risen.JS microservice framework. The service instances are shut down first and then the service core. The <a href="/risen-js/docs/apidatastructure#command-object">command object</a> looks like this:</p>
+<pre><code class="hljs">{
+  <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
+  funcName: <span class="hljs-string">'end'</span>,
+  body: null // Nothing is required
+}
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="storage"></a><a href="#storage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>storage</code></h3>
+<p>This is the operation that provides access to persistent storage for a running Risen.JS instance. All storage operations only happen on the service core ensuring synchronization.</p>
+<p>The storage is powered by <a href="https://www.npmjs.com/package/quick.db">Quick-DB</a> so please have a look at available methods to use. The <a href="/risen-js/docs/apidatastructure#command-object">command object</a> looks like this:</p>
+<pre><code class="hljs">{
+  <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
+  <span class="hljs-attribute">funcName</span>: <span class="hljs-string">'storage'</span>,
+  <span class="hljs-attribute">body</span>: {
+    <span class="hljs-attribute">method</span>: <span class="hljs-string">'set'</span> <span class="hljs-comment">// See a full list by visiting the above link</span>
+    <span class="hljs-attribute">table</span>: <span class="hljs-string">'_defaultTable'</span>, <span class="hljs-comment">// Make sure you have defined the "table" in the when you initialised Risen.JS or you will get an error.</span>
+    <span class="hljs-attribute">args</span>: [<span class="hljs-string">'randomNumber'</span>, <span class="hljs-number">1024</span>] <span class="hljs-comment">// Arguments will change depending on the method, these will be spread across the Quick.DB method</span>
+  }
+}
+</code></pre>
+<p>Because you can initialize multiple tables at start-up you can separate your data as you need. The data will be stored in a <code>json.sqlite</code> file in the <code>__dirname</code> folder.</p>
+<h3><a class="anchor" aria-hidden="true" id="changeinstances"></a><a href="#changeinstances" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>changeInstances</code></h3>
+<p>This is one of the key core operations in Risen.JS because this service core operation allows you to <strong>increase and decrease</strong> the instance count of any services you have already defined during runtime.</p>
+<p>This means it’s possible to have a service dedicated to monitoring load and increasing/decreasing the instance count of various services where necessary. How you implement this is up to you.</p>
+<p>The command is very simple, define the name of the service you want to change the instance count, and define how many instances you want to add/remove.</p>
+<h4><a class="anchor" aria-hidden="true" id="adding-instances"></a><a href="#adding-instances" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Adding Instances</h4>
+<p>The <a href="/risen-js/docs/apidatastructure#command-object">command object</a> for adding <strong>3</strong> instances to a service:</p>
+<pre><code class="hljs">{
+  <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
+  <span class="hljs-attribute">funcName</span>: <span class="hljs-string">'changeInstances'</span>,
+  <span class="hljs-attribute">body</span>: {
+    <span class="hljs-attribute">name</span>: <span class="hljs-string">'exampleService'</span> <span class="hljs-comment">// The name of the service</span>
+    <span class="hljs-attribute">instances</span>: <span class="hljs-number">3</span> <span class="hljs-comment">// The number of instances you want to add</span>
+  }
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="removing-instances"></a><a href="#removing-instances" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Removing Instances</h4>
+<p>The <a href="/risen-js/docs/apidatastructure#command-object">command object</a> for removing <strong>3</strong> instances to a service:</p>
+<pre><code class="hljs">{
+  <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
+  <span class="hljs-attribute">funcName</span>: <span class="hljs-string">'changeInstances'</span>,
+  <span class="hljs-attribute">body</span>: {
+    <span class="hljs-attribute">name</span>: <span class="hljs-string">'exampleService'</span> <span class="hljs-comment">// The name of the service</span>
+    <span class="hljs-attribute">instances</span>: -<span class="hljs-number">3</span> <span class="hljs-comment">// The number of instances you want to remove</span>
+  }
+}
+</code></pre>
+<p>Note that if you only have <strong>2</strong> instances and request to remove <strong>5</strong> the service core will stop all remaining instances, effectively shutting down this service. You can always start them back up at any point during runtime.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/risen-js/docs/viewresults"><span class="arrow-prev">← </span><span>See Results</span></a><a class="docs-next button" href="/risen-js/docs/apiinstance"><span>Instance</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#the-risen-class">The <code>Risen</code> class</a><ul class="toc-headings"><li><a href="#constructor">constructor</a></li><li><a href="#mode"><code>mode</code></a></li><li><a href="#coreoperations"><code>coreOperations</code></a></li><li><a href="#runonstart"><code>runOnStart</code></a></li></ul></li><li><a href="#http-configuration">HTTP Configuration</a><ul class="toc-headings"><li><a href="#ssl"><code>ssl</code></a></li><li><a href="#routes"><code>routes</code></a></li></ul></li><li><a href="#service-core-operations">Service Core Operations</a><ul class="toc-headings"><li><a href="#end"><code>end</code></a></li><li><a href="#storage"><code>storage</code></a></li><li><a href="#changeinstances"><code>changeInstances</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><div><h5>Topics</h5><a href="/risen-js/docs/quickstart">Quickstart</a><a href="/risen-js/docs/overview">Overview</a><a href="/risen-js/docs/philosophy">Philosophy</a><a href="/risen-js/docs/security">Security</a><a href="/risen-js/docs/terminology">Terminology</a></div><div><h5>Community</h5><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js">Code Repository</a><a href="https://github.com/daviemakz/risen-js/issues" target="_blank" rel="noreferrer noopener">Issues</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js/pulls">Pull Requests</a><a rel="noreferrer noopener" target="_blank" href="https://stackoverflow.com/search?q=risen-js">Stack Overflow</a></div><div><h5>Links</h5><a rel="noreferrer noopener" target="_blank" href="https://www.npmjs.com/package/risen-js">NPM</a><a rel="noreferrer noopener" target="_blank" href="https://travis-ci.org/daviemakz/risen-js">Build Status</a><a rel="noreferrer noopener" target="_blank" href="https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js/">Licence Status</a><a rel="noreferrer noopener" target="_blank" href="https://libraries.io/github/daviemakz/risen-js">Dependencies</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/daviemakz/risen-js?style=social"/></a></div></section><a href="https://opensource.facebook.com/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/risen-js/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 - 2020 David Makuni</section></footer></div></body></html>

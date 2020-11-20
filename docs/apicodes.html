@@ -1,0 +1,103 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Codes · Risen.JS</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## Summary"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Codes · Risen.JS"/><meta property="og:type" content="website"/><meta property="og:url" content="https://daviemakz.github.io/risen-js/"/><meta property="og:description" content="## Summary"/><meta property="og:image" content="https://daviemakz.github.io/risen-js/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://daviemakz.github.io/risen-js/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/risen-js/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/risen-js/js/scrollSpy.js"></script><link rel="stylesheet" href="/risen-js/css/main.css"/><script src="/risen-js/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/risen-js/"><img class="logo" src="/risen-js/img/favicon.ico" alt="Risen.JS"/><h2 class="headerTitleWithLogo">Risen.JS</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/risen-js/docs/quickstart" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/risen-js/docs/settingup" target="_self">Tutorial</a></li><li class="siteNavGroupActive"><a href="/risen-js/docs/apirisen" target="_self">API</a></li><li class=""><a href="/risen-js/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/quickstart">Quickstart</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/philosophy">Philosophy</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/security">Security</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/terminology">Terminology</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Tutorial</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/settingup">Setting Up</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/initialiseproject">Initialise Project</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/defineprimeservice">Prime Service</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/definerenderservice">Render Service</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/configureframework">Configure Framework</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/viewresults">See Results</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/risen-js/docs/apirisen">Constructor</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiinstance">Instance</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiservices">Services</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apiglobalmethods">Global Methods</a></li><li class="navListItem"><a class="navItem" href="/risen-js/docs/apidatastructure">Data Structure</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/risen-js/docs/apicodes">Codes</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Codes</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="summary"></a><a href="#summary" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Summary</h2>
+<p>Risen.JS status codes indicate whether a specific request has been completed or has not.</p>
+<h2><a class="anchor" aria-hidden="true" id="categories"></a><a href="#categories" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Categories</h2>
+<p>Transport state refers to getting the command to its destination. Command state refers to what happens when it is executed on the service instance or service core.</p>
+<p>Since there are two parts to this, the transport level and the command level they have been split into these categories:</p>
+<ul>
+<li>Successful transport responses (2000–2999)</li>
+<li>Successful command responses (200–299)</li>
+<li>Transport errors (5000–5999)</li>
+<li>Command errors (400–599)</li>
+</ul>
+<p>You can set your codes using the <a href="/risen-js/docs/apiglobalmethods#sendsuccess">sendSuccess</a> and <a href="/risen-js/docs/apiglobalmethods#senderror">sendError</a> methods as long as you stay within these numerical ranges.</p>
+<p>This is to allow you to set different status codes as this can be important when building a server-side application and want to differentiate different types of success or failure states.</p>
+<blockquote>
+<p>If using the above methods you set an otherwise successful command to <code>sendSuccess({result: true, code: 300})</code>, Risen.JS will interpret this as a failure.</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" id="success-codes"></a><a href="#success-codes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Success Codes</h3>
+<h4><a class="anchor" aria-hidden="true" id="transport"></a><a href="#transport" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Transport</h4>
+<ul>
+<li>2000 - Transport completed successfully.</li>
+</ul>
+<h4><a class="anchor" aria-hidden="true" id="command"></a><a href="#command" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Command</h4>
+<ul>
+<li>200 - Command completed successfully.</li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="error-codes"></a><a href="#error-codes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Error Codes</h3>
+<h4><a class="anchor" aria-hidden="true" id="transport-1"></a><a href="#transport-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Transport</h4>
+<ul>
+<li>5001 - No data received.</li>
+<li>5002 - Service connection initiation attempts, maximum reached.</li>
+<li>5003 - Unable to connect to the service core.</li>
+<li>5004 - Unable to connect to a specific service.</li>
+<li>5005 - Request received but destination unknown.</li>
+<li>5006 - Micro service process exited unexpectedly.</li>
+<li>5007 - Request received &amp; destination verified but function unknown.</li>
+</ul>
+<h4><a class="anchor" aria-hidden="true" id="command-1"></a><a href="#command-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Command</h4>
+<ul>
+<li>400 - Command executed but an error occurred while processing the request.</li>
+<li>401 - Command executed but an error occurred while attempting storage operation.</li>
+<li>402 - Command executed but an error occurred while attempting to change instances.</li>
+<li>500 - Command not executed, transport failure, or no data received.</li>
+<li>501 - Command not executed, internal redirection failure.</li>
+<li>502 - Command not executed, no data received by service.</li>
+<li>503 - Command not executed, function unknown.</li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/risen-js/docs/apidatastructure"><span class="arrow-prev">← </span><span>Data Structure</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#summary">Summary</a></li><li><a href="#categories">Categories</a><ul class="toc-headings"><li><a href="#success-codes">Success Codes</a></li><li><a href="#error-codes">Error Codes</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><div><h5>Topics</h5><a href="/risen-js/docs/quickstart">Quickstart</a><a href="/risen-js/docs/overview">Overview</a><a href="/risen-js/docs/philosophy">Philosophy</a><a href="/risen-js/docs/security">Security</a><a href="/risen-js/docs/terminology">Terminology</a></div><div><h5>Community</h5><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js">Code Repository</a><a href="https://github.com/daviemakz/risen-js/issues" target="_blank" rel="noreferrer noopener">Issues</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js/pulls">Pull Requests</a><a rel="noreferrer noopener" target="_blank" href="https://stackoverflow.com/search?q=risen-js">Stack Overflow</a></div><div><h5>Links</h5><a rel="noreferrer noopener" target="_blank" href="https://www.npmjs.com/package/risen-js">NPM</a><a rel="noreferrer noopener" target="_blank" href="https://travis-ci.org/daviemakz/risen-js">Build Status</a><a rel="noreferrer noopener" target="_blank" href="https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js/">Licence Status</a><a rel="noreferrer noopener" target="_blank" href="https://libraries.io/github/daviemakz/risen-js">Dependencies</a><a rel="noreferrer noopener" target="_blank" href="https://github.com/daviemakz/risen-js"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/daviemakz/risen-js?style=social"/></a></div></section><a href="https://opensource.facebook.com/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/risen-js/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 - 2020 David Makuni</section></footer></div></body></html>

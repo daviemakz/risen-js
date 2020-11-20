@@ -22,6 +22,16 @@ From inserting and retrieving data from a separate external database (e.g. Redis
 
 Click [here](https://medium.com/@daviemakz/a-simple-way-to-deploy-react-multi-threaded-server-side-rendering-with-risen-js-eba4db97407) to read a Medium article on Risen.JS!
 
+# Updating Documentation Submodule
+
+If you have already installed you can initialise the submodule:
+
+`git submodule update --init --recursive`
+
+To update the submodule to the latest version run:
+
+`git submodule update --remote --merge`
+
 # Philosophy
 
 There are a lot of Node.JS based micro service frameworks out there and some of them are very powerful, however generally speaking they are quite complicated and require a significant amount of knowledge outside of JavaScript to utilise effectively or securely (especially in a production environment).

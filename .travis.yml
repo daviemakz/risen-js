@@ -4,22 +4,27 @@ node_js:
   - '12'
   - 'lts/*'
 
-script: echo "Running tests against $(node -v) ..."
+script: echo "Running pipeline against $(node -v) ..."
 
 jobs:
   include:
-    - stage: install
-      name: 'submodules'
-      script: ./ci/init-docs.sh
     - stage: test
-    - stage: publish
+    - stage: deploy
       name: 'documentation'
-      script: ./ci/deploy-docs.sh
-    - script: ./ci/deploy-package.sh
-      name: 'npm'
+      script:
+        - cd docs
+        - git pull origin HEAD:master
+        - yarn install
+        - cd website
+        - yarn install
+        - yarn build
+        - cd ../..
+        - git config --global user.name "${GH_NAME}"
+        - git config --global user.email "${GH_EMAIL}"
+        - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
+        - cd docs/website && GIT_USER="${GH_NAME}" yarn run publish-gh-pages
 
 stages:
-  - install
   - test
-  - name: publish
+  - name: deploy
     if: branch = master

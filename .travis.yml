@@ -4,7 +4,9 @@ node_js:
   - '12'
   - 'lts/*'
 
-script: echo "Running tests against $(node -v) ..."
+script:
+  - echo "Running tests against $(node -v) ..."
+  - yarn test
 
 jobs:
   include:

@@ -1,19 +1,17 @@
 language: node_js
+node_js:
+  - '10'
+  - '12'
+  - 'lts/*'
 
-script: echo "Running pipeline against $(node -v) ..."
+script: echo "Running tests against $(node -v) ..."
 
 jobs:
   include:
-    - stage: test
-      node_js:
-        - '10'
-        - '12'
-        - 'lts/*'
-      script:
-        - yarn test
     - stage: publish
-      name: 'documentation'
+      node_js: '12'
       script:
+        - echo "Deploying documentation..."
         - cd docs
         - git pull origin HEAD:master
         - yarn install
@@ -25,8 +23,4 @@ jobs:
         - git config --global user.email "${GH_EMAIL}"
         - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
         - cd docs/website && GIT_USER="${GH_NAME}" yarn run publish-gh-pages
-
-stages:
-  - test
-  - name: publish
-    if: branch = master
+        - echo "Documentation deployed."

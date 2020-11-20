@@ -10,6 +10,7 @@ jobs:
   include:
     - stage: publish
       node_js: '12'
+      name: 'documentation'
       script:
         - echo "Deploying documentation..."
         - cd docs

@@ -9,6 +9,8 @@ script: echo "Running pipeline against $(node -v) ..."
 jobs:
   include:
     - stage: test
+      script:
+        - yarn test
     - stage: publish
       name: 'documentation'
       script:

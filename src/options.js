@@ -72,7 +72,7 @@ export const defaultInstanceOptions = {
   http: false,
   databaseNames: ['_defaultTable'],
   verbose: true,
-  maxBuffer: 50, // in megabytes
+  maxBuffer: 256, // max stdout/sdterr in megabytes per process, in prod turn off verbose
   logPath: void 0,
   restartTimeout: 50,
   connectionTimeout: 1000,

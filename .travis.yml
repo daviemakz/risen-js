@@ -3,7 +3,11 @@ language: node_js
 node_js:
   - '10'
   - '12'
+  - '13'
+  - '14'
+  - '15'
   - 'lts/*'
+  - 'node'
 
 script:
   - echo "Running tests against $(node -v) ..."
@@ -17,7 +21,6 @@ jobs:
       script:
         - echo "Deploying documentation..."
         - cd docs
-        - git pull origin HEAD:master
         - yarn install
         - cd website
         - yarn install
@@ -27,4 +30,3 @@ jobs:
         - git config --global user.email "${GH_EMAIL}"
         - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
         - cd docs/website && GIT_USER="${GH_NAME}" yarn run publish-gh-pages
-        - echo "Documentation deployed."

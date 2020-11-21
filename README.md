@@ -1,4 +1,4 @@
-# Risen.JS - Simple, Fast & Unopinionated Micro Services Framework
+# Risen.JS - Simple, Fast & Scalable Micro Services Framework
 
 [![NPM](https://nodei.co/npm/risen-js.png?compact=true)](https://www.npmjs.com/package/risen-js)
 
@@ -12,7 +12,7 @@
 
 **Lead Maintainer:** [David Makuni](https://github.com/daviemakz)
 
-**Documentation:** [Visit this link](https://daviemakz.github.io/risen-js/)
+**Documentation:** [Click here](https://daviemakz.github.io/risen-js/)
 
 # Summary
 
@@ -24,13 +24,15 @@ Risen.JS provides a level of abstraction above these frameworks but also exposes
 
 Because the "services" you will create run as independent Node.JS processes, this means you can build microservices utilizing the tens of thousands of NPM packages that currently exist and are added every day. Simply put anything you can do in Node.JS, you can build a microservice to do for you.
 
-To see a tutorial of the application please visit this [link](https://daviemakz.github.io/risen-js/docs/settingup).
+# Tutorial
+
+We highly recommend you go through this [tutorial](https://daviemakz.github.io/risen-js/docs/settingup) to get a better feel of this framework. It will cover all the basics of the framework and demonstrate some key features!
 
 _Supports Node 10.x +_
 
 # Installation
 
-To install please follow the below instructions:
+Start building scalable high-performance microservice architectures today! To install please follow the below instructions:
 
 ## NPM
 
@@ -46,15 +48,19 @@ yarn add risen-js
 
 # Testing
 
-Run the following commands to run a full test suite of Risen.JS. There is a focus on the end-to-end testing as well as unit tests:
+Risen.JS is fully tested and production-ready. To execute the test suite run the following commands:
 
 ```sh
 yarn test
 ```
 
+> Ensure you have installed the package before doing this using `yarn` or `npm install`.
+
 # Development
 
-If you would like to add to this project I've made it simple to do so.
+This framework is designed to be open-source and free for all to use according to the MIT License. To support further development this package includes an integrated development server, providing a full runtime environment for future development.
+
+Follow the below steps to set the repository up locally.
 
 ## Clone the repository
 
@@ -70,13 +76,11 @@ yarn install
 
 ## Start the server
 
-To run the development server against the full test suite, you simply execute:
+When running the development server, as you make changes all the tests will execute automatically, allowing you to easily develop new features in the framework while ensuring the library still works. To run the development server against the full test suite, you simply execute:
 
 ```sh
 yarn dev:server
 ```
-
-As you make changes all the tests will execute automatically, allowing you to easily develop new features in the framework.
 
 # Documentation
 

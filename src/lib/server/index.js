@@ -9,7 +9,7 @@ import isRunning from 'is-running';
 import { isNumeric } from 'validator';
 
 // Load network components
-import { createListener, createSpeakerReconnector } from '../net';
+import { createSocketListener, createSocketSpeakerReconnect } from '../net';
 
 // Loading libraries
 import ServiceCommon from '../common';
@@ -199,7 +199,7 @@ class MicroServer extends ServiceCommon {
         'log'
       );
       // Initialise interface
-      this.listnerInterface = createListener(this.microServerAddress);
+      this.listnerInterface = createSocketListener(this.microServerAddress);
       // Check the status of the gateway
       if (!this.listnerInterface) {
         // Console log
@@ -260,7 +260,9 @@ class MicroServer extends ServiceCommon {
         'log'
       );
       // Initialise interface
-      this.speakerInterface = createSpeakerReconnector(this.settings.address);
+      this.speakerInterface = createSocketSpeakerReconnect(
+        this.settings.address
+      );
       // Check the status of the gateway
       if (!this.speakerInterface) {
         // Console log

@@ -5,7 +5,7 @@ import ResponseBody from '../template/response';
 import CommandBody from '../template/command';
 
 // Load network components
-import { createSpeaker } from '../net';
+import { createSocketSpeaker } from '../net';
 
 // Load utils
 import { executePromisesInOrder } from '../util';
@@ -33,7 +33,7 @@ export function sendRequest(
   let connectionAttempts = 0;
 
   // Invoke Network Interface
-  const portEmitter = socket || createSpeaker(options.address);
+  const portEmitter = socket || createSocketSpeaker(options.address);
 
   // Build message Body
   const resBody = {

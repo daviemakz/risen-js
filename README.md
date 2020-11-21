@@ -1,4 +1,4 @@
-<img src="https://daviemakz.github.io/risen-js/img/logo.png" alt="Risen.JS Logo" style="margin: 0 auto">
+<img src="https://daviemakz.github.io/risen-js/img/logo-readme.png" alt="Risen.JS Logo" style="margin: 0 auto">
 
 # Risen.JS - Simple, Fast & Scalable Micro Services Framework
 

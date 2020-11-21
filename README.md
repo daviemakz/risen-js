@@ -1,20 +1,5 @@
 # Risen.JS - Simple, Fast & Unopinionated Micro Services Framework
 
-# Table Of Contents
-
-- [Summary](#summary)
-- [Installation](#installation)
-  - [NPM:](#npm-)
-  - [Yarn:](#yarn-)
-- [Testing](#testing)
-- [Development](#development)
-  - [Start Server](#start-server)
-- [Documentation](#documentation)
-  - [Installation](#installation-1)
-  - [Starting Server](#starting-server)
-- [Contributing](#contributing)
-- [License](#license)
-
 [![NPM](https://nodei.co/npm/risen-js.png?compact=true)](https://www.npmjs.com/package/risen-js)
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_shield)

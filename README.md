@@ -1,3 +1,5 @@
+![Logo][]
+
 # Risen.JS - Simple, Fast & Scalable Micro Services Framework
 
 [![NPM](https://nodei.co/npm/risen-js.png?compact=true)](https://www.npmjs.com/package/risen-js)
@@ -12,7 +14,7 @@
 
 **Lead Maintainer:** [David Makuni](https://github.com/daviemakz)
 
-**Documentation:** [Click here](https://daviemakz.github.io/risen-js/)
+**Documentation:** [Click Here](https://daviemakz.github.io/risen-js/)
 
 # Summary
 
@@ -24,11 +26,11 @@ Risen.JS provides a level of abstraction above these frameworks but also exposes
 
 Because the "services" you will create run as independent Node.JS processes, this means you can build microservices utilizing the tens of thousands of NPM packages that currently exist and are added every day. Simply put anything you can do in Node.JS, you can build a microservice to do for you.
 
+_Supports Node 10.x +_
+
 # Tutorial
 
-We highly recommend you go through this [tutorial](https://daviemakz.github.io/risen-js/docs/settingup) to get a better feel of this framework. It will cover all the basics of the framework and demonstrate some key features!
-
-_Supports Node 10.x +_
+We highly recommend you go through this [tutorial](https://daviemakz.github.io/risen-js/docs/settingup) to get a better feel of this framework. It will cover all the basics of the framework and demonstrate some of the possibilities of Risen.JS.
 
 # Installation
 
@@ -58,9 +60,9 @@ yarn test
 
 # Development
 
-This framework is designed to be open-source and free for all to use according to the MIT License. To support further development this package includes an integrated development server, providing a full runtime environment for future development.
+This framework is designed to be open-source and free for all to use according to the MIT License.
 
-Follow the below steps to set the repository up locally.
+To support further development this package includes an integrated development server, providing a full runtime environment for future development. Follow the below steps to set the repository up locally.
 
 ## Clone the repository
 
@@ -76,7 +78,9 @@ yarn install
 
 ## Start the server
 
-When running the development server, as you make changes all the tests will execute automatically, allowing you to easily develop new features in the framework while ensuring the library still works. To run the development server against the full test suite, you simply execute:
+When running the development server, as you make changes all the tests will execute automatically, allowing you to easily develop new features in the framework while ensuring the library still works.
+
+To run the development server against the full test suite, you simply execute:
 
 ```sh
 yarn dev:server
@@ -84,7 +88,7 @@ yarn dev:server
 
 # Documentation
 
-The documentation of Risen.JS is installed as a submodule to this repository.
+The [documentation](https://daviemakz.github.io/risen-js/) of Risen.JS is installed as a submodule to this repository.
 
 ## Installation
 
@@ -96,7 +100,7 @@ If you have already installed Risen.JS in the main directory run this file:
 
 ## Starting documentation server
 
-To run the local documentation server run:
+To run the local [documentation](https://daviemakz.github.io/risen-js/) server run:
 
 ```sh
 cd docs
@@ -110,3 +114,5 @@ All contributions are very welcome, please read my [CONTRIBUTING.md](https://git
 # License
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_large)
+
+[logo]: https://daviemakz.github.io/risen-js/img/logo.png

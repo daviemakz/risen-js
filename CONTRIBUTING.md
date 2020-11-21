@@ -12,7 +12,7 @@ The following guidelines are about _How to avoid Homework Questions_.
 
 ## Read the documentation.
 
-Please read the documentation closely. Most answers will be here but if its not clear let me know!
+Please read the [documentation](https://daviemakz.github.io/risen-js/) closely. Most answers will be here but if its not clear let me know!
 
 ## Close your issue if it's solved
 
@@ -32,6 +32,6 @@ If you believe that 'Risen.JS Micro Service Framework' should provide some featu
 
 It's welcomed to pull request. And there are some tips about that:
 
-1. It is a good habit to create a feature request issue to discuss whether the feature is necessary before you implement it. However, it's unnecessary to create an issue to claim that you found a typo or improved the readability of documentation, just create a pull request.
+1. It is a good habit to create a feature request issue to discuss whether the feature is necessary before you implement it. However, it's unnecessary to create an issue to claim that you found a typo or improved the readability of [documentation](https://daviemakz.github.io/risen-js/), just create a pull request.
 1. Rebase before creating a PR to keep commit history clear.
 1. Add some descriptions and refer relative issues for you PR.

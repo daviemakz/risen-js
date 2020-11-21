@@ -175,7 +175,7 @@ risenClient.request(
 <p>In this example if you want to communicate with the service core custom operation you've just defined called <code>getServiceData</code> you would do:</p>
 <pre><code class="hljs">{
   <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
-  funcName: <span class="hljs-string">'getServiceData'</span>,
+  functionName: <span class="hljs-string">'getServiceData'</span>,
   body: null
 }
 </code></pre>
@@ -308,7 +308,7 @@ risenClient.request(
 <p>This function shuts down the Risen.JS microservice framework. The service instances are shut down first and then the service core. The <a href="/risen-js/docs/apidatastructure#command-object">command object</a> looks like this:</p>
 <pre><code class="hljs">{
   <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
-  funcName: <span class="hljs-string">'end'</span>,
+  functionName: <span class="hljs-string">'end'</span>,
   body: null // Nothing is required
 }
 </code></pre>
@@ -317,7 +317,7 @@ risenClient.request(
 <p>The storage is powered by <a href="https://www.npmjs.com/package/quick.db">Quick-DB</a> so please have a look at available methods to use. The <a href="/risen-js/docs/apidatastructure#command-object">command object</a> looks like this:</p>
 <pre><code class="hljs">{
   <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
-  <span class="hljs-attribute">funcName</span>: <span class="hljs-string">'storage'</span>,
+  <span class="hljs-attribute">functionName</span>: <span class="hljs-string">'storage'</span>,
   <span class="hljs-attribute">body</span>: {
     <span class="hljs-attribute">method</span>: <span class="hljs-string">'set'</span> <span class="hljs-comment">// See a full list by visiting the above link</span>
     <span class="hljs-attribute">table</span>: <span class="hljs-string">'_defaultTable'</span>, <span class="hljs-comment">// Make sure you have defined the "table" in the when you initialised Risen.JS or you will get an error.</span>
@@ -334,7 +334,7 @@ risenClient.request(
 <p>The <a href="/risen-js/docs/apidatastructure#command-object">command object</a> for adding <strong>3</strong> instances to a service:</p>
 <pre><code class="hljs">{
   <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
-  <span class="hljs-attribute">funcName</span>: <span class="hljs-string">'changeInstances'</span>,
+  <span class="hljs-attribute">functionName</span>: <span class="hljs-string">'changeInstances'</span>,
   <span class="hljs-attribute">body</span>: {
     <span class="hljs-attribute">name</span>: <span class="hljs-string">'exampleService'</span> <span class="hljs-comment">// The name of the service</span>
     <span class="hljs-attribute">instances</span>: <span class="hljs-number">3</span> <span class="hljs-comment">// The number of instances you want to add</span>
@@ -345,7 +345,7 @@ risenClient.request(
 <p>The <a href="/risen-js/docs/apidatastructure#command-object">command object</a> for removing <strong>3</strong> instances to a service:</p>
 <pre><code class="hljs">{
   <span class="hljs-attribute">destination</span>: <span class="hljs-string">'serviceCore'</span>,
-  <span class="hljs-attribute">funcName</span>: <span class="hljs-string">'changeInstances'</span>,
+  <span class="hljs-attribute">functionName</span>: <span class="hljs-string">'changeInstances'</span>,
   <span class="hljs-attribute">body</span>: {
     <span class="hljs-attribute">name</span>: <span class="hljs-string">'exampleService'</span> <span class="hljs-comment">// The name of the service</span>
     <span class="hljs-attribute">instances</span>: -<span class="hljs-number">3</span> <span class="hljs-comment">// The number of instances you want to remove</span>

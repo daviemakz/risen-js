@@ -1,4 +1,4 @@
-![Logo][]
+<img src="https://daviemakz.github.io/risen-js/img/logo.png" alt="Risen.JS Logo" style="margin: 0 auto">
 
 # Risen.JS - Simple, Fast & Scalable Micro Services Framework
 
@@ -114,5 +114,3 @@ All contributions are very welcome, please read my [CONTRIBUTING.md](https://git
 # License
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_large)
-
-[logo]: https://daviemakz.github.io/risen-js/img/logo.png

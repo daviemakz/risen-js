@@ -128,7 +128,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "execa": "^4.0.3",
     "husky": "^4.2.5",
-    "is-reachable": "^4.0.0",
+    "is-reachable": "^5.0.0",
     "jest": "^26.4.2",
     "jest-cli": "^26.4.2",
     "lint-staged": "^10.2.11",

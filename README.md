@@ -32,13 +32,13 @@ _Supports Node 10.x +_
 
 To install please follow the below instructions:
 
-## NPM:
+## NPM
 
 ```sh
 npm install risen-js --save
 ```
 
-## Yarn:
+## Yarn
 
 ```sh
 yarn add risen-js
@@ -46,7 +46,7 @@ yarn add risen-js
 
 # Testing
 
-Run the following commands to test the module:
+Run the following commands to run a full test suite of Risen.JS. There is a focus on the end-to-end testing as well as unit tests:
 
 ```sh
 yarn test
@@ -56,19 +56,19 @@ yarn test
 
 If you would like to add to this project I've made it simple to do so.
 
-Clone the repository:
+## Clone the repository
 
 ```sh
 git clone https://github.com/daviemakz/risen-js.git
 ```
 
-Install the dependencies
+## Install the dependencies
 
 ```sh
 yarn install
 ```
 
-## Start Server
+## Start the server
 
 To run the development server against the full test suite, you simply execute:
 
@@ -90,7 +90,7 @@ If you have already installed Risen.JS in the main directory run this file:
 ./init-docs.sh
 ```
 
-## Starting Server
+## Starting documentation server
 
 To run the local documentation server run:
 

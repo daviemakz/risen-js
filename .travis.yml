@@ -30,3 +30,11 @@ jobs:
         - git config --global user.email "${GH_EMAIL}"
         - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
         - cd docs/website && GIT_USER="${GH_NAME}" yarn run publish-gh-pages
+    - stage: release
+      node_js: '12'
+      name: 'npm'
+      script: echo "Deploying to npm ..."
+      deploy:
+        provider: npm
+        api_key: $NPM_TOKEN
+        on: deploy-npm-release

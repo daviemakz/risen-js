@@ -897,13 +897,15 @@ Run the following commands to test the module:
 1. Add pre-made example and add this into the `README.md`.
 2. Update `README.md` with a more slimmed down version.
 3. Add 'development section' to `README.md`.
-4. Add a logo to the project.
+4. Proof-read documentation & website once more
+5. Add a more detailed client description
+6. Update demo with the latest code and `README.md`
+7. Add a logo to the project.
 
 - Bump version...icing!
 
 ## Version 2.1
 
-- Make final package changes:
 - Refactor net functions []
 - Implement CLI version of launching script with `--init` & `--config` functionality.
 

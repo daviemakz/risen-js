@@ -429,11 +429,6 @@ class ServiceCore extends ServiceCommon {
     return socket.request('SERVICE_REQUEST', recData, (res) => {
       // Send Micro Service Response To Source
       clientSocket.reply(res);
-      // Show message in console
-      if (recData.keepAlive === false) {
-        // this.log(`[${conId}] Service core has closed the connection!`, 'log');
-        // clientSocket.conn.destroy();
-      }
       // Return
       return 'connectionReady';
     });

@@ -2,12 +2,10 @@
 
 import getFreePort from 'find-free-port';
 
-// Load Templates
 import ResponseBody from './template/response';
 
 import { getHostByAddress } from './net';
 
-// Wrap the socker and data to allow easier responses to requests
 export function buildResponseFunctions(socket, command, scope) {
   // Destructure the request object
   const { data } = command;
@@ -62,7 +60,6 @@ export function buildResponseFunctions(socket, command, scope) {
   };
 }
 
-// Parse the address, depending on what it is
 export const parseAddress = (address) => {
   return address;
 };
@@ -97,16 +94,7 @@ export const processStdio = (name, type, data) => {
   ).trim();
 };
 
-export const handleReplyToSocket = (
-  data,
-  socket
-  // keepAlive = false
-) => {
-  // Reply
-  socket.reply(data);
-  // Close Socket
-  // return keepAlive && socket.conn.destroy();
-};
+export const handleReplyToSocket = (data, socket) => socket.reply(data);
 
 export const handleOnData = (self, port, instanceId) => (name, type, data) => {
   const { address } = self.settings;

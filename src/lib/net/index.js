@@ -1,25 +1,21 @@
 'use strict';
 
-// Load libs
-import Listener from './listener';
-import Speaker from './speaker';
-import SpeakerReconnector from './speakerReconnector';
+import SocketListener from './socketListener';
+import SocketSpeaker from './socketSpeaker';
+import SocketSpeakerReconnect from './socketSpeakerReconnect';
 
-// Listens to data on a specific port
-export function createListener(address) {
-  return new Listener(address);
+export function createSocketListener(address) {
+  return new SocketListener(address);
 }
 
-// Connects to a port and emits data to a specific port
-export function createSpeaker(...rest) {
+export function createSocketSpeaker(...rest) {
   const addresses = rest.length >= 1 ? [].slice.call(rest, 0) : [];
-  return new Speaker(addresses);
+  return new SocketSpeaker(addresses);
 }
 
-// Connects to a port and emits data to a specific port and will automatically reconnect if connection is lost
-export function createSpeakerReconnector(...rest) {
+export function createSocketSpeakerReconnect(...rest) {
   const addresses = rest.length >= 1 ? [].slice.call(rest, 0) : [];
-  return new SpeakerReconnector(addresses);
+  return new SocketSpeakerReconnect(addresses);
 }
 
 export * from './networkBase';

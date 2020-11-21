@@ -1,10 +1,6 @@
 'use strict';
 
-/* eslint-disable */
-
-let networkBase;
-
-export const getHostByAddress = (address) => {
+export function getHostByAddress(address) {
   if (typeof address === 'number') {
     return null;
   }
@@ -12,9 +8,9 @@ export const getHostByAddress = (address) => {
     return address.split(':')[0];
   }
   return void 0;
-};
+}
 
-export const getPortByAddress = (address) => {
+export function getPortByAddress(address) {
   if (typeof address === 'number') {
     return address;
   }
@@ -22,36 +18,37 @@ export const getPortByAddress = (address) => {
     return address.split(':')[1];
   }
   return void 0;
-};
+}
 
-export const getAddressFormatted = (host, port) => {
+export function getAddressFormatted(host, port) {
   if (host !== null) {
     return `${host}:${port}`;
-  } else {
-    return `${port}`;
   }
-};
+  return `${port}`;
+}
 
-networkBase = (function () {
-  function networkBase() {
-    this.savedBuffer = '';
+function prepareJsonToSend(json) {
+  return `${JSON.stringify(json)}\0`;
+}
+
+function tokenizeData(data) {
+  this.savedBuffer += data;
+  const tokens = this.savedBuffer.split('\0');
+  if (tokens.pop()) {
+    return [];
   }
-  networkBase.prototype.getHostByAddress = getHostByAddress;
-  networkBase.prototype.getPortByAddress = getPortByAddress;
-  networkBase.prototype.prepareJsonToSend = (json) =>
-    `${JSON.stringify(json)}\0`;
+  this.savedBuffer = '';
+  return tokens;
+}
 
-  networkBase.prototype.tokenizeData = function (data) {
-    let tokens;
-    this.savedBuffer += data;
-    tokens = this.savedBuffer.split('\0');
-    if (tokens.pop()) {
-      return [];
-    }
+class NetworkBase {
+  constructor() {
     this.savedBuffer = '';
-    return tokens;
-  };
-  return networkBase;
-})();
+    this.getHostByAddress = getHostByAddress.bind(this);
+    this.getPortByAddress = getPortByAddress.bind(this);
+    this.prepareJsonToSend = prepareJsonToSend.bind(this);
+    this.tokenizeData = tokenizeData.bind(this);
+  }
+}
 
-export default networkBase;
+export default NetworkBase;

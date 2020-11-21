@@ -5,7 +5,8 @@ module.exports = {
     'import/no-dynamic-require': 'off',
     'global-require': 'off',
     'no-void': 'off',
-    'no-shadow': 'off'
+    'no-shadow': 'off',
+    'class-methods-use-this': 'off'
   },
   extends: [
     'airbnb-base',

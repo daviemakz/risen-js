@@ -11,7 +11,7 @@ import { dirname } from 'path';
 import ResponseBody from './template/response';
 
 // Load network components
-import { createSpeakerReconnector, getHostByAddress } from './net';
+import { createSocketSpeakerReconnect, getHostByAddress } from './net';
 
 // Load utils
 import {
@@ -309,7 +309,7 @@ class ServiceCore extends ServiceCommon {
     const host = getHostByAddress(address);
     const resolvedAddress = host !== null ? `${host}:${port}` : port;
     // Invoke the port emitter
-    const portEmitter = createSpeakerReconnector(resolvedAddress);
+    const portEmitter = createSocketSpeakerReconnect(resolvedAddress);
     // Check Socket Is Ready & Execute
     const startMicroServiceConnection = () => {
       // Check If Socket Initialized Then Continue...

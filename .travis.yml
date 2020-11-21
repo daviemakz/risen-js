@@ -37,4 +37,3 @@ jobs:
       deploy:
         provider: npm
         api_key: $NPM_TOKEN
-        on: deploy-npm-release

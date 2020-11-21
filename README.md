@@ -886,10 +886,18 @@ Run the following commands to test the module:
 
 - Reformat service messages [DONE]
 
-- Create CircleCI pipelines for:
+- Refactor net functions [DONE]
 
-1. Testing
-2. Building & Publishing Documentation [Depends on 1]
+- Add further validation for service definition
+
+- Relook at method binding and avoid double binding
+
+- Move methods to positions where it makes sense
+
+- Create CircleCI pipelines for: [DONE]
+
+1. Testing [DONE]
+2. Building & Publishing Documentation [Depends on 1] [DONE]
 3. Publishing Package On Version Change [Depends on 1]
 
 - Update `README.md` with the following:
@@ -898,7 +906,7 @@ Run the following commands to test the module:
 2. Update `README.md` with a more slimmed down version.
 3. Add 'development section' to `README.md`.
 4. Proof-read documentation & website once more
-5. Add a more detailed client description
+5. Add a more detailed 'client mode' description
 6. Update demo with the latest code and `README.md`
 7. Add a logo to the project.
 
@@ -906,7 +914,6 @@ Run the following commands to test the module:
 
 ## Version 2.1
 
-- Refactor net functions []
 - Implement CLI version of launching script with `--init` & `--config` functionality.
 
 ## Contributing

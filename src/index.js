@@ -18,7 +18,7 @@ import { shuffle } from 'lodash';
 import { version } from '../package.json';
 
 // Load network components
-import { createListener, createSpeakerReconnector } from './lib/net';
+import { createSocketListener, createSocketSpeakerReconnect } from './lib/net';
 
 // Load core operations
 import serviceCoreOperations from './lib/core';
@@ -309,7 +309,7 @@ export class Risen extends ServiceCore {
         .then(() => {
           this.log('Starting service core...', 'log', true);
           // Initialise interface, invoke port listener
-          this.externalInterfaces.apiGateway = createListener(
+          this.externalInterfaces.apiGateway = createSocketListener(
             this.settings.address
           );
           // Check the status of the gateway
@@ -414,7 +414,7 @@ export class Risen extends ServiceCore {
       ? Promise.all(
           this.settings.http.map((httpSettings) => {
             // This will be reused by the express server for sending data to the service core
-            const socket = createSpeakerReconnector(this.settings.address);
+            const socket = createSocketSpeakerReconnect(this.settings.address);
             return new Promise((resolve, reject) => {
               try {
                 // Check if the HTTP server should be started or not

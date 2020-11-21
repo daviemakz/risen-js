@@ -123,5 +123,4 @@ class SocketSpeaker extends NetworkBase {
   }
 }
 
-// EXPORTS
 export default SocketSpeaker;

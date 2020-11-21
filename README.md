@@ -888,11 +888,11 @@ Run the following commands to test the module:
 
 - Refactor net functions [DONE]
 
-- Add further validation for service definition
+- Add further validation for service definition [DONE]
 
-- Relook at method binding and avoid double binding
+- Relook at method binding and avoid double binding [DONE]
 
-- Move methods to positions where it makes sense
+- Move methods to positions where it makes sense [DONE]
 
 - Create CircleCI pipelines for: [DONE]
 
@@ -906,9 +906,10 @@ Run the following commands to test the module:
 2. Update `README.md` with a more slimmed down version.
 3. Add 'development section' to `README.md`.
 4. Proof-read documentation & website once more
-5. Add a more detailed 'client mode' description
-6. Update demo with the latest code and `README.md`
-7. Add a logo to the project.
+5. Explore some docusaurus featues and add to docs
+6. Add a more detailed 'client mode' description
+7. Update demo with the latest code and `README.md`
+8. Add a logo to the project.
 
 - Bump version...icing!
 

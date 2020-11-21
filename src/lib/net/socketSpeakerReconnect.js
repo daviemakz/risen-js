@@ -70,5 +70,4 @@ class SocketSpeakerReconnect extends SocketSpeaker {
   }
 }
 
-// EXPORTS
 export default SocketSpeakerReconnect;

@@ -272,13 +272,21 @@ export class Risen extends ServiceCore {
       case typeof serviceData.operations === 'undefined' ||
         !existsSync(serviceData.resolvedPath): {
         throw new Error(
-          `The operations path of the microservice is not defined or cannot be found! PATH: ${serviceData.resolvedPath}`
+          `The service operations path of the microservice is not defined or cannot be found! PATH: ${serviceData.resolvedPath}`
         );
       }
       case typeof serviceData.operations !== 'object' ||
         !Object.keys(serviceData.operations).length: {
         throw new Error(
-          `No operations found. Expecting an exported object with atleast one key! PATH: ${serviceData.resolvedPath}`
+          `No service operations found. Expecting an exported object with atleast one key! PATH: ${serviceData.resolvedPath}`
+        );
+      }
+      case typeof serviceData.operations !== 'object' ||
+        !Object.entries(serviceData.operations).every(([key, value]) => {
+          return typeof key === 'string' && typeof value === 'function';
+        }): {
+        throw new Error(
+          `Invalid service operations found. Expecting an exported object containing a collection of named functions! PATH: ${serviceData.resolvedPath}`
         );
       }
 

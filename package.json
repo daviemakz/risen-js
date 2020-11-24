@@ -1,6 +1,6 @@
 {
   "name": "risen-js",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Risen is a fast, modern and lightweight microservices framework for Node.JS",
   "main": "dist/index.js",
   "license": "MIT",
@@ -135,12 +135,12 @@
     "minimist": "^1.2.5",
     "nodemon-webpack-plugin": "^4.3.2",
     "prettier": "^2.1.0",
-    "prettier-eslint": "^11.0.0",
+    "prettier-eslint": "^12.0.0",
     "prettier-eslint-cli": "^5.0.0",
     "request": "^2.88.0",
     "rimraf": "^3.0.0",
-    "typescript": "^4.0.2",
-    "webpack": "^5.6.0",
+    "typescript": "^4.0.5",
+    "webpack": "^4.44.1",
     "webpack-cli": "^4.2.0"
   },
   "dependencies": {

@@ -2,6 +2,47 @@
 
 import { isURL } from 'validator';
 
+const validateNameAndFunction = (obj) =>
+  Object.entries(obj).every(
+    ([key, value]) =>
+      typeof key === 'string' && key.length && typeof value === 'function'
+  );
+
+export const validateServiceDefinitionOperations = (serviceData) => {
+  // It must be an object
+  if (
+    typeof serviceData.operations !== 'object' ||
+    Array.isArray(serviceData.operations) ||
+    serviceData.operations === null
+  ) {
+    throw new Error(
+      `Invalid service operations found. Expecting an exported object containing a collection of named functions! PATH: ${serviceData.resolvedPath}`
+    );
+  }
+  // It cannot contain a named operation called 'default'
+  if (
+    Object.keys(serviceData.operations).includes('default') &&
+    typeof serviceData.operations.default !== 'object'
+  ) {
+    throw new Error(
+      `Invalid service operations found. You cannot have a service operation called 'default' in your service definition.`
+    );
+  }
+  // Ensure the functions are named and the function is expected
+  if (Object.keys(serviceData.operations).includes('default')) {
+    if (!validateNameAndFunction(serviceData.operations.default)) {
+      throw new Error(
+        `Invalid service operations found in ESM exported file. Expecting an object containing a collection of named functions! PATH: ${serviceData.resolvedPath}`
+      );
+    }
+  } else if (!validateNameAndFunction(serviceData.operations)) {
+    throw new Error(
+      `Invalid service operations found in CommonJS exported file. Expecting an object containing a collection of named functions! PATH: ${serviceData.resolvedPath}`
+    );
+  }
+  return false;
+};
+
 export const validateRouteOptions = (route) => {
   switch (true) {
     case !['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(

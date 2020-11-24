@@ -39,13 +39,17 @@ import {
   buildHttpOptions,
   buildSecureOptions,
   defaultServiceOptions,
-  eventList,
   defaultInstanceOptions,
+  eventList,
   hardenServer
 } from './options';
 
 // Load validation options
-import { validateServiceOptions, validateOptions } from './lib/validate';
+import {
+  validateServiceOptions,
+  validateOptions,
+  validateServiceDefinitionOperations
+} from './lib/validate';
 
 // Declare class
 export class Risen extends ServiceCore {
@@ -281,17 +285,11 @@ export class Risen extends ServiceCore {
           `No service operations found. Expecting an exported object with atleast one key! PATH: ${serviceData.resolvedPath}`
         );
       }
-      case typeof serviceData.operations !== 'object' ||
-        !Object.entries(serviceData.operations).every(([key, value]) => {
-          return typeof key === 'string' && typeof value === 'function';
-        }): {
-        throw new Error(
-          `Invalid service operations found. Expecting an exported object containing a collection of named functions! PATH: ${serviceData.resolvedPath}`
-        );
-      }
-
       case Object.prototype.hasOwnProperty.call(this.serviceInfo, name): {
         throw new Error(`The microservice ${name} has already been defined.`);
+      }
+      case validateServiceDefinitionOperations(serviceData): {
+        throw new Error(`Should have thrown!`);
       }
       default: {
         // Set options

@@ -9,7 +9,8 @@ import {
   validateHttpOptions,
   validateCoreOperations,
   validateOptions,
-  validateServiceOptions
+  validateServiceOptions,
+  validateServiceDefinitionOperations
 } from '../tmp/lib/validate';
 
 // Test suite
@@ -368,6 +369,68 @@ describe('tmp/lib/validate', () => {
       }).toThrow(
         new Error(
           'The service options "babelConfig" option is not valid, it must be an object containing babel configuration'
+        )
+      );
+    });
+  });
+
+  describe('validateServiceDefinitionOperations()', () => {
+    test('throw new error: if the service definition is not an object', () => {
+      expect(() => {
+        validateServiceDefinitionOperations({
+          operations: [],
+          resolvedPath: './pathname'
+        });
+      }).toThrow(
+        new Error(
+          `Invalid service operations found. Expecting an exported object containing a collection of named functions! PATH: ./pathname`
+        )
+      );
+    });
+
+    test('throw new error: if the service operation contains a prop called "default" which is not an ESM module export', () => {
+      expect(() => {
+        validateServiceDefinitionOperations({
+          operations: { default: () => void 0 },
+          resolvedPath: './pathname'
+        });
+      }).toThrow(
+        new Error(
+          `Invalid service operations found. You cannot have a service operation called 'default' in your service definition.`
+        )
+      );
+    });
+
+    test('throw new error: if the ESM module doesnt contain named functions in an object', () => {
+      expect(() => {
+        validateServiceDefinitionOperations({
+          operations: {
+            default: {
+              functionOne: () => void 0,
+              functionTwo: null
+            }
+          },
+          resolvedPath: './pathname'
+        });
+      }).toThrow(
+        new Error(
+          `Invalid service operations found in ESM exported file. Expecting an object containing a collection of named functions! PATH: ./pathname`
+        )
+      );
+    });
+
+    test('throw new error: if the CommonJS module doesnt contain named functions in an object', () => {
+      expect(() => {
+        validateServiceDefinitionOperations({
+          operations: {
+            functionOne: () => void 0,
+            functionTwo: null
+          },
+          resolvedPath: './pathname'
+        });
+      }).toThrow(
+        new Error(
+          'Invalid service operations found in CommonJS exported file. Expecting an object containing a collection of named functions! PATH: ./pathname'
         )
       );
     });

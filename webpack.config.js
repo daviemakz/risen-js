@@ -11,7 +11,7 @@ module.exports = () => {
   const config = {
     mode: 'development',
     target: 'node',
-    devtool: false,
+    devtool: 'inline-source-map',
     entry: {
       mock: ['dev/mock.js']
     },

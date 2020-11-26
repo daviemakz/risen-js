@@ -18,7 +18,7 @@
    <a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/v/risen-js" alt="npm"/></a>
 </p>
 
-# Risen.JS
+#
 
 **Lead Maintainer:** [David Makuni](https://github.com/daviemakz)
 

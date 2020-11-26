@@ -2,7 +2,7 @@
    <a href="https://daviemakz.github.io/risen-js/" target="blank"><img src="https://daviemakz.github.io/risen-js/img/logo-readme.png"  alt="Risen.JS Logo" /></a>
 </p>
 
-<p align="center">A simple, fast and unopinionated <a href="http://nodejs.org" target="_blank">Node.JS</a> framework for building efficient and scalable server-side applications.</p>
+<p align="center">Risen.JS is a simple, fast and unopinionated <a href="http://nodejs.org" target="_blank">Node.JS</a> framework for building efficient and scalable server-side applications.</p>
 
 <p align="center">
    <a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://nodei.co/npm/risen-js.png?compact=true" alt="NPM"/></a>

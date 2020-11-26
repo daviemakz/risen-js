@@ -1,1 +1,279 @@
-'use strict';var _validator=require("validator");Object.defineProperty(exports,"__esModule",{value:!0}),exports.validateServiceOptions=exports.validateOptions=exports.validateCoreOperations=exports.validateHttpOptions=exports.validateRouteOptions=exports.validateServiceDefinitionOperations=void 0;function _typeof(a){"@babel/helpers - typeof";return _typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(a){return typeof a}:function(a){return a&&"function"==typeof Symbol&&a.constructor===Symbol&&a!==Symbol.prototype?"symbol":typeof a},_typeof(a)}function _slicedToArray(a,b){return _arrayWithHoles(a)||_iterableToArrayLimit(a,b)||_unsupportedIterableToArray(a,b)||_nonIterableRest()}function _nonIterableRest(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function _unsupportedIterableToArray(a,b){if(a){if("string"==typeof a)return _arrayLikeToArray(a,b);var c=Object.prototype.toString.call(a).slice(8,-1);return"Object"===c&&a.constructor&&(c=a.constructor.name),"Map"===c||"Set"===c?Array.from(a):"Arguments"===c||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(c)?_arrayLikeToArray(a,b):void 0}}function _arrayLikeToArray(a,b){(null==b||b>a.length)&&(b=a.length);for(var c=0,d=Array(b);c<b;c++)d[c]=a[c];return d}function _iterableToArrayLimit(a,b){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(a)){var c=[],d=!0,e=!1,f=void 0;try{for(var g,h=a[Symbol.iterator]();!(d=(g=h.next()).done)&&(c.push(g.value),!(b&&c.length===b));d=!0);}catch(a){e=!0,f=a}finally{try{d||null==h["return"]||h["return"]()}finally{if(e)throw f}}return c}}function _arrayWithHoles(a){if(Array.isArray(a))return a}var validateNameAndFunction=function(a){return Object.entries(a).every(function(a){var b=_slicedToArray(a,2),c=b[0],d=b[1];return"string"==typeof c&&c.length&&"function"==typeof d})},validateServiceDefinitionOperations=function(a){if("object"!==_typeof(a.operations)||Array.isArray(a.operations)||null===a.operations)throw new Error("Invalid service operations found. Expecting an exported object containing a collection of named functions! PATH: ".concat(a.resolvedPath));if(Object.keys(a.operations).includes("default")&&"object"!==_typeof(a.operations["default"]))throw new Error("Invalid service operations found. You cannot have a service operation called 'default' in your service definition.");if(Object.keys(a.operations).includes("default")){if(!validateNameAndFunction(a.operations["default"]))throw new Error("Invalid service operations found in ESM exported file. Expecting an object containing a collection of named functions! PATH: ".concat(a.resolvedPath));}else if(!validateNameAndFunction(a.operations))throw new Error("Invalid service operations found in CommonJS exported file. Expecting an object containing a collection of named functions! PATH: ".concat(a.resolvedPath));return!1};exports.validateServiceDefinitionOperations=validateServiceDefinitionOperations;var validateRouteOptions=function(a){switch(!0){case!["GET","POST","PUT","PATCH","DELETE"].includes((a.method||"").toUpperCase()):throw new Error("The http route option \"method\" is invalid!");case"string"!=typeof a.uri:throw new Error("The http route option \"uri\" must be a string!");case Object.prototype.hasOwnProperty.call(a,"preMiddleware")&&!Array.isArray(a.preMiddleware):throw new Error("The http route option \"preMiddleware\" must be an array!");case Object.prototype.hasOwnProperty.call(a,"preMiddleware")&&!Array.isArray(a.postMiddleware):throw new Error("The http route option \"postMiddleware\" must be an array!");case"function"!=typeof a.handler:throw new Error("The http route option \"handler\" must be a function!");default:return!0;}};exports.validateRouteOptions=validateRouteOptions;var validateHttpOptions=function(a){return a.every(function(a){switch(!0){case Object.prototype.hasOwnProperty.call(!a,"port")||"number"!=typeof a.port:throw new Error("The http option \"port\" must be a number!");case Object.prototype.hasOwnProperty.call(a,"ssl")&&!["object","boolean"].includes(_typeof(a.ssl)):throw new Error("The http option \"ssl\" must be a boolean false or an object with the keys: {key, ca, cert}");case Object.prototype.hasOwnProperty.call(a,"harden")&&"boolean"!=typeof a.harden:throw new Error("The http option \"harden\" must be a boolean!");case Object.prototype.hasOwnProperty.call(a,"beforeStart")&&"function"!=typeof a.beforeStart:throw new Error("The http option \"beforeStart\" must be a function!");case Object.prototype.hasOwnProperty.call(a,"middlewares")&&!Array.isArray(a.middlewares):throw new Error("The http option \"middlewares\" must be an array!");case Object.prototype.hasOwnProperty.call(a,"static")&&!Array.isArray(a["static"]):throw new Error("The http option \"static\" must be an array!");case Object.prototype.hasOwnProperty.call(a,"routes")&&!Array.isArray(a.routes)||!a.routes.every(function(a){return validateRouteOptions(a)}):throw new Error("The http option \"routes\" must be an array with valid configuration!");default:return!0;}})};exports.validateHttpOptions=validateHttpOptions;var validateCoreOperations=function(a){return!!(a instanceof Object)&&Object.entries(a).every(function(a){var b=_slicedToArray(a,2),c=b[0],d=b[1];return"string"==typeof c&&"function"==typeof d})};exports.validateCoreOperations=validateCoreOperations;var validateOptions=function(a){switch(!0){case Object.prototype.hasOwnProperty.call(a,"mode")&&!["server","client"].includes(a.mode):throw new Error("The \"mode\" option is not valid, it can only be \"server\" or \"client\"");case Object.prototype.hasOwnProperty.call(a,"http")&&!validateHttpOptions(a.http):throw new Error("The \"http\" option is not valid, consult documentation for more information");case Object.prototype.hasOwnProperty.call(a,"databaseNames")&&!Array.isArray(a.databaseNames):throw new Error("The \"databaseNames\" option is not valid, it must be an array of strings");case Object.prototype.hasOwnProperty.call(a,"verbose")&&"boolean"!=typeof a.verbose:throw new Error("The \"verbose\" option is not valid, it must be an boolean");case Object.prototype.hasOwnProperty.call(a,"maxBuffer")&&"number"!=typeof a.maxBuffer:throw new Error("The \"maxBuffer\" option is not valid, it must be a number");case Object.prototype.hasOwnProperty.call(a,"logPath")&&"string"!=typeof a.logPath:throw new Error("The \"logPath\" option is not valid, it must be a string");case Object.prototype.hasOwnProperty.call(a,"restartTimeout")&&"number"!=typeof a.restartTimeout:throw new Error("The \"restartTimeout\" option is not valid, it must be a number");case Object.prototype.hasOwnProperty.call(a,"connectionTimeout")&&"number"!=typeof a.connectionTimeout:throw new Error("The \"connectionTimeout\" option is not valid, it must be a number");case Object.prototype.hasOwnProperty.call(a,"msConnectionTimeout")&&"number"!=typeof a.msConnectionTimeout:throw new Error("The \"msConnectionTimeout\" option is not valid, it must be a number");case Object.prototype.hasOwnProperty.call(a,"msConnectionRetryLimit")&&"number"!=typeof a.msConnectionRetryLimit:throw new Error("The \"msConnectionRetryLimit\" option is not valid, it must be a number");case Object.prototype.hasOwnProperty.call(a,"address")&&"number"!=typeof a.address&&!(0,_validator.isURL)(a.address,{protocols:["http","https"],require_tld:!1,require_protocol:!1,require_host:!1,require_valid_protocol:!0}):throw new Error("The \"address\" option is not valid, it must be a valid network address");case Object.prototype.hasOwnProperty.call(a,"portRangeStart")&&"number"!=typeof a.portRangeStart:throw new Error("The \"portRangeStart\" option is not valid, it must be a number");case Object.prototype.hasOwnProperty.call(a,"portRangeFinish")&&"number"!=typeof a.portRangeFinish:throw new Error("The \"portRangeFinish\" option is not valid, it must be a number");case Object.prototype.hasOwnProperty.call(a,"runOnStart")&&!Array.isArray(a.runOnStart)||Array.isArray(a.runOnStart)&&a.runOnStart.length&&a.runOnStart.every(function(a){return"string"!=typeof a}):throw new Error("The \"runOnStart\" option is not valid, it must be a array of strings corresponding to defined operations");case Object.prototype.hasOwnProperty.call(a,"coreOperations")&&!validateCoreOperations(a.coreOperations):throw new Error("The \"coreOperations\" option is not valid, it must be an object composed of strings (\"operations\") which map to functions");default:return!0;}};exports.validateOptions=validateOptions;var validateServiceOptions=function(a){switch(!0){case Object.prototype.hasOwnProperty.call(a,"runOnStart")&&!Array.isArray(a.runOnStart)||Array.isArray(a.runOnStart)&&a.runOnStart.some(function(a){return"string"!=typeof a}):throw new Error("The service options \"runOnStart\" option is not valid, it must be a valid array");case Object.prototype.hasOwnProperty.call(a,"loadBalancing")&&"function"!=typeof a.loadBalancing&&!["random","roundRobin"].includes(a.loadBalancing):throw new Error("The service options \"loadBalancing\" option is not valid, can either be \"random\" or \"roundRobin\" or a function(socketList)");case Object.prototype.hasOwnProperty.call(a,"instances")&&("number"!=typeof a.instances||"number"==typeof a.instances&&1>a.instances):throw new Error("The service options \"instances\" option is not valid, it must be an number above 1");case Object.prototype.hasOwnProperty.call(a,"babelConfig")&&("object"!==_typeof(a.babelConfig)||null===a.babelConfig):throw new Error("The service options \"babelConfig\" option is not valid, it must be an object containing babel configuration");default:return!0;}};exports.validateServiceOptions=validateServiceOptions;
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.validateServiceOptions = exports.validateOptions = exports.validateCoreOperations = exports.validateHttpOptions = exports.validateRouteOptions = exports.validateServiceDefinitionOperations = void 0;
+
+var _validator = require("validator");
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var validateNameAndFunction = function validateNameAndFunction(obj) {
+  return Object.entries(obj).every(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        key = _ref2[0],
+        value = _ref2[1];
+
+    return typeof key === 'string' && key.length && typeof value === 'function';
+  });
+};
+
+var validateServiceDefinitionOperations = function validateServiceDefinitionOperations(serviceData) {
+  if (_typeof(serviceData.operations) !== 'object' || Array.isArray(serviceData.operations) || serviceData.operations === null) {
+    throw new Error("Invalid service operations found. Expecting an exported object containing a collection of named functions! PATH: ".concat(serviceData.resolvedPath));
+  }
+
+  if (Object.keys(serviceData.operations).includes('default') && _typeof(serviceData.operations["default"]) !== 'object') {
+    throw new Error("Invalid service operations found. You cannot have a service operation called 'default' in your service definition.");
+  }
+
+  if (Object.keys(serviceData.operations).includes('default')) {
+    if (!validateNameAndFunction(serviceData.operations["default"])) {
+      throw new Error("Invalid service operations found in ESM exported file. Expecting an object containing a collection of named functions! PATH: ".concat(serviceData.resolvedPath));
+    }
+  } else if (!validateNameAndFunction(serviceData.operations)) {
+    throw new Error("Invalid service operations found in CommonJS exported file. Expecting an object containing a collection of named functions! PATH: ".concat(serviceData.resolvedPath));
+  }
+
+  return false;
+};
+
+exports.validateServiceDefinitionOperations = validateServiceDefinitionOperations;
+
+var validateRouteOptions = function validateRouteOptions(route) {
+  switch (true) {
+    case !['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes((route.method || '').toUpperCase()):
+      {
+        throw new Error('The http route option "method" is invalid!');
+      }
+
+    case typeof route.uri !== 'string':
+      {
+        throw new Error('The http route option "uri" must be a string!');
+      }
+
+    case Object.prototype.hasOwnProperty.call(route, 'preMiddleware') && !Array.isArray(route.preMiddleware):
+      {
+        throw new Error('The http route option "preMiddleware" must be an array!');
+      }
+
+    case Object.prototype.hasOwnProperty.call(route, 'preMiddleware') && !Array.isArray(route.postMiddleware):
+      {
+        throw new Error('The http route option "postMiddleware" must be an array!');
+      }
+
+    case typeof route.handler !== 'function':
+      {
+        throw new Error('The http route option "handler" must be a function!');
+      }
+
+    default:
+      {
+        return true;
+      }
+  }
+};
+
+exports.validateRouteOptions = validateRouteOptions;
+
+var validateHttpOptions = function validateHttpOptions(httpOptions) {
+  return httpOptions.every(function (http) {
+    switch (true) {
+      case Object.prototype.hasOwnProperty.call(!http, 'port') || typeof http.port !== 'number':
+        {
+          throw new Error('The http option "port" must be a number!');
+        }
+
+      case Object.prototype.hasOwnProperty.call(http, 'ssl') && !['object', 'boolean'].includes(_typeof(http.ssl)):
+        {
+          throw new Error('The http option "ssl" must be a boolean false or an object with the keys: {key, ca, cert}');
+        }
+
+      case Object.prototype.hasOwnProperty.call(http, 'harden') && typeof http.harden !== 'boolean':
+        {
+          throw new Error('The http option "harden" must be a boolean!');
+        }
+
+      case Object.prototype.hasOwnProperty.call(http, 'beforeStart') && typeof http.beforeStart !== 'function':
+        {
+          throw new Error('The http option "beforeStart" must be a function!');
+        }
+
+      case Object.prototype.hasOwnProperty.call(http, 'middlewares') && !Array.isArray(http.middlewares):
+        {
+          throw new Error('The http option "middlewares" must be an array!');
+        }
+
+      case Object.prototype.hasOwnProperty.call(http, 'static') && !Array.isArray(http["static"]):
+        {
+          throw new Error('The http option "static" must be an array!');
+        }
+
+      case Object.prototype.hasOwnProperty.call(http, 'routes') && !Array.isArray(http.routes) || !http.routes.every(function (route) {
+        return validateRouteOptions(route);
+      }):
+        {
+          throw new Error('The http option "routes" must be an array with valid configuration!');
+        }
+
+      default:
+        {
+          return true;
+        }
+    }
+  });
+};
+
+exports.validateHttpOptions = validateHttpOptions;
+
+var validateCoreOperations = function validateCoreOperations(options) {
+  return options instanceof Object ? Object.entries(options).every(function (_ref3) {
+    var _ref4 = _slicedToArray(_ref3, 2),
+        functionName = _ref4[0],
+        functionOp = _ref4[1];
+
+    return typeof functionName === 'string' && typeof functionOp === 'function';
+  }) : false;
+};
+
+exports.validateCoreOperations = validateCoreOperations;
+
+var validateOptions = function validateOptions(options) {
+  switch (true) {
+    case Object.prototype.hasOwnProperty.call(options, 'mode') && !['server', 'client'].includes(options.mode):
+      {
+        throw new Error('The "mode" option is not valid, it can only be "server" or "client"');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'http') && !validateHttpOptions(options.http):
+      {
+        throw new Error('The "http" option is not valid, consult documentation for more information');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'databaseNames') && !Array.isArray(options.databaseNames):
+      {
+        throw new Error('The "databaseNames" option is not valid, it must be an array of strings');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'verbose') && typeof options.verbose !== 'boolean':
+      {
+        throw new Error('The "verbose" option is not valid, it must be an boolean');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'maxBuffer') && typeof options.maxBuffer !== 'number':
+      {
+        throw new Error('The "maxBuffer" option is not valid, it must be a number');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'logPath') && typeof options.logPath !== 'string':
+      {
+        throw new Error('The "logPath" option is not valid, it must be a string');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'restartTimeout') && typeof options.restartTimeout !== 'number':
+      {
+        throw new Error('The "restartTimeout" option is not valid, it must be a number');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'connectionTimeout') && typeof options.connectionTimeout !== 'number':
+      {
+        throw new Error('The "connectionTimeout" option is not valid, it must be a number');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'msConnectionTimeout') && typeof options.msConnectionTimeout !== 'number':
+      {
+        throw new Error('The "msConnectionTimeout" option is not valid, it must be a number');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'msConnectionRetryLimit') && typeof options.msConnectionRetryLimit !== 'number':
+      {
+        throw new Error('The "msConnectionRetryLimit" option is not valid, it must be a number');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'address') && typeof options.address !== 'number' && !(0, _validator.isURL)(options.address, {
+      protocols: ['http', 'https'],
+      require_tld: false,
+      require_protocol: false,
+      require_host: false,
+      require_valid_protocol: true
+    }):
+      {
+        throw new Error('The "address" option is not valid, it must be a valid network address');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'portRangeStart') && typeof options.portRangeStart !== 'number':
+      {
+        throw new Error('The "portRangeStart" option is not valid, it must be a number');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'portRangeFinish') && typeof options.portRangeFinish !== 'number':
+      {
+        throw new Error('The "portRangeFinish" option is not valid, it must be a number');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'runOnStart') && !Array.isArray(options.runOnStart) || Array.isArray(options.runOnStart) && options.runOnStart.length && options.runOnStart.every(function (op) {
+      return typeof op !== 'string';
+    }):
+      {
+        throw new Error('The "runOnStart" option is not valid, it must be a array of strings corresponding to defined operations');
+      }
+
+    case Object.prototype.hasOwnProperty.call(options, 'coreOperations') && !validateCoreOperations(options.coreOperations):
+      {
+        throw new Error('The "coreOperations" option is not valid, it must be an object composed of strings ("operations") which map to functions');
+      }
+
+    default:
+      {
+        return true;
+      }
+  }
+};
+
+exports.validateOptions = validateOptions;
+
+var validateServiceOptions = function validateServiceOptions(serviceOption) {
+  switch (true) {
+    case Object.prototype.hasOwnProperty.call(serviceOption, 'runOnStart') && !Array.isArray(serviceOption.runOnStart) || Array.isArray(serviceOption.runOnStart) && serviceOption.runOnStart.some(function (op) {
+      return typeof op !== 'string';
+    }):
+      {
+        throw new Error('The service options "runOnStart" option is not valid, it must be a valid array');
+      }
+
+    case Object.prototype.hasOwnProperty.call(serviceOption, 'loadBalancing') && typeof serviceOption.loadBalancing !== 'function' && !['random', 'roundRobin'].includes(serviceOption.loadBalancing):
+      {
+        throw new Error('The service options "loadBalancing" option is not valid, can either be "random" or "roundRobin" or a function(socketList)');
+      }
+
+    case Object.prototype.hasOwnProperty.call(serviceOption, 'instances') && (typeof serviceOption.instances !== 'number' || typeof serviceOption.instances === 'number' && serviceOption.instances < 1):
+      {
+        throw new Error('The service options "instances" option is not valid, it must be an number above 1');
+      }
+
+    case Object.prototype.hasOwnProperty.call(serviceOption, 'babelConfig') && (_typeof(serviceOption.babelConfig) !== 'object' || serviceOption.babelConfig === null):
+      {
+        throw new Error('The service options "babelConfig" option is not valid, it must be an object containing babel configuration');
+      }
+
+    default:
+      {
+        return true;
+      }
+  }
+};
+
+exports.validateServiceOptions = validateServiceOptions;

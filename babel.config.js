@@ -1,11 +1,7 @@
 'use strict';
 
 // Import base configs
-const {
-  rcConfigTest,
-  rcConfigMinify,
-  rcConfigDev
-} = require('./babel.config.base');
+const { rcConfigTest, rcConfigDev } = require('./babel.config.base');
 
 // Export
 module.exports = (api) => {
@@ -14,7 +10,7 @@ module.exports = (api) => {
     env: {
       test: rcConfigTest,
       development: rcConfigDev,
-      production: rcConfigMinify
+      production: rcConfigDev
     }
   };
 };

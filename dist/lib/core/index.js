@@ -1,1 +1,317 @@
-'use strict';var _exportNames={uniqueArray:!0,getRandomElements:!0,startService:!0,stopService:!0,end:!0,storage:!0,changeInstances:!0};Object.defineProperty(exports,"__esModule",{value:!0});exports.uniqueArray=uniqueArray,exports.getRandomElements=getRandomElements,exports.startService=startService,exports.stopService=stopService,exports.end=end,exports.storage=storage,exports.changeInstances=changeInstances,exports["default"]=void 0,require("regenerator-runtime");var _lodash=require("lodash"),_request=require("./request");Object.keys(_request).forEach(function(a){"default"===a||"__esModule"===a||Object.prototype.hasOwnProperty.call(_exportNames,a)||a in exports&&exports[a]===_request[a]||Object.defineProperty(exports,a,{enumerable:!0,get:function get(){return _request[a]}})});function _defineProperty(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0,configurable:!0,writable:!0}):a[b]=c,a}function asyncGeneratorStep(a,b,c,d,e,f,g){try{var h=a[f](g),i=h.value}catch(a){return void c(a)}h.done?b(i):Promise.resolve(i).then(d,e)}function _asyncToGenerator(a){return function(){var b=this,c=arguments;return new Promise(function(d,e){function f(a){asyncGeneratorStep(h,d,e,f,g,"next",a)}function g(a){asyncGeneratorStep(h,d,e,f,g,"throw",a)}var h=a.apply(b,c);f(void 0)})}}function _toConsumableArray(a){return _arrayWithoutHoles(a)||_iterableToArray(a)||_unsupportedIterableToArray(a)||_nonIterableSpread()}function _nonIterableSpread(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function _unsupportedIterableToArray(a,b){if(a){if("string"==typeof a)return _arrayLikeToArray(a,b);var c=Object.prototype.toString.call(a).slice(8,-1);return"Object"===c&&a.constructor&&(c=a.constructor.name),"Map"===c||"Set"===c?Array.from(a):"Arguments"===c||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(c)?_arrayLikeToArray(a,b):void 0}}function _iterableToArray(a){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(a))return Array.from(a)}function _arrayWithoutHoles(a){if(Array.isArray(a))return _arrayLikeToArray(a)}function _arrayLikeToArray(a,b){(null==b||b>a.length)&&(b=a.length);for(var c=0,d=Array(b);c<b;c++)d[c]=a[c];return d}function uniqueArray(a){return a.filter(function(a,b,c){return c.indexOf(a)===b})}function getRandomElements(a,b){var c=_toConsumableArray(a);return _toConsumableArray(Array(b)).map(function(){return c.splice(Math.floor(Math.random()*c.length),1)[0]})}function startService(a,b){return this.startServices(a,b)}function stopService(a,b){var c=this;return new Promise(function(d,f){var g=Math.abs(b),h=c.serviceData[a].port.length,i=g>h?h:g;if(0===i)return d(void 0);var j=getRandomElements(c.serviceData[a].port,i);process.env.exitedProcessPorts=uniqueArray([].concat(process.env.exitedProcessPorts,j)),("string"==typeof process.env.exitedProcessPorts?process.env.exitedProcessPorts.split(","):process.env.exitedProcessPorts).map(function(a){return parseInt(a,10)}).filter(function(a){return"number"==typeof a});var k=j.map(function(b){return c.getProcessIndex(a,b)});try{return k.forEach(function(){var b=_asyncToGenerator(regeneratorRuntime.mark(function b(d,e){return regeneratorRuntime.wrap(function(b){for(;;)switch(b.prev=b.next){case 0:return b.abrupt("return",new Promise(function(b,f){c.log("Service core will send kill command to the service: ".concat(a,"/port:").concat(j[e]),"log"),c.serviceData[a].clientSocket[d].request("SERVICE_KILL",void 0,function(d){c.log("Service core has recieved acknowledgement of kill command from: ".concat(a,"/port:").concat(j[e]),"log"),(0,_lodash.inRange)(d.status.command.code,200,299)?b(!0):f(Error(!1))})}));case 1:case"end":return b.stop();}},b)}));return function(){return b.apply(this,arguments)}}()),d(void 0)}catch(a){return f(a)}})}function end(a){var b=a.sendSuccess;return b({result:{error:null,details:{},isSuccess:!0,message:"Shutting down micro service framework."}}),setTimeout(function(){return process.exit()},1e3)}function storage(a){var b=this,c=a.data,d=a.sendError,e=a.sendSuccess,f=c.body,g=f.table,h=f.method,i=f.args;return setImmediate(function(){return b.databaseOperation(g,h,i,function(a,b,c){return a?e({result:{isSuccess:a,result:b,message:"The operation completed successfully!"}}):d({result:{isSuccess:a,result:b,error:c,message:"The operation failed!"},code:401,message:"Command executed but an error occurred while attempting storage operation."})})})}function changeInstances(){return _changeInstances.apply(this,arguments)}function _changeInstances(){return _changeInstances=_asyncToGenerator(regeneratorRuntime.mark(function a(b){var c,d,e,f,g,h,i,j,k,l,m,n;return regeneratorRuntime.wrap(function(a){for(;;)switch(a.prev=a.next){case 0:if(c=b.data,d=b.sendError,e=b.sendSuccess,f=c.body,g=f.name,h=f.instances,i={error:null,details:{}},Object.keys(this.serviceInfo).includes(g)){a.next=7;break}d({result:Object.assign(i,{isSuccess:!1,message:"Service \"".concat(g,"\" was not found!")})}),a.next=25;break;case 7:if("number"==typeof h&&0!==h){a.next=11;break}d({result:Object.assign(i,{isSuccess:!1,message:"\"instance\" property must be a number which is not 0!"})}),a.next=25;break;case 11:if(k=(j=[]).concat.apply(j,_toConsumableArray(this.serviceData[g].port)),!(0<h)){a.next=18;break}return a.next=15,startService.call(this,_defineProperty({},g,this.serviceInfo[g]),h);case 15:a.t0=a.sent,a.next=21;break;case 18:return a.next=20,stopService.call(this,g,h);case 20:a.t0=a.sent;case 21:l=a.t0,m=this.serviceData[g].port,n=this.serviceData[g].instanceId,"undefined"==typeof l?e({result:Object.assign(i,{isSuccess:!0,message:"Services were modified successfully!",details:{instances:m.length,instanceIds:n,name:g,previousPorts:k,nextPorts:m}})}):d({result:Object.assign(i,{isSuccess:!1,message:"Services modification failed!",details:{instances:m.length,instanceIds:n,name:g,previousPorts:k,nextPorts:m}}),code:402,message:"Command executed but an error occurred while attempting to change instances"});case 25:case"end":return a.stop();}},a,this)})),_changeInstances.apply(this,arguments)}var _default={end:end,storage:storage,changeInstances:changeInstances,uniqueArray:uniqueArray,getRandomElements:getRandomElements};exports["default"]=_default;
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _exportNames = {
+  uniqueArray: true,
+  getRandomElements: true,
+  startService: true,
+  stopService: true,
+  end: true,
+  storage: true,
+  changeInstances: true
+};
+exports.uniqueArray = uniqueArray;
+exports.getRandomElements = getRandomElements;
+exports.startService = startService;
+exports.stopService = stopService;
+exports.end = end;
+exports.storage = storage;
+exports.changeInstances = changeInstances;
+exports["default"] = void 0;
+
+require("regenerator-runtime");
+
+var _lodash = require("lodash");
+
+var _request = require("./request");
+
+Object.keys(_request).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _request[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _request[key];
+    }
+  });
+});
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function uniqueArray(arrArg) {
+  return arrArg.filter(function (elem, pos, arr) {
+    return arr.indexOf(elem) === pos;
+  });
+}
+
+function getRandomElements(arr, count) {
+  var arrClone = _toConsumableArray(arr);
+
+  return _toConsumableArray(Array(count)).map(function () {
+    return arrClone.splice(Math.floor(Math.random() * arrClone.length), 1)[0];
+  });
+}
+
+function startService(serviceInfo, instances) {
+  return this.startServices(serviceInfo, instances);
+}
+
+function stopService(name, instances) {
+  var _this = this;
+
+  return new Promise(function (resolve, reject) {
+    var requestedInstances = Math.abs(instances);
+    var actualInstances = _this.serviceData[name].port.length;
+    var instancesToTerminate = requestedInstances > actualInstances ? actualInstances : requestedInstances;
+
+    if (instancesToTerminate === 0) {
+      return resolve(void 0);
+    }
+
+    var ports = getRandomElements(_this.serviceData[name].port, instancesToTerminate);
+    process.env.exitedProcessPorts = uniqueArray([].concat(process.env.exitedProcessPorts, ports));
+    (typeof process.env.exitedProcessPorts === 'string' ? process.env.exitedProcessPorts.split(',') : process.env.exitedProcessPorts).map(function (port) {
+      return parseInt(port, 10);
+    }).filter(function (exitedPort) {
+      return typeof exitedPort === 'number';
+    });
+    var processIndexes = ports.map(function (port) {
+      return _this.getProcessIndex(name, port);
+    });
+
+    try {
+      processIndexes.forEach(function () {
+        var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(index, elIndex) {
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  return _context.abrupt("return", new Promise(function (resolve, reject) {
+                    _this.log("Service core will send kill command to the service: ".concat(name, "/port:").concat(ports[elIndex]), 'log');
+
+                    _this.serviceData[name].clientSocket[index].request('SERVICE_KILL', void 0, function (res) {
+                      _this.log("Service core has recieved acknowledgement of kill command from: ".concat(name, "/port:").concat(ports[elIndex]), 'log');
+
+                      if ((0, _lodash.inRange)(res.status.command.code, 200, 299)) {
+                        resolve(true);
+                      } else {
+                        reject(Error(false));
+                      }
+                    });
+                  }));
+
+                case 1:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }));
+
+        return function (_x, _x2) {
+          return _ref.apply(this, arguments);
+        };
+      }());
+      return resolve(void 0);
+    } catch (e) {
+      return reject(e);
+    }
+  });
+}
+
+function end(_ref2) {
+  var sendSuccess = _ref2.sendSuccess;
+  sendSuccess({
+    result: {
+      error: null,
+      details: {},
+      isSuccess: true,
+      message: 'Shutting down micro service framework.'
+    }
+  });
+  return setTimeout(function () {
+    return process.exit();
+  }, 1000);
+}
+
+function storage(_ref3) {
+  var _this2 = this;
+
+  var data = _ref3.data,
+      sendError = _ref3.sendError,
+      sendSuccess = _ref3.sendSuccess;
+  var _data$body = data.body,
+      table = _data$body.table,
+      method = _data$body.method,
+      args = _data$body.args;
+  return setImmediate(function () {
+    return _this2.databaseOperation(table, method, args, function (isSuccess, result, error) {
+      if (isSuccess) {
+        return sendSuccess({
+          result: {
+            isSuccess: isSuccess,
+            result: result,
+            message: 'The operation completed successfully!'
+          }
+        });
+      }
+
+      return sendError({
+        result: {
+          isSuccess: isSuccess,
+          result: result,
+          error: error,
+          message: 'The operation failed!'
+        },
+        code: 401,
+        message: 'Command executed but an error occurred while attempting storage operation.'
+      });
+    });
+  });
+}
+
+function changeInstances(_x3) {
+  return _changeInstances.apply(this, arguments);
+}
+
+function _changeInstances() {
+  _changeInstances = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(_ref4) {
+    var data, sendError, sendSuccess, _data$body2, name, instances, baseResponse, _ref5, previousPorts, result, nextPorts, instanceIds;
+
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            data = _ref4.data, sendError = _ref4.sendError, sendSuccess = _ref4.sendSuccess;
+            _data$body2 = data.body, name = _data$body2.name, instances = _data$body2.instances;
+            baseResponse = {
+              error: null,
+              details: {}
+            };
+
+            if (Object.keys(this.serviceInfo).includes(name)) {
+              _context2.next = 7;
+              break;
+            }
+
+            sendError({
+              result: Object.assign(baseResponse, {
+                isSuccess: false,
+                message: "Service \"".concat(name, "\" was not found!")
+              })
+            });
+            _context2.next = 25;
+            break;
+
+          case 7:
+            if (!(typeof instances !== 'number' || instances === 0)) {
+              _context2.next = 11;
+              break;
+            }
+
+            sendError({
+              result: Object.assign(baseResponse, {
+                isSuccess: false,
+                message: '"instance" property must be a number which is not 0!'
+              })
+            });
+            _context2.next = 25;
+            break;
+
+          case 11:
+            previousPorts = (_ref5 = []).concat.apply(_ref5, _toConsumableArray(this.serviceData[name].port));
+
+            if (!(instances > 0)) {
+              _context2.next = 18;
+              break;
+            }
+
+            _context2.next = 15;
+            return startService.call(this, _defineProperty({}, name, this.serviceInfo[name]), instances);
+
+          case 15:
+            _context2.t0 = _context2.sent;
+            _context2.next = 21;
+            break;
+
+          case 18:
+            _context2.next = 20;
+            return stopService.call(this, name, instances);
+
+          case 20:
+            _context2.t0 = _context2.sent;
+
+          case 21:
+            result = _context2.t0;
+            nextPorts = this.serviceData[name].port;
+            instanceIds = this.serviceData[name].instanceId;
+
+            if (typeof result === 'undefined') {
+              sendSuccess({
+                result: Object.assign(baseResponse, {
+                  isSuccess: true,
+                  message: 'Services were modified successfully!',
+                  details: {
+                    instances: nextPorts.length,
+                    instanceIds: instanceIds,
+                    name: name,
+                    previousPorts: previousPorts,
+                    nextPorts: nextPorts
+                  }
+                })
+              });
+            } else {
+              sendError({
+                result: Object.assign(baseResponse, {
+                  isSuccess: false,
+                  message: 'Services modification failed!',
+                  details: {
+                    instances: nextPorts.length,
+                    instanceIds: instanceIds,
+                    name: name,
+                    previousPorts: previousPorts,
+                    nextPorts: nextPorts
+                  }
+                }),
+                code: 402,
+                message: 'Command executed but an error occurred while attempting to change instances'
+              });
+            }
+
+          case 25:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  }));
+  return _changeInstances.apply(this, arguments);
+}
+
+var _default = {
+  end: end,
+  storage: storage,
+  changeInstances: changeInstances,
+  uniqueArray: uniqueArray,
+  getRandomElements: getRandomElements
+};
+exports["default"] = _default;

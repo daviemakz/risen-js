@@ -352,7 +352,7 @@ var MicroServer = function (_ServiceCommon) {
           });
           serviceCoreSocket.reply(responseObject);
 
-          if (_this7 === null || _this7 === void 0 ? void 0 : _this7.speakerInterface) {
+          if (_this7 !== null && _this7 !== void 0 && _this7.speakerInterface) {
             var _this7$speakerInterfa;
 
             _this7 === null || _this7 === void 0 ? void 0 : (_this7$speakerInterfa = _this7.speakerInterface) === null || _this7$speakerInterfa === void 0 ? void 0 : _this7$speakerInterfa.conn.destroy();

@@ -10,15 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.0.0-0",
-    "@babel/preset-env": "^7.12.1",
-    "@babel/preset-react": "^7.12.5",
-    "@babel/register": "^7.12.1",
+    "@babel/core": "7.12.9",
+    "@babel/preset-env": "7.12.7",
+    "@babel/preset-react": "7.12.7",
     "antd": "4.8.2",
-    "body-parser": "^1.19.0",
+    "body-parser": "1.19.0",
     "compression": "1.7.4",
     "prop-types": "15.7.2",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "risen-js": "^2.0.2"
   }
 }

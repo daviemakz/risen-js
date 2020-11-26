@@ -16,16 +16,13 @@ function getPrimeList(min, max) {
   }
   return primes;
 }
+
 module.exports = {
   getPrimeListFromRange: ({ sendSuccess, data }) => {
-    // Will grab prime numbers for a given range. This will run across multiple processes
-    // at once and combined by the "render" service
     const { start, end } = data.body;
-    // We recieve this from the "render" service, calculate the list of prime numbers
-    // and return them back to its origin.
+    // Will calculate prime numbers for a given number range.
     const listOfPrimeNumbers = getPrimeList(start, end);
-    // Notice all functions recieve the same arguments to make writing operations
-    // easier.
+    // Send the result back to its source
     return sendSuccess({
       result: listOfPrimeNumbers
     });

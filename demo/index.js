@@ -2,8 +2,11 @@ const { Risen } = require('risen-js');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 
+// If no prime is defined in the query string we default to this
 const defaultPrimeNumber = 25;
 
+// This is a route object which our Express server will use to map the
+// HTTP request/method and communicate with Risen.JS
 const routes = [
   {
     method: 'GET',
@@ -64,7 +67,7 @@ RisenInstance.defineService('render', './services/render/index.jsx', {
   babelConfig: {
     presets: ['@babel/preset-env', '@babel/preset-react']
   },
-  instances: 2 // We will start two instance of the render service
+  instances: 2 // We will start two instances of the render service
 });
 
 // Start the server framework

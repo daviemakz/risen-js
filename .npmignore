@@ -6,7 +6,12 @@ ci
 dev
 src
 tmp
+babel.config.base.js
+babel.config.js
+debug.sh
+init-docs.sh
 SECURITY.md
+.gitmodules
 .github
 .DS_Store
 .eslintignore

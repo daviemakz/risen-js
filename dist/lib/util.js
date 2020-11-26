@@ -1,1 +1,141 @@
-'use strict';Object.defineProperty(exports,"__esModule",{value:!0}),exports.buildResponseFunctions=buildResponseFunctions,exports.randomScheduling=exports.handleOnData=exports.handleReplyToSocket=exports.processStdio=exports.findAFreePort=exports.executePromisesInOrder=exports.parseAddress=void 0;var _findFreePort=_interopRequireDefault(require("find-free-port")),_response=_interopRequireDefault(require("./template/response")),_net=require("./net");function _interopRequireDefault(a){return a&&a.__esModule?a:{default:a}}function _typeof(a){"@babel/helpers - typeof";return _typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(a){return typeof a}:function(a){return a&&"function"==typeof Symbol&&a.constructor===Symbol&&a!==Symbol.prototype?"symbol":typeof a},_typeof(a)}function ownKeys(a,b){var c=Object.keys(a);if(Object.getOwnPropertySymbols){var d=Object.getOwnPropertySymbols(a);b&&(d=d.filter(function(b){return Object.getOwnPropertyDescriptor(a,b).enumerable})),c.push.apply(c,d)}return c}function _objectSpread(a){for(var b,c=1;c<arguments.length;c++)b=null==arguments[c]?{}:arguments[c],c%2?ownKeys(Object(b),!0).forEach(function(c){_defineProperty(a,c,b[c])}):Object.getOwnPropertyDescriptors?Object.defineProperties(a,Object.getOwnPropertyDescriptors(b)):ownKeys(Object(b)).forEach(function(c){Object.defineProperty(a,c,Object.getOwnPropertyDescriptor(b,c))});return a}function _defineProperty(a,b,c){return b in a?Object.defineProperty(a,b,{value:c,enumerable:!0,configurable:!0,writable:!0}):a[b]=c,a}function buildResponseFunctions(a,b,c){var d=this,e=b.data,f=new _response["default"];return _objectSpread({data:e,command:b,sendSuccess:function sendSuccess(c){var g=c.result,h=void 0===g?null:g,i=c.code,j=c.message,k=b.data,l=k.source,m=k.conId,n=l.name,o=l.address,p=l.instanceId;return f.success({data:h,code:i,message:j}),d.log("[".concat(m,"] Service successfully processed command (").concat(e.functionName,") from ").concat(null===p?"".concat(n,"/").concat(d.settings.address):"".concat(n,"/").concat(o,"/id:").concat(p)),"log"),a&&a.reply(f)},sendError:function sendError(c){var g=c.result,h=void 0===g?null:g,i=c.code,j=c.message,k=b.data,l=k.source,m=k.conId,n=l.name,o=l.port,p=l.instanceId;return f.error({data:h,code:i,message:j}),d.log("[".concat(m,"] Service failed to process the command (").concat(e.functionName,") from ").concat(null===p?"".concat(n,"/address:").concat(d.settings.address):"".concat(n,"/port:").concat(o,"/id:").concat(p)),"log"),a&&a.reply(f)}},c)}var parseAddress=function(a){return a};exports.parseAddress=parseAddress;var executePromisesInOrder=function(a){return a.reduce(function(a,b){return a.then(function(a){return b().then(Array.prototype.concat.bind(a))},function(a){throw new Error(a)})},Promise.resolve([]))};exports.executePromisesInOrder=executePromisesInOrder;var findAFreePort=function(a){return new Promise(function(b){return(0,_findFreePort["default"])(a.settings.portRangeStart,a.settings.portRangeFinish,function(a,c){return b(c)})})};exports.findAFreePort=findAFreePort;var processStdio=function(a,b,c){return("[Child process: ".concat(b,"] Micro service - ").concat(a,": ").concat("object"===_typeof(c)?JSON.stringify(c,null,2):c)||"").trim()};exports.processStdio=processStdio;var handleReplyToSocket=function(a,b){return b.reply(a)};exports.handleReplyToSocket=handleReplyToSocket;var handleOnData=function(a,b,c){return function(d,e,f){var g=a.settings.address,h=(0,_net.getHostByAddress)(g),i=null===h?b:"".concat(h,":").concat(b),j=processStdio("".concat(d,"/").concat(i,"/instanceId:").concat(c),e,f);a.writeToLogFile(j),a.log(j,"log")}};exports.handleOnData=handleOnData;var randomScheduling=function(a){var b=Math.floor(Math.random()*a.length);return[a[b],b]};exports.randomScheduling=randomScheduling;
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.buildResponseFunctions = buildResponseFunctions;
+exports.randomScheduling = exports.handleOnData = exports.handleReplyToSocket = exports.processStdio = exports.findAFreePort = exports.executePromisesInOrder = exports.parseAddress = void 0;
+
+var _findFreePort = _interopRequireDefault(require("find-free-port"));
+
+var _response = _interopRequireDefault(require("./template/response"));
+
+var _net = require("./net");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function buildResponseFunctions(socket, command, scope) {
+  var _this = this;
+
+  var data = command.data;
+  var responseObject = new _response["default"]();
+
+  var sendSuccess = function sendSuccess(_ref) {
+    var _ref$result = _ref.result,
+        result = _ref$result === void 0 ? null : _ref$result,
+        code = _ref.code,
+        message = _ref.message;
+    var _command$data = command.data,
+        source = _command$data.source,
+        conId = _command$data.conId;
+    var name = source.name,
+        address = source.address,
+        instanceId = source.instanceId;
+    responseObject.success({
+      data: result,
+      code: code,
+      message: message
+    });
+
+    _this.log("[".concat(conId, "] Service successfully processed command (").concat(data.functionName, ") from ").concat(instanceId === null ? "".concat(name, "/").concat(_this.settings.address) : "".concat(name, "/").concat(address, "/id:").concat(instanceId)), 'log');
+
+    return socket && socket.reply(responseObject);
+  };
+
+  var sendError = function sendError(_ref2) {
+    var _ref2$result = _ref2.result,
+        result = _ref2$result === void 0 ? null : _ref2$result,
+        code = _ref2.code,
+        message = _ref2.message;
+    var _command$data2 = command.data,
+        source = _command$data2.source,
+        conId = _command$data2.conId;
+    var name = source.name,
+        port = source.port,
+        instanceId = source.instanceId;
+    responseObject.error({
+      data: result,
+      code: code,
+      message: message
+    });
+
+    _this.log("[".concat(conId, "] Service failed to process the command (").concat(data.functionName, ") from ").concat(instanceId === null ? "".concat(name, "/address:").concat(_this.settings.address) : "".concat(name, "/port:").concat(port, "/id:").concat(instanceId)), 'log');
+
+    return socket && socket.reply(responseObject);
+  };
+
+  return _objectSpread({
+    data: data,
+    command: command,
+    sendSuccess: sendSuccess,
+    sendError: sendError
+  }, scope);
+}
+
+var parseAddress = function parseAddress(address) {
+  return address;
+};
+
+exports.parseAddress = parseAddress;
+
+var executePromisesInOrder = function executePromisesInOrder(funcs) {
+  return funcs.reduce(function (promise, func) {
+    return promise.then(function (result) {
+      return func().then(Array.prototype.concat.bind(result));
+    }, function (err) {
+      throw new Error(err);
+    });
+  }, Promise.resolve([]));
+};
+
+exports.executePromisesInOrder = executePromisesInOrder;
+
+var findAFreePort = function findAFreePort(self) {
+  return new Promise(function (resolve) {
+    return (0, _findFreePort["default"])(self.settings.portRangeStart, self.settings.portRangeFinish, function (err, freePort) {
+      return resolve(freePort);
+    });
+  });
+};
+
+exports.findAFreePort = findAFreePort;
+
+var processStdio = function processStdio(name, type, data) {
+  return ("[Child process: ".concat(type, "] Micro service - ").concat(name, ": ").concat(_typeof(data) === 'object' ? JSON.stringify(data, null, 2) : data) || '').trim();
+};
+
+exports.processStdio = processStdio;
+
+var handleReplyToSocket = function handleReplyToSocket(data, socket) {
+  return socket.reply(data);
+};
+
+exports.handleReplyToSocket = handleReplyToSocket;
+
+var handleOnData = function handleOnData(self, port, instanceId) {
+  return function (name, type, data) {
+    var address = self.settings.address;
+    var host = (0, _net.getHostByAddress)(address);
+    var resolvedAddress = host !== null ? "".concat(host, ":").concat(port) : port;
+    var logOutput = processStdio("".concat(name, "/").concat(resolvedAddress, "/instanceId:").concat(instanceId), type, data);
+    self.writeToLogFile(logOutput);
+    self.log(logOutput, 'log');
+  };
+};
+
+exports.handleOnData = handleOnData;
+
+var randomScheduling = function randomScheduling(socketList) {
+  var socketIndex = Math.floor(Math.random() * socketList.length);
+  return [socketList[socketIndex], socketIndex];
+};
+
+exports.randomScheduling = randomScheduling;

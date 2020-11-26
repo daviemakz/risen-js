@@ -90,6 +90,14 @@ yarn dev:server
 
 The [documentation](https://daviemakz.github.io/risen-js/) of Risen.JS is installed as a submodule to this repository.
 
+If you have already installed the repositor you can initialise the submodule:
+
+`git submodule update --init --recursive`
+
+To update the submodule to the latest version run:
+
+`git submodule update --remote --merge`
+
 ## Installation
 
 If you have already installed Risen.JS in the main directory run this file:

@@ -25,6 +25,9 @@ const rcConfigMinify = {
     [
       'minify',
       {
+        keepFnName: true,
+        keepClassName: true,
+        removeDebugger: true,
         builtIns: false
       }
     ]

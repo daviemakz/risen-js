@@ -93,7 +93,6 @@
   "homepage": "https://github.com/daviemakz/risen-js#readme",
   "devDependencies": {
     "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.3.3",
     "@babel/plugin-syntax-throw-expressions": "^7.2.0",
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
     "@babel/plugin-transform-regenerator": "^7.0.0",
@@ -140,11 +139,12 @@
     "request": "^2.88.0",
     "rimraf": "^3.0.0",
     "typescript": "^4.0.5",
-    "webpack": "^4.44.1",
+    "webpack": "^5.6.0",
     "webpack-cli": "^4.2.0"
   },
   "dependencies": {
-    "@babel/register": "^7.10.5",
+    "@babel/core": "^7.12.9",
+    "@babel/register": "^7.12.1",
     "auto-bind": "^4.0.0",
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",

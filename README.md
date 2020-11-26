@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<b>Risen.JS</b> is a simple, fast, and unopinionated <a href="http://nodejs.org" target="_blank">Node.JS</a> framework for building fast, efficient, and scalable server-side applications.
+<b>Risen.JS</b> is a simple, fast, and unopinionated <a href="http://nodejs.org" target="_blank">Node.JS</a> framework for building efficient, and scalable server-side applications and RESTful API's. Using this library you can automate business operations, streamlining your processes, reducing overhead, and cutting costs in the process.</p>
 
 <p align="center">
 <a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/v/risen-js" alt="npm"/></a>

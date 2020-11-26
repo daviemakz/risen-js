@@ -2,20 +2,17 @@
    <a href="https://daviemakz.github.io/risen-js/" target="blank"><img src="https://daviemakz.github.io/risen-js/img/logo-readme.png"  alt="Risen.JS Logo" /></a>
 </p>
 
-<p align="center"><b>Risen.JS</b> is a simple, fast and unopinionated <a href="http://nodejs.org" target="_blank">Node.JS</a> framework for building fast, efficient and scalable server-side applications.</p>
+<p align="center">
+<b>Risen.JS</b> is a simple, fast, and unopinionated <a href="http://nodejs.org" target="_blank">Node.JS</a> framework for building fast, efficient, and scalable server-side applications.
 
 <p align="center">
-   <a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://nodei.co/npm/risen-js.png?compact=true" alt="NPM"/></a>
-</p>
-
-<p align="center">
-   <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_shield" target="_blank"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=shield" alt="FOSSA Status"/></a>
-   <a href="https://travis-ci.org/daviemakz/risen-js" target="_blank"><img src="https://travis-ci.org/daviemakz/risen-js.svg?branch=master" alt="Build Status"/></a>
-   <a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/dm/risen-js.svg" alt="Downloads"/></a>
-   <a href="https://github.com/daviemakz/risen-js/issues" target="_blank"><img src="https://img.shields.io/github/issues/daviemakz/risen-js" alt="GitHub issues"/></a>
-   <a href="https://github.com/daviemakz/risen-js/pulls" target="_blank"><img src="https://img.shields.io/github/issues-pr/daviemakz/risen-js" alt="GitHub pull requests"/></a>
-   <a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/l/risen-js" alt="NPM"/></a>
-   <a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/v/risen-js" alt="npm"/></a>
+<a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/v/risen-js" alt="npm"/></a>
+<a href="https://travis-ci.org/daviemakz/risen-js" target="_blank"><img src="https://travis-ci.org/daviemakz/risen-js.svg?branch=master" alt="Build Status"/></a>
+<a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/dm/risen-js.svg" alt="Downloads"/></a>
+<a href="https://github.com/daviemakz/risen-js/issues" target="_blank"><img src="https://img.shields.io/github/issues/daviemakz/risen-js" alt="GitHub issues"/></a>
+<a href="https://github.com/daviemakz/risen-js/pulls" target="_blank"><img src="https://img.shields.io/github/issues-pr/daviemakz/risen-js" alt="GitHub pull requests"/></a>
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js?ref=badge_shield" target="_blank"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdaviemakz%2Frisen-js.svg?type=shield" alt="FOSSA Status"/></a>
+<a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/l/risen-js" alt="NPM"/></a>
 </p>
 
 #

@@ -1,6 +1,6 @@
 {
   "name": "risen-js",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Risen is a fast, modern and lightweight microservices framework for Node.JS",
   "main": "dist/index.js",
   "license": "MIT",

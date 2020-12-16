@@ -60,9 +60,7 @@ export function buildResponseFunctions(socket, command, scope) {
   };
 }
 
-export const parseAddress = (address) => {
-  return address;
-};
+export const parseAddress = (address) => address;
 
 export const executePromisesInOrder = (funcs) =>
   funcs.reduce(
@@ -76,23 +74,21 @@ export const executePromisesInOrder = (funcs) =>
     Promise.resolve([])
   );
 
-export const findAFreePort = (self) => {
-  return new Promise((resolve) =>
+export const findAFreePort = (self) =>
+  new Promise((resolve) =>
     getFreePort(
       self.settings.portRangeStart,
       self.settings.portRangeFinish,
       (err, freePort) => resolve(freePort)
     )
   );
-};
 
-export const processStdio = (name, type, data) => {
-  return (
+export const processStdio = (name, type, data) =>
+  (
     `[Child process: ${type}] Micro service - ${name}: ${
       typeof data === 'object' ? JSON.stringify(data, null, 2) : data
     }` || ''
   ).trim();
-};
 
 export const handleReplyToSocket = (data, socket) => socket.reply(data);
 

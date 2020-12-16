@@ -2,15 +2,9 @@
 
 import { inRange } from 'lodash';
 
-const isSuccess = (self) => {
-  return (
-    inRange(
-      self?.status?.transport?.code ?? self?.transport?.code,
-      2000,
-      2999
-    ) && inRange(self?.status?.command?.code ?? self?.command?.code, 200, 299)
-  );
-};
+const isSuccess = (self) =>
+  inRange(self?.status?.transport?.code ?? self?.transport?.code, 2000, 2999) &&
+  inRange(self?.status?.command?.code ?? self?.command?.code, 200, 299);
 
 function getResponseBody() {
   return {

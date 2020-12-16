@@ -4,14 +4,13 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import helmet from 'helmet';
 
-export const hardenServer = (expressApp) => {
+export const hardenServer = (expressApp) =>
   /*
     This hardening follows the guidance in this file:
     https://expressjs.com/en/advanced/best-practice-security.html
     This may be enhanced in the future
   */
-  return expressApp.use(helmet());
-};
+  expressApp.use(helmet());
 
 export const buildSecureOptions = (ssl) => {
   try {

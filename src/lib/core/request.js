@@ -10,15 +10,13 @@ import { createSocketSpeaker } from '../net';
 // Load utils
 import { executePromisesInOrder } from '../util';
 
-const getProcessType = () => {
-  return process.env.service === 'true' ? 'Micro service' : 'Service core';
-};
+const getProcessType = () =>
+  process.env.service === 'true' ? 'Micro service' : 'Service core';
 
-const executeCallback = ({ responseData, resBody, portEmitter }) => {
-  return typeof resBody.callback === 'function'
+const executeCallback = ({ responseData, resBody, portEmitter }) =>
+  typeof resBody.callback === 'function'
     ? resBody.callback(responseData, resBody, portEmitter || void 0)
     : void 0;
-};
 
 // Send data to the service core
 export function sendRequest(

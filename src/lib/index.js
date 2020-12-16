@@ -154,8 +154,8 @@ class ServiceCore extends ServiceCommon {
     const instanceId = uuidv4();
 
     // Build micro service wrapper
-    const microServiceWrapper = () => {
-      return new Promise((resolve, reject) => {
+    const microServiceWrapper = () =>
+      new Promise((resolve, reject) => {
         const initialiseOnFreePort = async () => {
           try {
             // Find a free port and assign above scope
@@ -214,7 +214,6 @@ class ServiceCore extends ServiceCommon {
         // Return
         return initialiseOnFreePort();
       });
-    };
 
     // Service starter wrapper
     const startService = async (callback) => {

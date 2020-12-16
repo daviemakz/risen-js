@@ -13,9 +13,7 @@ class SocketListener extends NetworkBase {
     this.host = this.getHostByAddress(address);
     this.port = this.getPortByAddress(address);
     this.startServer();
-    this.errorFn = () => {
-      return this.startServer();
-    };
+    this.errorFn = () => this.startServer();
   }
 
   startServer() {
@@ -48,14 +46,13 @@ class SocketListener extends NetworkBase {
     const { subject } = message;
     let i = 0;
     Object.assign(message, {
-      reply: (json) => {
-        return message.conn.write(
+      reply: (json) =>
+        message.conn.write(
           this.prepareJsonToSend({
             id: message.id,
             data: json
           })
-        );
-      }
+        )
     });
     Object.assign(message, {
       next: () => {

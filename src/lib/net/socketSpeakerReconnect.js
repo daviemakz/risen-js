@@ -6,9 +6,8 @@ import { getAddressFormatted } from './networkBase';
 
 import SocketSpeaker from './socketSpeaker';
 
-const processExitedPorts = (ports) => {
-  return typeof ports === 'string' ? ports.split(',') : ports;
-};
+const processExitedPorts = (ports) =>
+  typeof ports === 'string' ? ports.split(',') : ports;
 
 class SocketSpeakerReconnect extends SocketSpeaker {
   connect(address) {

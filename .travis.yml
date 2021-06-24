@@ -7,7 +7,6 @@ node_js:
   - '14'
   - '15'
   - 'lts/*'
-  - 'node'
 
 script:
   - echo "Running tests against $(node -v) ..."

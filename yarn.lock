@@ -1474,6 +1474,13 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.8.tgz#2127bd81949a95c8b7d3240f3254352d72563aec"
   integrity sha512-z/5Yd59dCKI5kbxauAJgw6dLPzW+TNOItNE00PkpzNwUIEwdj/Lsqwq94H5DdYBX7C13aRA0CY32BK76+neEUA==
 
+"@types/nodemon@latest":
+  version "1.19.1"
+  resolved "https://registry.yarnpkg.com/@types/nodemon/-/nodemon-1.19.1.tgz#00b2b931e240112dff30fc9cadbe3de02b5f3abc"
+  integrity sha512-3teAFqCFba3W9zk4dAGUZ+rW/nrQBrSGXWyK9HfJuWxmITk2z2d3u/5cy7oFqNG2fZxPwSAWkP+a8q/QC6UU5Q==
+  dependencies:
+    "@types/node" "*"
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
@@ -6504,12 +6511,12 @@ node-releases@^1.1.70:
   integrity sha512-zR6HoT6LrLCRBwukmrVbHv0EpEQjksO6GmFcZQQuCAy139BEsoVKPYnf3jongYW83fAa1torLGYwxxky/p28sg==
 
 nodemon-webpack-plugin@^4.3.2:
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/nodemon-webpack-plugin/-/nodemon-webpack-plugin-4.4.4.tgz#57d2fa517bd4bb3cd080cebdeec06ec0f5b2b69e"
-  integrity sha512-fgRAkKNvek1r5hOY25i9Gxx95nSuHX2hHndgHbTO0HFXNq1ItBjmaBR7U7a2FbQJj4ttfMfKnhqYMzSpM92yBQ==
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/nodemon-webpack-plugin/-/nodemon-webpack-plugin-4.5.2.tgz#76aeee7f9c73815f64de5e0ae8578122bc3d2639"
+  integrity sha512-+TNh++lIY6qcKOdEP07XhFFW0cN1a2YfyfP3idP7dOtJOUzwcMYZpNRk5iTMtQmMwzJF04obpltwE2KT5FISGw==
   dependencies:
+    "@types/nodemon" latest
     nodemon "2.0.7"
-    ramda "0.27.1"
 
 nodemon@2.0.7:
   version "2.0.7"
@@ -7301,11 +7308,6 @@ quick.db@^7.0.0-b21:
   dependencies:
     better-sqlite3 "^7.1.1"
     lodash "^4.17.20"
-
-ramda@0.27.1:
-  version "0.27.1"
-  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.27.1.tgz#66fc2df3ef873874ffc2da6aa8984658abacf5c9"
-  integrity sha512-PgIdVpn5y5Yns8vqb8FzBUEYn98V3xcPgawAkkgj0YJ0qDsnHCiNmZYfOGMgOvoB0eWFLpYbhxUR3mxfDIMvpw==
 
 randombytes@^2.1.0:
   version "2.1.0"

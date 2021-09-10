@@ -146,7 +146,7 @@
     "minimist": "^1.2.5",
     "nodemon-webpack-plugin": "^4.3.2",
     "prettier": "^2.1.0",
-    "prettier-eslint": "^12.0.0",
+    "prettier-eslint": "^13.0.0",
     "prettier-eslint-cli": "^5.0.0",
     "request": "^2.88.0",
     "rimraf": "^3.0.0",

@@ -6,10 +6,10 @@ const path = require('path');
 const NodemonPlugin = require('nodemon-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-module.exports = () => {
+module.exports = (mode, env) => {
   /* eslint-disable-next-line */
   const config = {
-    mode: 'development',
+    mode: env.mode,
     target: 'node',
     devtool: 'inline-source-map',
     entry: {
@@ -36,9 +36,12 @@ module.exports = () => {
     },
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+        'process.env': {
+          // This has effect on the react lib size
+          NODE_ENV: JSON.stringify(env.mode)
+        }
       }),
-      new webpack.IgnorePlugin(/.*\/__tests__\/.*/),
+      new webpack.IgnorePlugin({ resourceRegExp: /.*\/__tests__\/.*/ }),
       new CopyWebpackPlugin({
         patterns: [
           {

@@ -7,7 +7,7 @@
 
 <p align="center">
 <a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/v/risen-js" alt="npm"/></a>
-<a href="https://travis-ci.org/daviemakz/risen-js" target="_blank"><img src="https://travis-ci.org/daviemakz/risen-js.svg?branch=master" alt="Build Status"/></a>
+<a href="https://app.travis-ci.com/github/daviemakz/risen-js" target="_blank"><img src="https://app.travis-ci.com/daviemakz/risen-js.svg?branch=master" alt="Build Status"/></a>
 <a href="https://www.npmjs.com/package/risen-js" target="_blank"><img src="https://img.shields.io/npm/dm/risen-js.svg" alt="Downloads"/></a>
 <a href="https://github.com/daviemakz/risen-js/issues" target="_blank"><img src="https://img.shields.io/github/issues/daviemakz/risen-js" alt="GitHub issues"/></a>
 <a href="https://github.com/daviemakz/risen-js/pulls" target="_blank"><img src="https://img.shields.io/github/issues-pr/daviemakz/risen-js" alt="GitHub pull requests"/></a>

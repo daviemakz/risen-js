@@ -15,10 +15,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:import/warnings',
     'plugin:json/recommended',
-    'prettier',
-    'prettier/@typescript-eslint',
-    'prettier/babel',
-    'prettier/standard'
+    'prettier'
   ],
   globals: {
     globalThis: 'readonly',
